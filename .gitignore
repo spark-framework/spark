@@ -3,4 +3,4 @@ server/artifacts
 server/cache
 server/db
 server/.replxx_history
-server/credentials
+server/credentials.cfg
