@@ -4,6 +4,9 @@ local Identifiers = {
     "id"
 }
 
+--- Get a player by a method
+--- @param method "steam" | "source" | "id"
+--- @param value any
 function Spark.Players:Get(method, value)
     if not Spark.Table:Contains(Identifiers, method) then
         return print("method not found")
@@ -12,7 +15,7 @@ function Spark.Players:Get(method, value)
     local steam, id = value, nil
     if method == "id" then
         steam, id = self.Raw:Convert(value), value
-    elseif identifier == "source" then
+    elseif method == "source" then
         steam = Spark.Source:Steam(value)
     end
 
@@ -31,6 +34,34 @@ function Spark.Players:Get(method, value)
     end
 
     local player = {}
+
+    --- Register the Data module
+    player.Data = {}
+
+    function player.Data:Raw()
+        return Spark.Players.Players[steam]
+    end
+
+    --- Register the Get module
+    player.Get = {}
+
+    --- Get the player's ID
+    --- @return number
+    function player.Get:ID()
+        return id
+    end
+
+    --- Get the player's steam
+    --- @return string
+    function player.Get:Steam()
+        return steam
+    end
+
+    --- Get the player's source (can only be accessed after spawning)
+    --- @return number
+    function player.Get:Source()
+        return player.Data:Raw().source
+    end
 
     return player
 end

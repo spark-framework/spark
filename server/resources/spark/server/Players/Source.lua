@@ -1,7 +1,11 @@
+---@diagnostic disable: redundant-return-value
 Spark.Source = {
     Dummy = 'tewstOMG'
 }
 
+--- Get the steam identifier from a source
+--- @param source number
+--- @return string
 function Spark.Source:Steam(source)
     if not source or source == 0 then
         return self.Dummy
