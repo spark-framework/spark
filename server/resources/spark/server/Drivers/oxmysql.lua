@@ -12,7 +12,7 @@ end
 
 function Driver:Execute(query, ...)
     local promise = promise.new()
-    exports.oxmysql:update(query, ..., function(row)
+    exports.oxmysql:update(query, type(...) == "table" and ... or {...}, function(row)
         promise:resolve(row or 0)
     end)
 
@@ -21,7 +21,7 @@ end
 
 function Driver:Query(query, ...)
     local promise = promise.new()
-    exports.oxmysql:query(query, ..., function(result)
+    exports.oxmysql:query(query, type(...) == "table" and ... or {...}, function(result)
         promise:resolve(result)
     end)
 

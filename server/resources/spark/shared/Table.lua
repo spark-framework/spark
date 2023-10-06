@@ -13,4 +13,3 @@ function Spark.Table:Contains(table, value)
 
     return false
 end
-
