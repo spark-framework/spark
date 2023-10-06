@@ -14,5 +14,6 @@ shared_scripts {
     'shared/Spark.lua',
     'shared/String.lua',
     'shared/Files.lua',
-    'shared/Config.lua'
+    'shared/Config.lua',
+    'shared/Events'
 }
