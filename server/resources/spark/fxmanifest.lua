@@ -13,6 +13,7 @@ server_scripts {
 shared_scripts {
     'shared/Spark.lua',
     'shared/String.lua',
+    'shared/Table.lua',
     'shared/Files.lua',
     'shared/Config.lua',
     'shared/Events'

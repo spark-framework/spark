@@ -1,5 +1,11 @@
 Spark.Network = {}
 
+--- Perform a HTTP requests, using promsies instead of callbacks.
+--- @param url string
+--- @param method "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+--- @param data? string
+--- @param headers? table
+--- @return string, boolean
 function Spark.Network:HTTP(url, method, data, headers)
     local promise = promise.new()
 

@@ -1,13 +1,15 @@
-Spark.Driver = {}
+Spark.Driver = {} -- This is only for intellisense
 
 --- @param callback function
 function Spark.Driver:Ready(callback) end
 
 --- @param query string
-function Spark.Driver:Execute(query, ...) end
+--- @return number
+function Spark.Driver:Execute(query, ...) return 0 end
 
 --- @param query string
-function Spark.Driver:Query(query, ...) end
+--- @return table
+function Spark.Driver:Query(query, ...) return {} end
 
 Spark.Driver = Spark.Files:Get(
     GetCurrentResourceName(),
