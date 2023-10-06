@@ -3,6 +3,7 @@ Spark.Files = {
 }
 
 --- Get a file, this is just the name of the file
+--- @param resource string
 --- @param path string
 --- @return table
 function Spark.Files:Get(resource, path)
