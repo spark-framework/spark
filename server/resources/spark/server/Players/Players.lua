@@ -62,6 +62,7 @@ function Spark.Players:playerDropped(source, reason)
     end
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
+    print("Data: " .. json.encode(data.data))
 
     self.Raw:Dump(steam, data.data)
     self.Players[steam] = nil
@@ -168,8 +169,12 @@ end, false)
 
 RegisterCommand('data', function(_, args)
     local player = Spark.Players:Get("steam", "tewstOMG")
-    player.Data:Set(args[1], args[2])
-    print(player.Data:Get(args[1]))
+    if args[1] == "set" then
+        player.Data:Set(args[2], args[3])
+        print("Set " .. args[2] .. " to " .. args[3])
+    else
+        print(player.Data:Get(args[2]))
+    end
 end, false)
 
 RegisterCommand('drop', function()

@@ -48,7 +48,7 @@ function Spark.Players:Get(method, value)
     --- @param key string
     --- @param value any
     function player.Data:Set(key, value)
-        if player.Is:Online() then   
+        if player.Is:Online() then
             self:Raw().data[key] = value
         else
             local user = Spark.Players.Raw:Data(steam)
@@ -101,7 +101,3 @@ function Spark.Players:Get(method, value)
 
     return player
 end
-
-CreateThread(function()
-    Spark.Players:Get('steam', 'tewstOMG')
-end)
