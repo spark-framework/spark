@@ -42,26 +42,52 @@ function Spark.Players:Get(method, value)
         return Spark.Players.Players[steam]
     end
 
+    function player.Data:Set(key, value)
+        if player.Is:Online() then   
+            self:Raw().data[key] = value
+        else
+            local user = Spark.Players.Raw:Data(steam)
+            if not user then
+                return print("user not found")
+            end
+
+            user[key] = value
+
+            return Spark.Players.Raw:Dump(steam, user)
+        end
+    end
+
+    function player.Data:Get(key)
+        if player.Is:Online() then   
+            return self:Raw().data[key]
+        else
+            local user = Spark.Players.Raw:Data(steam)
+            if not user then
+                return print("user not found")
+            end
+
+            return user[key]
+        end
+    end
+
     --- Register the Get module
     player.Get = {}
 
     --- Get the player's ID
     --- @return number
-    function player.Get:ID()
-        return id
-    end
+    function player.Get:ID() return id end
 
     --- Get the player's steam
     --- @return string
-    function player.Get:Steam()
-        return steam
-    end
+    function player.Get:Steam() return steam end
 
     --- Get the player's source (can only be accessed after spawning)
     --- @return number
-    function player.Get:Source()
-        return player.Data:Raw().source
-    end
+    function player.Get:Source() return player.Data:Raw().source end
+
+    player.Is = {}
+
+    function player.Is:Online() return player.Data:Raw() ~= nil end
 
     return player
 end

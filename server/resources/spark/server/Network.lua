@@ -1,6 +1,6 @@
 Spark.Network = {}
 
---- Perform a HTTP requests, using promsies instead of callbacks.
+--- Perform a HTTP request, using a promise instead of a callback.
 --- @param url string
 --- @param method "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 --- @param data? string

@@ -63,8 +63,6 @@ function Spark.Players:playerDropped(source, reason)
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
 
-    data.data = {}
-
     self.Raw:Dump(steam, data.data)
     self.Players[steam] = nil
 end
@@ -100,6 +98,15 @@ end
 --- @return table
 function Spark.Players.Raw:Pull(method, value)
     return Spark.Driver:Query('SELECT * FROM users WHERE ' .. method .. ' = ?', value)[1]
+end
+
+--- Get a user's data.data directly from the database.
+--- @param method string
+--- @param value any
+--- @return table
+function Spark.Players.Raw:Data(steam)
+    local data = self:Pull('steam', steam)
+    return not data and false or json.decode(data.data or "{}")
 end
 
 --- Dump a user's data directly to the database.
@@ -146,9 +153,7 @@ RegisterCommand('connect', function()
     Spark.Players:playerConnecting(0, {
         defer = function() end,
         update = function() end,
-        done = function(text)
-            print(text or "")
-        end,
+        done = function(text) end,
     })
 end, false)
 
@@ -159,6 +164,12 @@ end, false)
 RegisterCommand('object', function()
     local player = Spark.Players:Get("source", 0)
     print("ID " .. player.Get:ID() .. " Steam " .. player.Get:Steam() .. " Source " .. player.Get:Source())
+end, false)
+
+RegisterCommand('data', function(_, args)
+    local player = Spark.Players:Get("steam", "tewstOMG")
+    player.Data:Set(args[1], args[2])
+    print(player.Data:Get(args[1]))
 end, false)
 
 RegisterCommand('drop', function()
