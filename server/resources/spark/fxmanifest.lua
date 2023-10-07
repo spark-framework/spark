@@ -4,6 +4,10 @@ game 'gta5'
 lua54 'yes'
 version '1.0'
 
+client_scripts {
+    'client/Spawn.lua'
+}
+
 server_scripts {
     'server/Spark.lua',
     'server/Network.lua',
@@ -12,7 +16,9 @@ server_scripts {
 
     'server/Players/Source.lua',
     'server/Players/Players.lua',
-    'server/Players/Class.lua'
+    'server/Players/Class.lua',
+
+    'server/Players/Commands.lua'
 }
 
 shared_scripts {

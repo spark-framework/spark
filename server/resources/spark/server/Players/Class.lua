@@ -80,24 +80,83 @@ function Spark.Players:Get(method, value)
     --- Register the Get module
     player.Get = {}
 
-    --- Get the player's ID
-    --- @return number
+    --- Get the user's ban reason, will return false if not banned.
+    --- @return string | boolean
+    function player.Get:Ban() return player.Data:Get('Banned') or false end
+
+    --- Get the user's id, this can be accessed immediately
     function player.Get:ID() return id end
 
-    --- Get the player's steam
+    --- Get the user's steam, this can be accessed immediately
     --- @return string
     function player.Get:Steam() return steam end
 
-    --- Get the player's source (can only be accessed after spawning)
-    --- @return number
+    --- Get the user's source, this can only be accessed after the player has spawned
     function player.Get:Source() return player.Data:Raw().source end
+
+    --- Get the user's ped, this can only be accessed after the player has spawned
+    --- @return number
+    function player.Get:Ped() return GetPlayerPed(self:Source() or 0) end
+
+    --- Get the user's health, this can only be accessed after the player has spawned
+    --- @return number
+    function player.Get:Health() return GetEntityHealth(self:Ped()) end
+
+    --- Get the position of the player - only after ped is set
+    --- @return vector3
+    function player.Get:Position() return GetEntityCoords(self:Ped()) end
 
     --- Register the Is module
     player.Is = {}
 
-    --- Is the user online
+    --- Check if the user is online
     --- @return boolean
     function player.Is:Online() return player.Data:Raw() ~= nil end
+
+    --- Check if the user is banned
+    --- @return boolean
+    function player.Is:Banned() return player.Data:Get('Banned') ~= nil end
+
+    --- Check if the user is whitelisted
+    --- @return boolean
+    function player.Is:Whitelisted() return player.Data:Get('Whitelisted') or false end
+
+    --- Check if the user is currently loaded in (has a source)
+    --- @return boolean
+    function player.Is:Loaded() return player.Data:Raw().spawned end
+
+    --- Kick the current user
+    --- @param reason string
+    function player:Kick(reason)
+        reason = reason or ''
+        DropPlayer(self.Get:Source(), reason)
+    end
+
+    --- Register the Set module
+    player.Set = {}
+
+    --- Set the banned value of a player
+    --- @param value boolean
+    --- @param reason? string
+    --- @return boolean
+    function player.Set:Banned(value, reason)
+        if not value then
+            return true, player.Data:Set('Banned', nil)
+        end
+
+        player.Data:Set('Banned', reason)
+        if player.Is:Online() then
+            player:Kick('[Banned] ' .. reason)
+        end
+
+        return true
+    end
+
+    --- Set the whitelisted value of a player
+    --- @param value boolean
+    function player.Set:Whitelisted(value)
+        return player.Data:Set('Whitelisted', value)
+    end
 
     return player
 end

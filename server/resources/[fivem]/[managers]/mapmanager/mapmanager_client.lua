@@ -1,4 +1,3 @@
----@diagnostic disable: cast-local-type
 local maps = {}
 local gametypes = {}
 
@@ -96,7 +95,7 @@ AddEventHandler('getMapDirectives', function(add)
 
                 local carGen = CreateScriptVehicleGenerator(x, y, z, heading, 5.0, 3.0, hash, color1, color2, -1, -1, true, false, false, true, true, -1)
                 SetScriptVehicleGenerator(carGen, true)
-                SetAllVehicleGeneratorsActive()
+                SetAllVehicleGeneratorsActive(true)
 
                 state.add('cargen', carGen)
             end)

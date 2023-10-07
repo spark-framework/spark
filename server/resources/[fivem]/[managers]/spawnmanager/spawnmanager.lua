@@ -1,4 +1,3 @@
----@diagnostic disable: param-type-mismatch
 -- in-memory spawnpoint array for this script execution instance
 local spawnPoints = {}
 
@@ -42,7 +41,7 @@ AddEventHandler('getMapDirectives', function(add)
 
                 -- recalculate the model for storage
                 if not tonumber(model) then
-                    model = GetHashKey(model)
+                    model = GetHashKey(model, _r)
                 end
 
                 -- store the spawn data in the state so we can erase it later on
@@ -160,11 +159,11 @@ local function freezePlayer(id, freeze)
 
     if not freeze then
         if not IsEntityVisible(ped) then
-            SetEntityVisible(ped, true, 0)
+            SetEntityVisible(ped, true)
         end
 
-        if not IsPedInAnyVehicle(ped, false) then
-            SetEntityCollision(ped, true, 0)
+        if not IsPedInAnyVehicle(ped) then
+            SetEntityCollision(ped, true)
         end
 
         FreezeEntityPosition(ped, false)
@@ -172,10 +171,10 @@ local function freezePlayer(id, freeze)
         SetPlayerInvincible(player, false)
     else
         if IsEntityVisible(ped) then
-            SetEntityVisible(ped, false, 0)
+            SetEntityVisible(ped, false)
         end
 
-        SetEntityCollision(ped, false, true)
+        SetEntityCollision(ped, false)
         FreezeEntityPosition(ped, true)
         --SetCharNeverTargetted(ped, true)
         SetPlayerInvincible(player, true)
@@ -284,14 +283,14 @@ function spawnPlayer(spawnIdx, cb)
         local ped = PlayerPedId()
 
         -- V requires setting coords as well
-        SetEntityCoordsNoOffset(ped, spawn.x, spawn.y, spawn.z, false, false, false)
+        SetEntityCoordsNoOffset(ped, spawn.x, spawn.y, spawn.z, false, false, false, true)
 
-        NetworkResurrectLocalPlayer(spawn.x, spawn.y, spawn.z, spawn.heading, true, true)
+        NetworkResurrectLocalPlayer(spawn.x, spawn.y, spawn.z, spawn.heading, true, true, false)
 
         -- gamelogic-style cleanup stuff
         ClearPedTasksImmediately(ped)
         --SetEntityHealth(ped, 300) -- TODO: allow configuration of this?
-        RemoveAllPedWeapons(ped, false) -- TODO: make configurable (V behavior?)
+        RemoveAllPedWeapons(ped) -- TODO: make configurable (V behavior?)
         ClearPlayerWantedLevel(PlayerId())
 
         -- why is this even a flag?

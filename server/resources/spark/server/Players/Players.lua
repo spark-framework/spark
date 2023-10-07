@@ -11,6 +11,8 @@ Spark.Players = {
 function Spark.Players:playerConnecting(source, def)
     local steam = Spark.Source:Steam(source)
 
+    print(source)
+
     def.defer()
     Wait(0)
 
@@ -25,14 +27,15 @@ function Spark.Players:playerConnecting(source, def)
     end
 
     -- Register/or gets data from the database
-    local data = self:Authenticate(steam)
+    local data = self:Authenticate(steam, source)
     if not data?.id then
         return def.done("Error while returning your data, please report this.")
     end
 
     -- Let the player join the server
-    print("User joined id " .. data.id .. " steam " .. steam .. " source " .. source)
-
+    --print("User joined id " .. data.id .. " steam " .. steam .. " source " .. source)
+    print(source)
+    print("User joined")
     def.done()
 end
 
@@ -46,8 +49,13 @@ function Spark.Players:playerSpawned(source)
         return print("Player is not registered when spawned?")
     end
 
+    if player.spawned then
+        return print("User has already spawned")
+    end
+
     print("Player " .. player.id .. " has spawned!")
     player.source = source -- Update the source of the user, on spawn
+    player.spawned = true
 end
 
 --- Event when a user has been dropped.
@@ -71,7 +79,7 @@ end
 --- Create/ or retrive data from the database
 --- @param steam string
 --- @return table
-function Spark.Players:Authenticate(steam)
+function Spark.Players:Authenticate(steam, source)
     local data = self.Raw:Pull('steam', steam)
 
     if not data then -- If the user is not registered, it will create a account for the person
@@ -88,6 +96,8 @@ function Spark.Players:Authenticate(steam)
     self.Players[steam] = {
         id = data.id,
         data = json.decode(data.data),
+        source = source,
+        spawned = false
     }
 
     return data
@@ -101,7 +111,7 @@ function Spark.Players.Raw:Pull(method, value)
     return Spark.Driver:Query('SELECT * FROM users WHERE ' .. method .. ' = ?', value)[1]
 end
 
---- Get a user's data.data directly from the database.
+--- Get a user's data in json directly from the database.
 --- @param method string
 --- @param value any
 --- @return table
@@ -149,34 +159,3 @@ AddEventHandler('playerDropped', function(reason)
     local source = source
     Spark.Players:playerDropped(source, reason)
 end)
-
-RegisterCommand('connect', function()
-    Spark.Players:playerConnecting(0, {
-        defer = function() end,
-        update = function() end,
-        done = function(text) end,
-    })
-end, false)
-
-RegisterCommand('spawn', function()
-    Spark.Players:playerSpawned(0)
-end, false)
-
-RegisterCommand('object', function()
-    local player = Spark.Players:Get("source", 0)
-    print("ID " .. player.Get:ID() .. " Steam " .. player.Get:Steam() .. " Source " .. player.Get:Source())
-end, false)
-
-RegisterCommand('data', function(_, args)
-    local player = Spark.Players:Get("steam", "tewstOMG")
-    if args[1] == "set" then
-        player.Data:Set(args[2], args[3])
-        print("Set " .. args[2] .. " to " .. args[3])
-    else
-        print(player.Data:Get(args[2]))
-    end
-end, false)
-
-RegisterCommand('drop', function()
-    Spark.Players:playerDropped(0, 'Kicked')
-end, false)
