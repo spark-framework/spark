@@ -38,10 +38,15 @@ function Spark.Players:Get(method, value)
     --- Register the Data module
     player.Data = {}
 
+    --- Get the raw data of the user
+    --- @return table
     function player.Data:Raw()
         return Spark.Players.Players[steam]
     end
 
+    --- Set a key data of a user
+    --- @param key string
+    --- @param value any
     function player.Data:Set(key, value)
         if player.Is:Online() then   
             self:Raw().data[key] = value
@@ -52,11 +57,13 @@ function Spark.Players:Get(method, value)
             end
 
             user[key] = value
-
-            return Spark.Players.Raw:Dump(steam, user)
+            Spark.Players.Raw:Dump(steam, user)
         end
     end
 
+    --- Get a key from a user
+    --- @param key string
+    --- @return any
     function player.Data:Get(key)
         if player.Is:Online() then   
             return self:Raw().data[key]
@@ -85,8 +92,11 @@ function Spark.Players:Get(method, value)
     --- @return number
     function player.Get:Source() return player.Data:Raw().source end
 
+    --- Register the Is module
     player.Is = {}
 
+    --- Is the user online
+    --- @return boolean
     function player.Is:Online() return player.Data:Raw() ~= nil end
 
     return player
