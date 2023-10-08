@@ -5,13 +5,18 @@ Spark.Players = {
     Default = {}
 }
 
+Spark.Driver:Ready(function()
+    Citizen.Await(Spark.Version.Loaded) -- Wait for the version to be printed
+
+    local users = Spark.Driver:Query('SELECT * FROM users')
+    print("Loaded " .. #users .. " user(s)!")
+end)
+
 --- Event when a user has connected.
 --- @param source number
 --- @param def table
 function Spark.Players:playerConnecting(source, def)
     local steam = Spark.Source:Steam(source)
-
-    print(source)
 
     def.defer()
     Wait(0)
@@ -33,9 +38,13 @@ function Spark.Players:playerConnecting(source, def)
     end
 
     -- Let the player join the server
-    --print("User joined id " .. data.id .. " steam " .. steam .. " source " .. source)
-    print(source)
-    print("User joined")
+    print('Player joined! ID: ' .. data.id .. " Steam: " .. steam .. " Source: " .. source .. " Data: " .. Spark.Table:Entries(json.decode(data.data)))
+
+    -- Give scripts a way to reject users
+    local object = Spark.Players:Get("steam", steam)
+    TriggerEvent('Spark:Connect', object, def)
+    Wait(0)
+
     def.done()
 end
 
@@ -53,7 +62,7 @@ function Spark.Players:playerSpawned(source)
         return print("User has already spawned")
     end
 
-    print("Player " .. player.id .. " has spawned!")
+    print("Player " .. player.id .. " has spawned! Updating source")
     player.source = source -- Update the source of the user, on spawn
     player.spawned = true
 end

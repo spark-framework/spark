@@ -27,5 +27,5 @@ shared_scripts {
     'shared/Table.lua',
     'shared/Files.lua',
     'shared/Config.lua',
-    'shared/Events.lua'
+    'shared/Events.lua',
 }
