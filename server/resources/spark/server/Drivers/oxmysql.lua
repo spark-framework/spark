@@ -11,9 +11,9 @@ function Driver:Ready(callback)
 end
 
 function Driver:Execute(query, ...)
-    local args = ... or {}
+    local args = type((...)) == "table" and ... or {...}
     local promise = promise.new()
-    exports.oxmysql:update(query, type(args) == "table" and args or {args}, function(row)
+    exports.oxmysql:update(query, args, function(row)
         promise:resolve(row or 0)
     end)
 
@@ -21,9 +21,9 @@ function Driver:Execute(query, ...)
 end
 
 function Driver:Query(query, ...)
-    local args = ... or {}
+    local args = type((...)) == "table" and ... or {...}
     local promise = promise.new()
-    exports.oxmysql:query(query, type(args) == "table" and args or {args}, function(result)
+    exports.oxmysql:query(query, args, function(result)
         promise:resolve(result)
     end)
 

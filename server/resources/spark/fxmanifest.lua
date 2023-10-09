@@ -5,7 +5,12 @@ lua54 'yes'
 version '1.0'
 
 client_scripts {
-    'client/Spawn.lua'
+    'cfg/Weapons.lua',
+
+    'client/Spawn.lua',
+    'client/Callback.lua',
+    'client/Update.lua'
+
 }
 
 server_scripts {
@@ -14,11 +19,14 @@ server_scripts {
     'server/Version.lua',
     'server/Driver.lua',
 
+    'server/Callback.lua',
+
     'server/Players/Source.lua',
     'server/Players/Players.lua',
     'server/Players/Class.lua',
 
-    'server/Players/Commands.lua'
+    'server/Players/Commands.lua',
+    'server/Players/State.lua'
 }
 
 shared_scripts {

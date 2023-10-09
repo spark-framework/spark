@@ -2,7 +2,10 @@ Spark.Players = {
     Players = {},
     Raw = {},
 
-    Default = {}
+    Default = {
+        Coords = vector3(-1260.45, 4282.33, 68.4),
+        Health = 150
+    }
 }
 
 Spark.Driver:Ready(function()
@@ -13,7 +16,7 @@ Spark.Driver:Ready(function()
 end)
 
 --- Event when a user has connected.
---- @param source number
+--- @param source number?
 --- @param def table
 function Spark.Players:playerConnecting(source, def)
     local steam = Spark.Source:Steam(source)
@@ -38,18 +41,18 @@ function Spark.Players:playerConnecting(source, def)
     end
 
     -- Let the player join the server
-    print('Player joined! ID: ' .. data.id .. " Steam: " .. steam .. " Source: " .. source .. " Data: " .. Spark.Table:Entries(json.decode(data.data)))
+    print('Player joined! ID: ' .. data.id .. " Steam: " .. steam .. " Source: " .. source)
+    print("Data: " .. data.data)
 
     -- Give scripts a way to reject users
-    local object = Spark.Players:Get("steam", steam)
-    TriggerEvent('Spark:Connect', object, def)
+    TriggerEvent('Spark:Connect', Spark.Players:Get("steam", steam), def)
     Wait(0)
 
     def.done()
 end
 
 --- Event when a user has spawned.
---- @param source number
+--- @param source number?
 function Spark.Players:playerSpawned(source)
     local steam = Spark.Source:Steam(source)
     local player = self.Players[steam]
@@ -58,17 +61,17 @@ function Spark.Players:playerSpawned(source)
         return print("Player is not registered when spawned?")
     end
 
-    if player.spawned then
-        return print("User has already spawned")
+    if player.spawns == 0 then
+        print("Player " .. player.id .. " has spawned! Updating source")
+        player.source = source -- Update the source of the user, on spawn 
     end
 
-    print("Player " .. player.id .. " has spawned! Updating source")
-    player.source = source -- Update the source of the user, on spawn
-    player.spawned = true
+    player.spawns = player.spawns + 1
+    TriggerEvent('Spark:Spawned', Spark.Players:Get("steam", steam), player.spawns == 1)
 end
 
 --- Event when a user has been dropped.
---- @param source number
+--- @param source number?
 --- @param reason string
 function Spark.Players:playerDropped(source, reason)
     local steam = Spark.Source:Steam(source)
@@ -77,6 +80,10 @@ function Spark.Players:playerDropped(source, reason)
     if not data then -- Checks if the user is registered.
         return print("Player is not registered when dropped?")
     end
+
+    TriggerEvent('Spark:Dropped', source)
+
+    Wait(500)
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
     print("Data: " .. json.encode(data.data))
@@ -106,7 +113,7 @@ function Spark.Players:Authenticate(steam, source)
         id = data.id,
         data = json.decode(data.data),
         source = source,
-        spawned = false
+        spawns = 0
     }
 
     return data
@@ -132,12 +139,8 @@ end
 --- Dump a user's data directly to the database.
 --- @param steam string
 --- @param data table
---- @return number
 function Spark.Players.Raw:Dump(steam, data)
-    return Spark.Driver:Execute('UPDATE users SET data = ? WHERE steam = ?', json.encode(
-        data,
-        { indent = true }
-    ), steam)
+    return Spark.Driver:Execute('UPDATE users SET data = ? WHERE steam = ?', json.encode(data), steam)
 end
 
 --- Convert a id to a steam

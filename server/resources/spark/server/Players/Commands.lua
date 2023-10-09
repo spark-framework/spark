@@ -28,6 +28,24 @@ RegisterCommand('drop', function(source)
     Spark.Players:playerDropped(source, 'daddy waddy')
 end, false)
 
-Spark.Events:Register('Spark:Connect', function(user, player, def)
-    print(user, player, def)
+RegisterCommand('getCallback', function(source)
+    local player = Spark.Players:Get("source", source)
+
+    print(player.Client:Callback('FarmandUwU'))
+end, false)
+
+CreateThread(function()
+    Wait(2000)
+    for _, source in pairs(GetPlayers()) do
+        local src = tonumber(source)
+        Spark.Players:playerConnecting(src, {
+            defer = function () end,
+            update = function () end,
+            done = function () end
+        })
+
+        Wait(250)
+
+        Spark.Players:playerSpawned(src)
+    end
 end)

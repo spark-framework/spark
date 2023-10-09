@@ -14,6 +14,9 @@ function Spark.Table:Contains(table, value)
     return false
 end
 
+--- Get the amount of table entries
+--- @param table table
+--- @return number
 function Spark.Table:Entries(table)
     local count = 0
     for _ in pairs(table) do

@@ -4,7 +4,7 @@ Spark.Source = {
 }
 
 --- Get the steam identifier from a source
---- @param source number
+--- @param source number?
 --- @return string
 function Spark.Source:Steam(source)
     if not source or source == 0 then

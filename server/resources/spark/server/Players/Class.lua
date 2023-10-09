@@ -123,7 +123,7 @@ function Spark.Players:Get(method, value)
 
     --- Check if the user is currently loaded in (has a source)
     --- @return boolean
-    function player.Is:Loaded() return player.Data:Raw().spawned end
+    function player.Is:Loaded() return player.Data:Raw().spawns > 0 end
 
     --- Kick the current user
     --- @param reason string
@@ -156,6 +156,44 @@ function Spark.Players:Get(method, value)
     --- @param value boolean
     function player.Set:Whitelisted(value)
         return player.Data:Set('Whitelisted', value)
+    end
+
+    --- Set the position of the user
+    --- @param x number
+    --- @param y number
+    --- @param z number
+    function player.Set:Position(x, y, z)
+        SetEntityCoords(player.Get:Ped(), x, y, z, false, false, false, false)
+    end
+
+    --- Set the health of the user
+    --- @param health number
+    function player.Set:Health(health)
+        player.Client:Event('Spark:Player:Update', {
+            health = health
+        })
+    end
+
+    --- Register the Client module
+    player.Client = {}
+
+    --- Trigger an client event
+    --- @param name string
+    function player.Client:Event(name, ...)
+        return TriggerClientEvent(name, player.Get:Source(), ...)
+    end
+
+    --- Trigger an callback
+    --- @param name string
+    --- @return any
+    function player.Client:Callback(name, ...)
+        local promise = promise.new()
+        RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name, function(response)
+            promise:resolve(response)
+        end)
+
+        self:Event('Spark:Callbacks:Client:Run:' .. name)
+        return Citizen.Await(promise)
     end
 
     return player
