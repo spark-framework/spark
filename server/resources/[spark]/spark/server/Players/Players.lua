@@ -39,7 +39,7 @@ function Spark.Players:playerConnecting(source, def)
 
     -- Let the player join the server
     print('Player joined! ID: ' .. data.id .. " Steam: " .. steam .. " Source: " .. source)
-    print("Data: " .. data.data)
+    --print("Data: " .. data.data)
 
     -- Give scripts a way to reject users
     TriggerEvent('Spark:Connect', Spark.Players:Get("steam", steam), def)
@@ -49,7 +49,6 @@ function Spark.Players:playerConnecting(source, def)
 end
 
 --- Event when a user has spawned.
---- @param source number?
 function Spark.Players:playerSpawned(source)
     local steam = Spark.Source:Steam(source)
     local player = self.Players[steam]
@@ -65,6 +64,7 @@ function Spark.Players:playerSpawned(source)
 
     player.spawns = player.spawns + 1
     TriggerEvent('Spark:Spawned', Spark.Players:Get("steam", steam), player.spawns == 1)
+    TriggerClientEvent('Spark:Loaded', source)
 end
 
 --- Event when a user has been dropped.
@@ -83,7 +83,7 @@ function Spark.Players:playerDropped(source, reason)
     Wait(500)
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
-    print("Data: " .. json.encode(data.data))
+    --print("Data: " .. json.encode(data.data))
 
     self.Raw:Dump(steam, data.data)
     self.Players[steam] = nil

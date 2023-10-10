@@ -18,7 +18,8 @@ function Spark.Version:Newest()
     end
 end
 
-print(Spark.Version:Get() == Spark.Version:Newest() and
-        "Spark is up-to-date" or
-        "Spark is out-of-date. Please download the newest version")
+print(Spark.Version:Get() == Spark.Version:Newest()
+    and "Spark is up-to-date"
+    or "Spark is out-of-date. Please download the newest version")
+
 Spark.Version.Loaded:resolve()

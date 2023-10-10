@@ -22,17 +22,16 @@ RegisterNetEvent('Spark:Spawned', function(source, first)
                 Wait(5 * 1000) -- 5 seconds
             end
         end)
-    else
+    else -- if the user died and spawned again
         coords = Spark.Players.Default.Coords
         player.Set:Position(coords.x, coords.y, coords.z)
 
         player.Set:Customization(player.Data:Get('Customization'))
         player.Set:Health(player.Get:Max())
 
+        player.Set:Weapons({})
         player.Data:Set('Weapons', {})
     end
-
-    print(player, first)
 end)
 
 RegisterNetEvent('Spark:Dropped', function(steam)
