@@ -1,12 +1,15 @@
 local Default =  {
+    Weapons = {},
     Coords = vector3(235.71, -411.25, 50.13),
     Health = 150,
+    Cash = 20 * 1000, -- 20 thousand
 
-    Customization = {
-        model = "mp_m_freemode_01"
-    },
+    Customization = { model = "mp_m_freemode_01" },
 
-    Weapons = {}
+    Identity = {
+        First = "Jørgen",
+        Last = "Olsen"
+    }
 }
 
 for i = 0, 19 do

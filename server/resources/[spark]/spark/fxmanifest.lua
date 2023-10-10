@@ -9,6 +9,8 @@ client_scripts {
 
     'client/Spawn.lua',
     'client/Callback.lua',
+    'client/Ped.lua',
+    'client/Player/Server.lua',
 
     'client/Player/Player.lua',
     'client/Player/Weapons.lua',
@@ -22,6 +24,8 @@ server_scripts {
     'server/Network.lua',
     'server/Version.lua',
     'server/Driver.lua',
+
+    'server/Events.lua',
 
     'server/Callback.lua',
 
@@ -39,5 +43,4 @@ shared_scripts {
     'shared/Table.lua',
     'shared/Files.lua',
     'shared/Config.lua',
-    'shared/Events.lua',
 }

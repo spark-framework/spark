@@ -1,8 +1,6 @@
-local Weapons = Spark:Config('Weapons')
-
 Spark:Callback('Spark:Update', function(data)
     local player = PlayerPedId()
-    
+
     if data.customization then
         Spark.Player.Customization:Set(data.customization)
     end

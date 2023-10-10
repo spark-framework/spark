@@ -4,8 +4,6 @@ local Identifiers = {
     "id"
 }
 
-local CurrentId = 0
-
 --- Get a player by a method
 --- @param method "steam" | "source" | "id"
 --- @param value any
@@ -210,13 +208,12 @@ function Spark.Players:Get(method, value)
     --- @return any
     function player.Client:Callback(name, ...)
         local promise = promise.new()
-        local id = CurrentId + 1
-        RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name .. ':' .. id, function(response)
+        RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name, function(response)
             promise:resolve(response)
         end)
 
         CurrentId = CurrentId + 1
-        self:Event('Spark:Callbacks:Client:Run:' .. name, id, ...)
+        self:Event('Spark:Callbacks:Client:Run:' .. name, ...)
         return Citizen.Await(promise)
     end
 
