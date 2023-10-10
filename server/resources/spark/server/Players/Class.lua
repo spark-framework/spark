@@ -173,7 +173,7 @@ function Spark.Players:Get(method, value)
     --- Set the health of the user
     --- @param health number
     function player.Set:Health(health)
-        player.Client:Event('Spark:Player:Update', {
+        player.Client:Callback('Spark:Update', {
             health = health
         })
     end

@@ -9,7 +9,11 @@ client_scripts {
 
     'client/Spawn.lua',
     'client/Callback.lua',
-    'client/Update.lua'
+
+    'client/Player/Player.lua',
+    'client/Player/Weapons.lua',
+    'client/Player/Customization.lua',
+    'client/Player/State.lua'
 
 }
 
