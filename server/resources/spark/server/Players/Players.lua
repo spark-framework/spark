@@ -2,10 +2,7 @@ Spark.Players = {
     Players = {},
     Raw = {},
 
-    Default = {
-        Coords = vector3(-1260.45, 4282.33, 68.4),
-        Health = 150
-    }
+    Default = Spark:Config('Default')
 }
 
 Spark.Driver:Ready(function()

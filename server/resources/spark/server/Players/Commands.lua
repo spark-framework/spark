@@ -28,12 +28,6 @@ RegisterCommand('drop', function(source)
     Spark.Players:playerDropped(source, 'daddy waddy')
 end, false)
 
-RegisterCommand('getCallback', function(source)
-    local player = Spark.Players:Get("source", source)
-
-    print(player.Client:Callback('FarmandUwU'))
-end, false)
-
 CreateThread(function()
     Wait(2000)
     for _, source in pairs(GetPlayers()) do

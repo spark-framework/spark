@@ -105,6 +105,10 @@ function Spark.Players:Get(method, value)
     --- Get the position of the player - only after ped is set
     --- @return vector3
     function player.Get:Position() return GetEntityCoords(self:Ped()) end
+    
+    --- Get the player's max health
+    --- @return number
+    function player.Get:Max() return GetEntityMaxHealth(self:Ped()) end
 
     --- Register the Is module
     player.Is = {}
@@ -123,7 +127,7 @@ function Spark.Players:Get(method, value)
 
     --- Check if the user is currently loaded in (has a source)
     --- @return boolean
-    function player.Is:Loaded() return player.Data:Raw().spawns > 0 end
+    function player.Is:Loaded() return(player.Data:Raw()?.spawns or 0) > 0 end
 
     --- Kick the current user
     --- @param reason string
@@ -174,6 +178,22 @@ function Spark.Players:Get(method, value)
         })
     end
 
+    --- Set the customization of the player
+    --- @param customization table
+    function player.Set:Customization(customization)
+        player.Client:Callback('Spark:Update', {
+            customization = customization
+        })
+    end
+
+    --- Set the weapons of the player
+    --- @param weapons table
+    function player.Set:Weapons(weapons)
+        player.Client:Callback('Spark:Update', {
+            weapons = weapons
+        })
+    end
+
     --- Register the Client module
     player.Client = {}
 
@@ -192,7 +212,7 @@ function Spark.Players:Get(method, value)
             promise:resolve(response)
         end)
 
-        self:Event('Spark:Callbacks:Client:Run:' .. name)
+        self:Event('Spark:Callbacks:Client:Run:' .. name, ...)
         return Citizen.Await(promise)
     end
 

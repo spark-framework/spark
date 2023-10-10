@@ -2,13 +2,34 @@ RegisterNetEvent('Spark:Spawned', function(source, first)
     local player = Spark.Players:Get("source", source)
     local coords = player.Data:Get('Coords')
     if first then
-        player.Set:Health(player.Data:Get('Health'))
         player.Set:Position(coords.x, coords.y, coords.z)
 
+        player.Set:Customization(player.Data:Get('Customization')) -- set the player's skin
+        player.Set:Weapons(player.Data:Get('Weapons')) -- set the player's weapon
+
+        player.Set:Health(player.Data:Get('Health')) -- set the player's health
+
         CreateThread(function() -- save weapons
-            local weapons = player.Client:Callback('GetWeapons')
-            print(json.encode(weapons))
+            while true do
+                if not player.Is:Loaded() then
+                    return
+                end
+
+                local data = player.Client:Callback('Spark:State')
+                player.Data:Set('Customization', data.customization)
+                player.Data:Set('Weapons', data.weapons)
+
+                Wait(5 * 1000) -- 5 seconds
+            end
         end)
+    else
+        coords = Spark.Players.Default.Coords
+        player.Set:Position(coords.x, coords.y, coords.z)
+
+        player.Set:Customization(player.Data:Get('Customization'))
+        player.Set:Health(player.Get:Max())
+
+        player.Data:Set('Weapons', {})
     end
 
     print(player, first)
