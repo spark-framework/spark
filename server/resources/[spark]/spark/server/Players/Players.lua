@@ -125,8 +125,7 @@ function Spark.Players.Raw:Pull(method, value)
 end
 
 --- Get a user's data in json directly from the database.
---- @param method string
---- @param value any
+--- @param steam string
 --- @return table
 function Spark.Players.Raw:Data(steam)
     local data = self:Pull('steam', steam)

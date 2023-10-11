@@ -5,7 +5,7 @@ CreateThread(function ()
             print('Cannot seem to connect to database driver?')
         end
     end)
-    
+
     Spark.Driver:Ready(function()
         Citizen.Await(Spark.Version.Loaded) -- Wait for the version to be printed
 

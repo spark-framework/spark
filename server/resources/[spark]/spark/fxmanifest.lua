@@ -5,7 +5,7 @@ lua54 'yes'
 version '1.0'
 
 client_scripts {
-    'cfg/Weapons.lua',
+    'cfg/Weapons.lua', -- what configs the client have access to
 
     'client/Spawn.lua',
     'client/Callback.lua',

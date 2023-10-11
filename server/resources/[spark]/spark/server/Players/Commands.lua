@@ -17,9 +17,9 @@ RegisterCommand('data', function(source, args)
 
     local player = Spark.Players:Get("source", source)
     if args[1] == "set" then
-        player.Data:Set(args[2], args[3])
+        player?.Data:Set(args[2], args[3])
     else
-        print(player.Data:Get(args[2]))
+        print(player?.Data:Get(args[2]))
     end
 end, false)
 
