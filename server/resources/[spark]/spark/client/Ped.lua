@@ -24,31 +24,31 @@ function Spark.Ped:Create(type, model, coords, heading, options)
         true
     )
 
-    if options.freeze then
+    if options?.freeze then
         FreezeEntityPosition(ped, true)
     end
 
-    if options.invincible then
+    if options?.invincible then
         SetEntityInvincible(ped, true)
     end
 
-    if options.block then
+    if options?.block then
         SetBlockingOfNonTemporaryEvents(ped, true)
     end
 
-    if options.heading then
-        SetEntityHeading(ped, options.heading)
+    if options?.heading then
+        SetEntityHeading(ped, options?.heading)
     end
 
-    if options.ragdoll then
-        SetPedCanRagdollFromPlayerImpact(ped, options.ragdoll)
+    if options?.ragdoll then
+        SetPedCanRagdollFromPlayerImpact(ped, options?.ragdoll)
     end
 
-    if options.injured then
+    if options?.injured then
         SetPedDiesWhenInjured(ped, false)
     end
 
-    if options.canPlay then
+    if options?.canPlay then
         SetPedCanPlayAmbientAnims(ped, true)
     end
 

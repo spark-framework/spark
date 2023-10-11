@@ -2,6 +2,8 @@ Spark.Player.Weapons = {
     Weapons = Spark:Config('Weapons')
 }
 
+-- TODO: add attachments
+
 --- Set the player's weapons
 --- @param weapons table
 function Spark.Player.Weapons:Set(weapons)

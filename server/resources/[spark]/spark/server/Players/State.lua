@@ -1,6 +1,11 @@
 RegisterNetEvent('Spark:Spawned', function(source, first)
     local player = Spark.Players:Get("source", source)
+    if player.Get:Source() == 0 then
+        return
+    end
+
     local coords = player.Data:Get('Coords')
+
     if first then
         player.Set:Position(coords.x, coords.y, coords.z)
 
@@ -35,7 +40,7 @@ RegisterNetEvent('Spark:Spawned', function(source, first)
 end)
 
 RegisterNetEvent('Spark:Dropped', function(steam)
-    local player = Spark.Players:Get("source", player)
+    local player = Spark.Players:Get("steam", steam)
     if player.Get:Source() == 0 then
         return
     end

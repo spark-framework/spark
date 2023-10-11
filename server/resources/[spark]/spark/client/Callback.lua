@@ -1,5 +1,4 @@
 --- @diagnostic disable: duplicate-set-field
---- TODO: make run function for client-server callback
 
 --- Create a callback with a name and callback
 --- @param name string
