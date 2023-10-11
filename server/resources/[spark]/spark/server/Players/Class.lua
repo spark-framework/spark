@@ -212,7 +212,6 @@ function Spark.Players:Get(method, value)
             promise:resolve(response)
         end)
 
-        CurrentId = CurrentId + 1
         self:Event('Spark:Callbacks:Client:Run:' .. name, ...)
         return Citizen.Await(promise)
     end

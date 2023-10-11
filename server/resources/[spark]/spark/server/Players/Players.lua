@@ -78,7 +78,7 @@ function Spark.Players:playerDropped(source, reason)
         return print("Player is not registered when dropped?")
     end
 
-    TriggerEvent('Spark:Dropped', source)
+    TriggerEvent('Spark:Dropped', steam)
 
     Wait(500)
 

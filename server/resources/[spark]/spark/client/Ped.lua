@@ -36,10 +36,6 @@ function Spark.Ped:Create(type, model, coords, heading, options)
         SetBlockingOfNonTemporaryEvents(ped, true)
     end
 
-    if options?.heading then
-        SetEntityHeading(ped, options?.heading)
-    end
-
     if options?.ragdoll then
         SetPedCanRagdollFromPlayerImpact(ped, options?.ragdoll)
     end
