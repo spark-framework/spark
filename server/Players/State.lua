@@ -1,5 +1,5 @@
-RegisterNetEvent('Spark:Spawned', function(source, first)
-    local player = Spark.Players:Get("source", source)
+RegisterNetEvent('Spark:Spawned', function(steam, first)
+    local player = Spark.Players:Get("steam", steam)
     if player.Get:Source() == 0 then
         return
     end
@@ -47,13 +47,6 @@ RegisterNetEvent('Spark:Dropped', function(steam)
 
     local coords = player.Get:Position()
 
-
-    --print(coords)
-
     player.Data:Set('Coords', {x = coords.x, y = coords.y, z = coords.z})
     player.Data:Set('Health', player.Get:Health())
-
-    --Wait(250)
-    --print(json.encode(Spark.Players.Players[player.Get:Steam()].data))
-    --print("SET DATA?")
 end)

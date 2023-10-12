@@ -63,8 +63,11 @@ function Spark.Players:playerSpawned(source)
     end
 
     player.spawns = player.spawns + 1
-    TriggerEvent('Spark:Spawned', Spark.Players:Get("steam", steam), player.spawns == 1)
-    TriggerClientEvent('Spark:Loaded', source)
+    TriggerEvent('Spark:Spawned', steam, player.spawns == 1)
+
+    if source ~= 0 then
+        TriggerClientEvent('Spark:Loaded', source)
+    end
 end
 
 --- Event when a user has been dropped.
@@ -80,10 +83,8 @@ function Spark.Players:playerDropped(source, reason)
 
     TriggerEvent('Spark:Dropped', steam)
 
-    Wait(500)
-
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
-    --print("Data: " .. json.encode(data.data))
+    print("Data: " .. json.encode(data.data))
 
     self.Raw:Dump(steam, data.data)
     self.Players[steam] = nil
