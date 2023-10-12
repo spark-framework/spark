@@ -1,8 +1,0 @@
-# Ignore server dump
-server/artifacts
-server/cache
-server/db
-server/.replxx_history
-server/credentials.cfg
-server/resources/ox_lib
-server/resources/scully_emotemenu
