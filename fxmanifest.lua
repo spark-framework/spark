@@ -1,8 +1,24 @@
-fx_version 'cerulean'
-game 'gta5'
 
-lua54 'yes'
-version '1.0'
+fx_version  'cerulean'
+game        'gta5'
+lua54       'yes'
+
+name        'Spark'
+author      'frackz'
+version     '1.0'
+license     'GPL v3.0'
+repository  'https://github.com/frackz/spark'
+description 'FiveM framework based on Lua'
+
+dependency  '/onesync'
+
+shared_scripts {
+    'shared/Spark.lua',
+    'shared/String.lua',
+    'shared/Table.lua',
+    'shared/Files.lua',
+    'shared/Config.lua',
+}
 
 client_scripts {
     'cfg/Weapons.lua', -- what configs the client have access to
@@ -31,12 +47,4 @@ server_scripts {
 
     'server/Players/Commands.lua',
     'server/Players/State.lua'
-}
-
-shared_scripts {
-    'shared/Spark.lua',
-    'shared/String.lua',
-    'shared/Table.lua',
-    'shared/Files.lua',
-    'shared/Config.lua',
 }
