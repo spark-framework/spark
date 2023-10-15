@@ -48,6 +48,12 @@ function Spark.Ped:Create(type, model, coords, heading, options)
         SetPedCanPlayAmbientAnims(ped, true)
     end
 
+    if options?.functions then
+        for k, v in pairs(options?.functions) do
+            _G[k](ped, table.unpack(v))
+        end
+    end
+
     return ped
 end
 
