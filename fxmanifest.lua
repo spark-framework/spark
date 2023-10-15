@@ -11,12 +11,8 @@ client_scripts {
     'client/Callback.lua',
     'client/Ped.lua',
 
-    'client/Player/Player.lua',
-    'client/Player/Server.lua',
-    'client/Player/Weapons.lua',
-    'client/Player/Customization.lua',
+    'client/Player.lua',
     'client/Player/State.lua',
-    'client/Player/Position.lua'
 }
 
 server_scripts {

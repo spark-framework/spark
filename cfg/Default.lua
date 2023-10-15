@@ -9,7 +9,7 @@ local Default =  {
     Identity = {
         First = "Jørgen",
         Last = "Olsen"
-    }
+    },
 }
 
 for i = 0, 19 do

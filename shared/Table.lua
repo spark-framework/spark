@@ -25,3 +25,15 @@ function Spark.Table:Entries(table)
 
     return count
 end
+
+--- Clone a table, without refrences
+--- @param table table
+--- @return table
+function Spark.Table:Clone(table)
+    local result = {}
+    for k, v in pairs(table) do
+        result[k] = v
+    end
+
+    return result
+end

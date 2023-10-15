@@ -84,7 +84,7 @@ function Spark.Players:playerDropped(source, reason)
     TriggerEvent('Spark:Dropped', steam)
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
-    print("Data: " .. json.encode(data.data))
+    --print("Data: " .. json.encode(data.data))
 
     self.Raw:Dump(steam, data.data)
     self.Players[steam] = nil
