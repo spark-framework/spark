@@ -19,6 +19,13 @@ function Spark.Marker:Add(x, y, z, dx, dy, dz, r, g, b, distance)
     local id = self.Id + 1
     self.Id = id
 
+    local resource = GetInvokingResource()
+    AddEventHandler('onResourceStop', function(name)
+        if resource == name then
+            Markers[id] = nil
+        end
+    end)
+
     Markers[id] = {
         x = x,
         y = y,
