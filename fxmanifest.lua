@@ -23,7 +23,7 @@ shared_scripts {
 client_scripts {
     'cfg/Weapons.lua', -- what configs the client have access to
 
-    'client/Spawn.lua',
+    'client/Events.lua',
     'client/Callback.lua',
     'client/Ped.lua',
 
@@ -31,10 +31,9 @@ client_scripts {
 
     'client/Player.lua',
     'client/Player/State.lua',
+    'client/Survival.lua',
 
-    'client/Map/*.lua',
-
-    'client/Death.lua'
+    'client/Map/*.lua'
 }
 
 server_scripts {

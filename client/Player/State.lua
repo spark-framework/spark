@@ -1,4 +1,4 @@
-Spark:Callback('Spark:Update', function(data)
+Spark:Callback('Spark:Update', function(data) -- Update user-data, with original delays
     local player = PlayerPedId()
 
     if data.customization then
@@ -14,7 +14,7 @@ Spark:Callback('Spark:Update', function(data)
     end
 end)
 
-Spark:Callback('Spark:State', function()
+Spark:Callback('Spark:State', function() -- Get state-data from the client
     return {
         weapons = Spark.Player.Weapons:Get(),
         customization = Spark.Player.Customization:Get()

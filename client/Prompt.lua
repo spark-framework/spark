@@ -17,7 +17,7 @@ CreateThread(function()
     while true do
         Wait(0)
 
-        if Text ~= nil then
+        if Text ~= nil then -- Check if a text needs to be displayed
             SetTextComponentFormat("STRING")
             AddTextComponentString(Text)
             DisplayHelpTextFromStringLabel(0, false, true, -1)
