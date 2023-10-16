@@ -27,8 +27,12 @@ client_scripts {
     'client/Callback.lua',
     'client/Ped.lua',
 
+    'client/Prompt.lua',
+
     'client/Player.lua',
     'client/Player/State.lua',
+
+    'client/Map/*.lua'
 }
 
 server_scripts {
