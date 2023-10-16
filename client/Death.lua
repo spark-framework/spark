@@ -9,6 +9,7 @@ AddEventHandler('onClientMapStart', function()
 	exports['spawnmanager']:setAutoSpawn(false)
 end)
 
+--- Check if the user should be dead
 function Spark.Death:Check()
     if NetworkIsPlayerActive(PlayerId()) then
         if not IsPedFatallyInjured(PlayerPedId()) then
@@ -21,6 +22,7 @@ function Spark.Death:Check()
     end
 end
 
+--- Begin the death timer
 function Spark.Death:Timer()
     Spark.Death.Dead = true
     Spark.Death.Left = 30
@@ -46,17 +48,17 @@ function Spark.Death:Timer()
             end
         end
 
-        while Spark.Death.Left == 0 and Spark.Death.Dead do
-            Wait(5)
-
-            if IsControlJustPressed(0, 38) then
-                Spark.Death:Respawn()
-            end
-
-            Spark.Player:DrawText2Ds("[~g~E~s~] to respawn")
-            SetPlayerInvincible(PlayerPedId(), true)
-        end
+        Spark.Death:Respawn()
     end)
+end
+
+function Spark.Death:Revive()
+    local coords = GetEntityCoords(PlayerPedId())
+    NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, 0.0, true, false)
+    AnimpostfxStop('DeathFailOut')
+    SetPlayerInvincible(PlayerPedId(), false)
+    SetEntityHeading(PlayerPedId(), GetPedMaxHealth(PlayerPedId()))
+    SetEntityHealth(PlayerPedId(), GetPedMaxHealth(PlayerPedId()))
 end
 
 function Spark.Death:Respawn()
@@ -80,6 +82,10 @@ function Spark.Death:Respawn()
 		DoScreenFadeIn(1000)
 	end)
 end
+
+RegisterCommand('revive', function()
+    Spark.Death:Revive()
+end, false)
 
 CreateThread(function()
     while true do
