@@ -5,7 +5,6 @@ end
 
 Spark.Player = {}
 
---- Draw text in 3d
 --- @param x number
 --- @param y number
 --- @param z number
@@ -26,7 +25,6 @@ function Spark.Player:DrawText3Ds(x, y, z, text)
     ClearDrawOrigin()
 end
 
---- Draw text on the player's screen
 --- @param text string
 function Spark.Player:DrawText2Ds(text)
     SetTextFont(4)
@@ -44,21 +42,17 @@ function Spark.Player:DrawText2Ds(text)
     DrawText(0.5, 0.8)
 end
 
---- Set the player's invincibility value
 --- @param value boolean
 function Spark.Player:Invincible(value)
     SetEntityInvincible(PlayerPedId(), value)
 end
 
---- Clear the blood from the player
 function Spark.Player:Blood()
     ClearPedBloodDamage(PlayerPedId())
 end
 
---- Register customization object
 Spark.Player.Customization = {}
 
---- Set the customization of the player
 --- @param custom table
 function Spark.Player.Customization:Set(custom)
     local ped = PlayerPedId()
@@ -100,7 +94,6 @@ function Spark.Player.Customization:Set(custom)
     end
 end
 
---- Get the customization of the player
 --- @return table
 function Spark.Player.Customization:Get()
     local ped = GetPlayerPed(-1)
@@ -125,6 +118,7 @@ function Spark.Player.Customization:Get()
     return custom
 end
 
+--- @return boolean, number?
 function Spark.Player.Customization:Parse(key)
     if type(key) == "string" and string.sub(key,1,1) == "p" then
         return true, tonumber(string.sub(key,2))
@@ -136,13 +130,11 @@ end
 --- Register position object
 Spark.Player.Position = {}
 
---- Get the player's position
 --- @return vector3
 function Spark.Player.Position:Get()
     return GetEntityCoords(PlayerPedId())
 end
 
---- Get the player's distance to a coord
 --- @param x number
 --- @param y number
 --- @param z number
@@ -151,7 +143,6 @@ function Spark.Player.Position:Distance(x, y, z)
     return #(vector3(x,y,z) - self:Get())
 end
 
---- Set the player's coords
 --- @param x number
 --- @param y number
 --- @param z number
@@ -164,7 +155,6 @@ Spark.Player.Weapons = {
     Weapons = Spark:Config('Weapons')
 }
 
---- Set the player's weapons
 --- @param weapons table
 function Spark.Player.Weapons:Set(weapons)
     local player = PlayerPedId()
@@ -176,7 +166,6 @@ function Spark.Player.Weapons:Set(weapons)
     end
 end
 
---- Get the player's weapons
 --- @return table
 function Spark.Player.Weapons:Get()
     local player = PlayerPedId()
@@ -208,13 +197,11 @@ end
 
 Spark.Player.Server = {}
 
---- Trigger a server event
 --- @param name string
 function Spark.Player.Server:Event(name, ...)
     return TriggerServerEvent(name, ...)
 end
 
---- Trigger a server callback
 --- @param name string
 --- @return any
 function Spark.Player.Server:Callback(name, ...)
@@ -232,19 +219,16 @@ end
 
 Spark.Player.Health = {}
 
---- Set the player's health
 --- @param health number
 function Spark.Player.Health:Set(health)
     SetEntityHealth(PlayerPedId(), health)
 end
 
---- Get the player's max health
 --- @return number
 function Spark.Player.Health:Max()
     return GetEntityMaxHealth(PlayerPedId())
 end
 
---- Get the player's health
 --- @return number
 function Spark.Player.Health:Get()
     return GetEntityHealth(PlayerPedId())
@@ -252,13 +236,11 @@ end
 
 Spark.Player.Heading = {}
 
---- Set the player's heading
 --- @param heading number
 function Spark.Player.Heading:Set(heading)
     SetEntityHeading(PlayerPedId(), heading)
 end
 
---- Get the player's heading
 --- @return number
 function Spark.Player.Heading:Get()
     return GetEntityHeading(PlayerPedId())
@@ -276,7 +258,6 @@ local Keys = {
     ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }
 
---- Check if the player is currently pressing a key
 --- @param key string | number
 --- @return boolean
 function Spark.Player:Key(key)

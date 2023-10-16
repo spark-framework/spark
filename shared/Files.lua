@@ -1,15 +1,12 @@
-Spark.Files = {
-    Files = {}
-}
+local Files = {}
 
---- Get a file, this is just the name of the file
 --- @param resource string
 --- @param path string
 --- @return table
-function Spark.Files:Get(resource, path)
+function Spark:Files(resource, path)
     assert(path, "Cannot access file because path is nil")
-    if self.Files[path] then
-        return self.Files[path]
+    if Files[path] then
+        return Files[path]
     end
 
     local content = LoadResourceFile(resource, path)
@@ -23,6 +20,6 @@ function Spark.Files:Get(resource, path)
     local file, content = response[1], response[2]
     assert(file, "Error loading file "..path)
 
-    self.Files[path] = content
+    Files[path] = content
     return content
 end

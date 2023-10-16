@@ -11,7 +11,7 @@ function Spark.Driver:Execute(query, ...) return 0 end
 --- @return table
 function Spark.Driver:Query(query, ...) return {} end
 
-Spark.Driver = Spark.Files:Get(
+Spark.Driver = Spark:Files(
     GetCurrentResourceName(),
     'server/Drivers/' .. Spark:Config('Driver') .. '.lua'
 )

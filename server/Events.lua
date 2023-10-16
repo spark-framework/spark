@@ -1,6 +1,5 @@
 Spark.Events = {}
 
---- Register a event with the Spark wrapper
 --- @param name string
 --- @param callback function
 function Spark.Events:Register(name, callback)
@@ -8,7 +7,6 @@ function Spark.Events:Register(name, callback)
     self:Handle(name, callback)
 end
 
---- Handle a event with the Spark wrapper
 --- @param name string
 --- @param callback function
 function Spark.Events:Handle(name, callback)

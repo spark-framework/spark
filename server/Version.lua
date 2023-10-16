@@ -3,13 +3,11 @@ Spark.Version = {
     Loaded = promise.new()
 }
 
---- Get the current version Spark is running on.
 --- @return number?
 function Spark.Version:Get()
     return tonumber(GetResourceMetadata(GetCurrentResourceName(), 'version', 0))
 end
 
---- Get the newest version of Spark.
 --- @return number | nil
 function Spark.Version:Newest()
     local text, status = Spark.Network:HTTP(self.URL, 'GET')

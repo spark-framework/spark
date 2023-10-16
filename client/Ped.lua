@@ -1,6 +1,5 @@
 Spark.Ped = {}
 
---- Create a ped with options
 --- @param type number
 --- @param model string
 --- @param coords vector3
@@ -57,7 +56,6 @@ function Spark.Ped:Create(type, model, coords, heading, options)
     return ped
 end
 
---- Delete a ped when your resource gets restarted
 --- @param ped number
 function Spark.Ped:Delete(ped)
     local resource = GetInvokingResource()

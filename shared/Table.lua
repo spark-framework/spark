@@ -1,6 +1,5 @@
 Spark.Table = {}
 
---- Check if a table contains a value
 --- @param table table
 --- @param value any
 --- @return boolean
@@ -14,7 +13,6 @@ function Spark.Table:Contains(table, value)
     return false
 end
 
---- Get the amount of table entries
 --- @param table table
 --- @return number
 function Spark.Table:Entries(table)
@@ -26,7 +24,6 @@ function Spark.Table:Entries(table)
     return count
 end
 
---- Clone a table, without refrences
 --- @param table table
 --- @return table
 function Spark.Table:Clone(table)

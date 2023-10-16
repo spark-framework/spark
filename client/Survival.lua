@@ -9,8 +9,7 @@ RegisterCommand('revive', function()
     Spark.Survival:Revive(true)
 end, false)
 
---- Begin the death timer
-function Spark.Survival:Start()
+function Spark.Survival:Start() -- start the death timer
     Spark.Survival.Dead = true
     Spark.Survival.Left = Config.Time -- restart time
 
@@ -27,7 +26,6 @@ function Spark.Survival:Start()
     end)
 end
 
---- Revive the player
 --- @param health boolean | nil
 function Spark.Survival:Revive(health)
     local coords = Spark.Player.Position:Get()
@@ -46,8 +44,7 @@ function Spark.Survival:Revive(health)
     end
 end
 
---- Respawn the player (remove weapons, etc)
-function Spark.Survival:Respawn()
+function Spark.Survival:Respawn() -- respawn the player
     CreateThread(function()
 		DoScreenFadeOut(1000) -- fade out screen
 

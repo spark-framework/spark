@@ -3,7 +3,6 @@ Spark.Marker = { Id = 0 }
 
 local Markers = {}
 
---- Add a marker to the world
 --- @param x number
 --- @param y number
 --- @param z number
@@ -42,14 +41,12 @@ function Spark.Marker:Add(x, y, z, dx, dy, dz, r, g, b, distance)
     return id
 end
 
---- Remove a marker from the world
 --- @param marker number
 function Spark.Marker:Remove(marker)
     Markers[marker] = nil
 end
 
--- draw markers (high ms)
-CreateThread(function()
+CreateThread(function() -- draw markers (high ms)
     while true do
         Wait(0)
 

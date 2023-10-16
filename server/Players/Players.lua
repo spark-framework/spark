@@ -12,7 +12,6 @@ Spark.Driver:Ready(function()
     print("Loaded " .. #users .. " user(s)!")
 end)
 
---- Event when a user has connected.
 --- @param source number?
 --- @param def table
 function Spark.Players:playerConnecting(source, def)
@@ -48,7 +47,6 @@ function Spark.Players:playerConnecting(source, def)
     def.done()
 end
 
---- Event when a user has spawned.
 function Spark.Players:playerSpawned(source)
     local steam = Spark.Source:Steam(source)
     local player = self.Players[steam]
@@ -70,7 +68,6 @@ function Spark.Players:playerSpawned(source)
     end
 end
 
---- Event when a user has been dropped.
 --- @param source number?
 --- @param reason string
 function Spark.Players:playerDropped(source, reason)
@@ -90,7 +87,6 @@ function Spark.Players:playerDropped(source, reason)
     self.Players[steam] = nil
 end
 
---- Create/ or retrive data from the database
 --- @param steam string
 --- @return table
 function Spark.Players:Authenticate(steam, source)
@@ -117,7 +113,6 @@ function Spark.Players:Authenticate(steam, source)
     return data
 end
 
---- Get a user's data directly from the database.
 --- @param method string
 --- @param value any
 --- @return table
@@ -125,7 +120,6 @@ function Spark.Players.Raw:Pull(method, value)
     return Spark.Driver:Query('SELECT * FROM users WHERE ' .. method .. ' = ?', value)[1]
 end
 
---- Get a user's data in json directly from the database.
 --- @param steam string
 --- @return table
 function Spark.Players.Raw:Data(steam)
@@ -133,14 +127,12 @@ function Spark.Players.Raw:Data(steam)
     return not data and false or json.decode(data.data or "{}")
 end
 
---- Dump a user's data directly to the database.
 --- @param steam string
 --- @param data table
 function Spark.Players.Raw:Dump(steam, data)
     return Spark.Driver:Execute('UPDATE users SET data = ? WHERE steam = ?', json.encode(data), steam)
 end
 
---- Convert a id to a steam
 --- @param id number
 --- @return string | nil
 function Spark.Players.Raw:Convert(id)

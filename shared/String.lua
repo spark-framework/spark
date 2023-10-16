@@ -5,7 +5,6 @@ Spark.String = {
         "!@#$%^&*()_+-={}|[]`~"
 }
 
---- Generate a random string
 --- @param length number
 --- @param symbols boolean
 --- @return string
@@ -21,7 +20,6 @@ function Spark.String:Generate(length, symbols)
     return result
 end
 
---- Split a string with a seperator
 --- @param text string
 --- @param separator string
 --- @return table

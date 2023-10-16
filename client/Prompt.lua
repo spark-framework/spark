@@ -2,13 +2,11 @@ Spark.Prompt = {}
 
 local Text = nil
 
---- Show a prompt with text
 --- @param text string
 function Spark.Prompt:Show(text)
     Text = text
 end
 
---- Remove prompt from the player
 function Spark.Prompt:Remove()
     Text = nil
 end

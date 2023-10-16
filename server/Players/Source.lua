@@ -3,7 +3,6 @@ Spark.Source = {
     Dummy = 'tewstOMG'
 }
 
---- Get the steam identifier from a source
 --- @param source number?
 --- @return string
 function Spark.Source:Steam(source)

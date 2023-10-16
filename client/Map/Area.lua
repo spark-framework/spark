@@ -2,14 +2,13 @@ Spark.Area = { Id = 0 }
 
 local Areas = {}
 
---- Add area with radius and callbacks
 --- @param x number
 --- @param y number
 --- @param z number
 --- @param radius number
 --- @param height number
---- @param enter function | nil
---- @param leave function | nil
+--- @param enter fun()
+--- @param leave fun()
 --- @return number
 function Spark.Area:Add(x, y, z, radius, height, enter, leave)
     local id = self.Id + 1
@@ -35,13 +34,12 @@ function Spark.Area:Add(x, y, z, radius, height, enter, leave)
     return id
 end
 
---- Remove area by id
 --- @param area number
 function Spark.Area:Remove(area)
     Areas[area] = nil
 end
 
-CreateThread(function()
+CreateThread(function() -- Displays all areas
     while true do
         Wait(250)
 
