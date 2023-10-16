@@ -7,7 +7,7 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
     local coords = player.Data:Get('Coords')
 
     if first then
-        player.Set:Position(coords.x, coords.y, coords.z)
+        player.Set:Position(coords)
 
         player.Set:Customization(player.Data:Get('Customization')) -- set the player's skin
         player.Set:Weapons(player.Data:Get('Weapons')) -- set the player's weapon
@@ -29,7 +29,7 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
         end)
     else -- if the user died and spawned again
         coords = Spark.Players.Default.Coords
-        player.Set:Position(coords.x, coords.y, coords.z)
+        player.Set:Position(coords)
 
         player.Set:Customization(player.Data:Get('Customization'))
         player.Set:Health(player.Get:Max())

@@ -20,9 +20,7 @@ function Spark.Area:Add(coords, radius, height, enter, leave)
     end)
 
     Areas[id] = {
-        x = coords.x,
-        y = coords.y,
-        z = coords.z,
+        coords = coords,
         radius = radius,
         height = height,
         enter = enter or function () end,
@@ -43,7 +41,7 @@ CreateThread(function() -- Displays all areas
 
         for id, v in pairs(Areas) do
             local isIn = (
-                Spark.Player.Position:Distance(v.x, v.y, v.z) <= v.radius and
+                Spark.Player.Position:Distance(v.coords) <= v.radius and
                 math.abs(Spark.Player.Position:Get().z - v.z) <= v.height
             )
 
