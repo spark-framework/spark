@@ -9,3 +9,6 @@ A FiveM framework built on Lua that makes creating servers simple!
 
 ## 💬 Discord
 https://discord.gg/Qzbm744N28
+
+## 🧐 Inspiration
+The framework [vrp](https://github.com/vRP-framework/vRP) has given me alot of inspiration! Please go check them out
