@@ -5,11 +5,9 @@ end
 
 Spark.Player = {}
 
---- @param x number
---- @param y number
---- @param z number
+--- @param coords vector3
 --- @param text string
-function Spark.Player:DrawText3Ds(x, y, z, text)
+function Spark.Player:DrawText3Ds(coords, text)
 	SetTextScale(0.35, 0.35)
     SetTextFont(4)
     SetTextProportional(true)
@@ -17,7 +15,7 @@ function Spark.Player:DrawText3Ds(x, y, z, text)
     SetTextEntry("STRING")
     SetTextCentre(true)
     AddTextComponentString(text)
-    SetDrawOrigin(x,y,z, 0)
+    SetDrawOrigin(coords.x, coords.y, coords.z, 0)
     DrawText(0.0, 0.0)
 
     local factor = (string.len(text)) / 370
@@ -135,19 +133,15 @@ function Spark.Player.Position:Get()
     return GetEntityCoords(PlayerPedId())
 end
 
---- @param x number
---- @param y number
---- @param z number
+--- @param coords vector3
 --- @return number
-function Spark.Player.Position:Distance(x, y, z)
-    return #(vector3(x,y,z) - self:Get())
+function Spark.Player.Position:Distance(coords)
+    return #(coords - self:Get())
 end
 
---- @param x number
---- @param y number
---- @param z number
-function Spark.Player.Position:Set(x, y, z)
-    return SetEntityCoords(PlayerPedId(), x, y, z, false, false, false, false)
+--- @param coords vector3
+function Spark.Player.Position:Set(coords)
+    return SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z, false, false, false, false)
 end
 
 --- Register customization object

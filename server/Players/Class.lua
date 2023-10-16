@@ -143,11 +143,9 @@ function Spark.Players:Get(method, value)
         return player.Data:Set('Whitelisted', value)
     end
 
-    --- @param x number
-    --- @param y number
-    --- @param z number
-    function player.Set:Position(x, y, z)
-        SetEntityCoords(player.Get:Ped(), x, y, z, false, false, false, false)
+    --- @param coords vector3
+    function player.Set:Position(coords)
+        SetEntityCoords(player.Get:Ped(), coords.x, coords.y, coords.z, false, false, false, false)
     end
 
     --- @param health number

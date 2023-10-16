@@ -1,9 +1,8 @@
 Spark.GPS = {}
 
---- @param x number
---- @param y number
-function Spark.GPS:Set(x, y)
-    SetNewWaypoint(x, y)
+--- @param coords vector2 | vector3
+function Spark.GPS:Set(coords)
+    SetNewWaypoint(coords.x, coords.y)
 end
 
 --- @param blip number

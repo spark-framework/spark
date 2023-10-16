@@ -1,15 +1,13 @@
 Spark.Blips = {}
 
---- @param x number
---- @param y number
---- @param z number
---- @param blip number
+--- @param coords vector3
+--- @param type number
 --- @param color number
 --- @param text string | nil
 --- @return number
-function Spark.Blips:Add(x, y, z, blip, color, text)
-    local blip = AddBlipForCoord(x, y, z)
-    SetBlipSprite(blip, blip)
+function Spark.Blips:Add(coords, type, color, text)
+    local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipSprite(blip, type)
     SetBlipAsShortRange(blip, true)
     SetBlipColour(blip, color)
     SetBlipScale(blip, 0.6)

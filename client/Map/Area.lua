@@ -2,15 +2,13 @@ Spark.Area = { Id = 0 }
 
 local Areas = {}
 
---- @param x number
---- @param y number
---- @param z number
+--- @param coords vector3
 --- @param radius number
 --- @param height number
 --- @param enter fun()
 --- @param leave fun()
 --- @return number
-function Spark.Area:Add(x, y, z, radius, height, enter, leave)
+function Spark.Area:Add(coords, radius, height, enter, leave)
     local id = self.Id + 1
     self.Id = id
 
@@ -22,9 +20,9 @@ function Spark.Area:Add(x, y, z, radius, height, enter, leave)
     end)
 
     Areas[id] = {
-        x = x,
-        y = y,
-        z = z,
+        x = coords.x,
+        y = coords.y,
+        z = coords.z,
         radius = radius,
         height = height,
         enter = enter or function () end,
