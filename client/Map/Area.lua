@@ -15,7 +15,7 @@ function Spark.Area:Add(x, y, z, radius, height, enter, leave)
     local id = self.Id + 1
     self.Id = id
 
-    local resource = GetInvokingResource()    
+    local resource = GetInvokingResource()
     AddEventHandler('onResourceStop', function(name)
         if resource == name then
             Areas[id] = nil

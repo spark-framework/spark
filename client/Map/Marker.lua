@@ -55,7 +55,7 @@ CreateThread(function()
 
         for _, v in pairs(Markers) do
             if Spark.Player.Position:Distance(v.x, v.y, v.z) <= v.distance then
-                DrawMarker(27, v.x, v.y, v.z, 0, 0, 0, 0, 0, 0, v.dx, v.dy, v.dz, v.r, v.g, v.b, 200, 0, 0, 0, 50)
+                DrawMarker(1, v.x, v.y, v.z, 0, 0, 0, 0, 0, 0, v.dx, v.dy, v.dz, v.r, v.g, v.b, 200, 0, 0, 0, 50)
             end
         end
     end

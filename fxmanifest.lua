@@ -32,7 +32,9 @@ client_scripts {
     'client/Player.lua',
     'client/Player/State.lua',
 
-    'client/Map/*.lua'
+    'client/Map/*.lua',
+
+    'client/Death.lua'
 }
 
 server_scripts {
