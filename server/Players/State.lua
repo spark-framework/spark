@@ -21,6 +21,7 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
                 end
 
                 local data = player.Client:Callback('Spark:State')
+                
                 player.Data:Set('Customization', data.customization)
                 player.Data:Set('Weapons', data.weapons)
 

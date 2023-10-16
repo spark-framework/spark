@@ -1,7 +1,7 @@
 local Config = Spark:Config('Survival')
 Spark.Survival = {
     Dead = false,
-    Left = 30,
+    Left = 0,
 }
 
 --- Revive command (debugging)
@@ -59,9 +59,12 @@ function Spark.Survival:Respawn() -- respawn the player
 end
 
 CreateThread(function() -- timer clicking down
-    while Spark.Survival.Left > 0 and Spark.Survival.Dead do
+    while true do
         Wait(1000)
-        Spark.Survival.Left = Spark.Survival.Left - 1 -- remove 1 second
+        
+        if Spark.Survival.Left > 0 and Spark.Survival.Dead then
+            Spark.Survival.Left = Spark.Survival.Left - 1 -- remove 1 second
+        end
     end
 end)
 
@@ -69,7 +72,7 @@ CreateThread(function()
     while true do
         Wait(0)
         if NetworkIsPlayerActive(PlayerId()) then -- is player active
-            if not IsPedFatallyInjured(PlayerPedId()) then
+            if not IsPedFatallyInjured(PlayerPedId()) and Spark.Survival.Left == 0 then
                 Spark.Survival.Dead = false -- set that the user is not dead
             else
                 if not Spark.Survival.Dead then -- if the player is not dead, start timer

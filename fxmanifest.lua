@@ -22,6 +22,7 @@ shared_scripts {
 
 client_scripts {
     'cfg/Weapons.lua', -- what configs the client have access to
+    'cfg/Survival.lua',
 
     'client/Events.lua',
     'client/Callback.lua',

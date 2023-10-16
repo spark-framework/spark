@@ -189,7 +189,9 @@ function Spark.Player.Weapons:Get()
     return weapons
 end
 
-Spark.Player.Server = {}
+Spark.Player.Server = {
+    CurrentId = 0
+}
 
 --- @param name string
 function Spark.Player.Server:Event(name, ...)
@@ -201,11 +203,12 @@ end
 function Spark.Player.Server:Callback(name, ...)
     local promise = promise.new()
     local id = self.CurrentId + 1
+    self.CurrentId = id
+
     RegisterNetEvent('Spark:Callbacks:Client:Response:'.. name .. ':' .. id, function(response)
         promise:resolve(response)
     end)
 
-    self.CurrentId = self.CurrentId + 1
     self:Event('Spark:Callbacks:Server:Run:' .. name, id, ...)
 
     return Citizen.Await(promise)

@@ -170,7 +170,9 @@ function Spark.Players:Get(method, value)
     end
 
     --- Register the Client module
-    player.Client = {}
+    player.Client = {
+        CurrentId = 0
+    }
 
     --- @param name string
     function player.Client:Event(name, ...)
@@ -181,11 +183,14 @@ function Spark.Players:Get(method, value)
     --- @return any
     function player.Client:Callback(name, ...)
         local promise = promise.new()
-        RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name, function(response)
+        local id = self.CurrentId + 1
+        self.CurrentId = id
+
+        RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name .. ':' .. id, function(response)
             promise:resolve(response)
         end)
 
-        self:Event('Spark:Callbacks:Client:Run:' .. name, ...)
+        self:Event('Spark:Callbacks:Client:Run:' .. name, id, ...)
         return Citizen.Await(promise)
     end
 
