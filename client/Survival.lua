@@ -2,6 +2,7 @@ local Config = Spark:Config('Survival')
 Spark.Survival = {
     Dead = false,
     Left = 0,
+    Token = false
 }
 
 --- Revive command (debugging)
@@ -12,6 +13,7 @@ end, false)
 function Spark.Survival:Start() -- start the death timer
     Spark.Survival.Dead = true
     Spark.Survival.Left = Config.Time -- restart time
+    Spark.Survival.Token = false
 
     StartScreenEffect(Config.Effect, 0, false) -- start the death screen effect
 
@@ -22,7 +24,11 @@ function Spark.Survival:Start() -- start the death timer
             Spark.Player:Invincible(true)
         end
 
-        Spark.Survival:Respawn() -- respawn the user if the time has ran out
+        if not Spark.Survival.Token then
+            Spark.Survival:Respawn() -- respawn the user if the time has ran out
+        else
+            Spark.Survival.Token = false
+        end
     end)
 end
 
@@ -34,6 +40,8 @@ function Spark.Survival:Revive(health)
     AnimpostfxStop('DeathFailOut') -- Stop screen effect
 
     Spark.Survival.Dead = false
+    Spark.Survival.Left = 0
+    Spark.Survival.Token = true
 
     Spark.Player:Blood()
     Spark.Player:Invincible(false)
