@@ -36,7 +36,7 @@ function Spark.Area:Add(x, y, z, radius, height, enter, leave)
 end
 
 --- Remove area by id
---- @param area id
+--- @param area number
 function Spark.Area:Remove(area)
     Areas[area] = nil
 end

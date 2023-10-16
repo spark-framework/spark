@@ -8,6 +8,7 @@ function Spark.GPS:Set(x, y)
 end
 
 --- Set the player's waypoint to a blip
+--- @param blip number
 function Spark.GPS:Blip(blip)
     SetBlipRoute(blip, true)
 end
