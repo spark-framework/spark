@@ -1,4 +1,4 @@
 return {
     Effect = 'DeathFailOut',
-    Time = 30 -- in seconds
+    Time = 5 -- in seconds
 }

@@ -73,42 +73,30 @@ function Spark.Players:Get(method, value)
         end
     end
 
-    --- Register the Get module
-    player.Get = {}
-
-    --- @return string | boolean
-    function player.Get:Ban() return player.Data:Get('Banned') or false end
-
-    function player.Get:ID() return id end
+    --- @return number
+    function player:ID()
+        return id
+    end
 
     --- @return string
-    function player.Get:Steam() return steam end
+    function player:Steam()
+        return steam
+    end
 
-    function player.Get:Source() return player.Data:Raw().source end
+    function player:Source()
+        return player.Data:Raw().source
+    end
 
     --- @return number
-    function player.Get:Ped() return GetPlayerPed(self:Source() or 0) end
-
-    --- @return number
-    function player.Get:Health() return GetEntityHealth(self:Ped()) end
-
-    --- @return vector3
-    function player.Get:Position() return GetEntityCoords(self:Ped()) end
-    
-    --- @return number
-    function player.Get:Max() return GetEntityMaxHealth(self:Ped()) end
+    function player:Ped()
+        return GetPlayerPed(self:Source() or 0)
+    end
 
     --- Register the Is module
     player.Is = {}
 
     --- @return boolean
     function player.Is:Online() return player.Data:Raw() ~= nil end
-
-    --- @return boolean
-    function player.Is:Banned() return player.Data:Get('Banned') ~= nil end
-
-    --- @return boolean
-    function player.Is:Whitelisted() return player.Data:Get('Whitelisted') or false end
 
     --- @return boolean
     function player.Is:Loaded() return(player.Data:Raw()?.spawns or 0) > 0 end
@@ -119,56 +107,6 @@ function Spark.Players:Get(method, value)
         DropPlayer(self.Get:Source(), reason)
     end
 
-    --- Register the Set module
-    player.Set = {}
-
-    --- @param value boolean
-    --- @param reason? string
-    --- @return boolean
-    function player.Set:Banned(value, reason)
-        if not value then
-            return true, player.Data:Set('Banned', nil)
-        end
-
-        player.Data:Set('Banned', reason)
-        if player.Is:Online() then
-            player:Kick('[Banned] ' .. reason)
-        end
-
-        return true
-    end
-
-    --- @param value boolean
-    function player.Set:Whitelisted(value)
-        return player.Data:Set('Whitelisted', value)
-    end
-
-    --- @param coords vector3
-    function player.Set:Position(coords)
-        SetEntityCoords(player.Get:Ped(), coords.x, coords.y, coords.z, false, false, false, false)
-    end
-
-    --- @param health number
-    function player.Set:Health(health)
-        player.Client:Callback('Spark:Update', {
-            health = health
-        })
-    end
-
-    --- @param customization table
-    function player.Set:Customization(customization)
-        player.Client:Callback('Spark:Update', {
-            customization = customization
-        })
-    end
-
-    --- @param weapons table
-    function player.Set:Weapons(weapons)
-        player.Client:Callback('Spark:Update', {
-            weapons = weapons
-        })
-    end
-
     --- Register the Client module
     player.Client = {
         CurrentId = 0
@@ -176,7 +114,7 @@ function Spark.Players:Get(method, value)
 
     --- @param name string
     function player.Client:Event(name, ...)
-        return TriggerClientEvent(name, player.Get:Source(), ...)
+        return TriggerClientEvent(name, player:Source(), ...)
     end
 
     --- @param name string
@@ -192,6 +130,111 @@ function Spark.Players:Get(method, value)
 
         self:Event('Spark:Callbacks:Client:Run:' .. name, id, ...)
         return Citizen.Await(promise)
+    end
+
+    --- Register the Weapons module
+    player.Weapons = {}
+
+    --- @param weapons table
+    function player.Weapons:Set(weapons)
+        player.Client:Callback('Spark:Update', {
+            weapons = weapons
+        })
+    end
+
+    --- @return table
+    function player.Weapons:Get()
+        return player.Client:Callback('Spark:State').weapons
+    end
+
+    --- Register the Customization module
+    player.Customization = {}
+
+    --- @param customization table
+    function player.Customization:Set(customization)
+        player.Client:Callback('Spark:Update', {
+            customization = customization
+        })
+    end
+
+    --- @return table
+    function player.Customization:Get()
+        return player.Client:Callback('Spark:State').customization
+    end
+
+    --- Register the Health module
+    player.Health = {}
+
+    --- @param health number
+    function player.Health:Set(health)
+        player.Client:Callback('Spark:Update', {
+            health = health
+        })
+    end
+
+    --- @return number
+    function player.Health:Max()
+        return GetEntityMaxHealth(player:Ped())
+    end
+
+    --- @return number
+    function player.Health:Get()
+        return GetEntityHealth(player:Ped())
+    end
+
+    --- Register the Position module
+    player.Position = {}
+
+    --- @param coords vector3
+    function player.Position:Set(coords)
+        SetEntityCoords(player:Ped(), coords.x, coords.y, coords.z, false, false, false, false)
+    end
+
+    --- @return vector3
+    function player.Position:Get()
+        return GetEntityCoords(player:Ped())
+    end
+
+    --- Register the Ban module
+    Spark.Ban = {}
+
+    --- @param value boolean
+    --- @param reason? string
+    --- @return boolean
+    function Spark.Ban:Set(value, reason)
+        if not value then
+            return true, player.Data:Set('Banned', nil)
+        end
+
+        player.Data:Set('Banned', reason)
+        if player.Is:Online() then
+            player:Kick('[Banned] ' .. reason)
+        end
+
+        return true
+    end
+
+    --- @return string | boolean
+    function Spark.Ban:Reason()
+        return player.Data:Get('Banned') or false
+    end
+
+    --- @return boolean
+    function Spark.Ban:Is()
+        return player.Data:Get('Banned') ~= nil
+    end
+
+    --- Register the Whitelist module
+    Spark.Whitelist = {}
+
+    --- @param value boolean
+    function Spark.Whitelist:Set(value)
+        return player.Data:Set('Whitelisted', value)
+    end
+
+    --- @return boolean
+    function Spark.Whitelist:Is()
+        return player.Data:Get('Whitelisted') ~= nil
     end
 
     return player
