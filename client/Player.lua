@@ -264,3 +264,10 @@ function Spark.Player:Key(key)
 
     return IsControlJustPressed(0, key)
 end
+
+--- @param text string
+function Spark.Player:Notification(text)
+    AddTextEntry("NOTIFICATION", text)
+    SetNotificationTextEntry("NOTIFICATION")
+    DrawNotification(true, false)
+end

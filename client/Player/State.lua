@@ -12,6 +12,10 @@ Spark:Callback('Spark:Update', function(data) -- Update user-data, with original
     if data.health then
         SetEntityHealth(player, data.health)
     end
+
+    if data.notification then
+        Spark.Player:Notification(data.notification)
+    end
 end)
 
 Spark:Callback('Spark:State', function() -- Get state-data from the client

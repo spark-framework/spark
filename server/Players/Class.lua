@@ -196,12 +196,12 @@ function Spark.Players:Get(method, value)
     end
 
     --- Register the Ban module
-    Spark.Ban = {}
+    player.Ban = {}
 
     --- @param value boolean
     --- @param reason? string
     --- @return boolean
-    function Spark.Ban:Set(value, reason)
+    function player.Ban:Set(value, reason)
         if not value then
             return true, player.Data:Set('Banned', nil)
         end
@@ -215,26 +215,33 @@ function Spark.Players:Get(method, value)
     end
 
     --- @return string | boolean
-    function Spark.Ban:Reason()
+    function player.Ban:Reason()
         return player.Data:Get('Banned') or false
     end
 
     --- @return boolean
-    function Spark.Ban:Is()
+    function player.Ban:Is()
         return player.Data:Get('Banned') ~= nil
     end
 
     --- Register the Whitelist module
-    Spark.Whitelist = {}
+    player.Whitelist = {}
 
     --- @param value boolean
-    function Spark.Whitelist:Set(value)
+    function player.Whitelist:Set(value)
         return player.Data:Set('Whitelisted', value)
     end
 
     --- @return boolean
-    function Spark.Whitelist:Is()
+    function player.Whitelist:Is()
         return player.Data:Get('Whitelisted') ~= nil
+    end
+
+    --- @param text string
+    function player:Notification(text)
+        player.Client:Callback('Spark:Update', {
+            notification = text
+        })
     end
 
     return player
