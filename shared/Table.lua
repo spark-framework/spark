@@ -29,7 +29,7 @@ end
 function Spark.Table:Clone(table)
     local result = {}
     for k, v in pairs(table) do
-        result[k] = v
+        result[k] = type(v) == "table" and self:Clone(v) or v
     end
 
     return result

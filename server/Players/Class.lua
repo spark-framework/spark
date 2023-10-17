@@ -62,9 +62,10 @@ function Spark.Players:Get(method, value)
     --- @return any
     function player.Data:Get(key)
         if player.Is:Online() then   
-            return self:Raw().data[key]
+            return Spark.Table:Clone(self:Raw().data)[key]
         else
             local user = Spark.Players.Raw:Data(steam)
+            
             if not user then
                 return print("user not found")
             end
@@ -242,6 +243,17 @@ function Spark.Players:Get(method, value)
         player.Client:Callback('Spark:Update', {
             notification = text
         })
+    end
+
+    player.Groups = {}
+
+    function player.Groups:Add(group)
+        local groups = player.Data:Get('Groups')
+        table.insert(groups, group)
+        
+        
+
+        print(json.encode(player.Data:Raw().data.groups))
     end
 
     return player

@@ -23,6 +23,13 @@ RegisterCommand('data', function(source, args)
     end
 end, false)
 
+RegisterCommand('group', function(source, args)
+    Wait(0)
+
+    local player = Spark.Players:Get("source", source)
+    print(player?.Groups:Add('adasdasdadasasdasddssd'))
+end, false)
+
 RegisterCommand('drop', function(source)
     Wait(0)
     Spark.Players:playerDropped(source, 'daddy waddy')

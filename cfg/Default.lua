@@ -10,6 +10,8 @@ local Default =  {
         First = "Jørgen",
         Last = "Olsen"
     },
+
+    Groups = {}
 }
 
 for i = 0, 19 do
