@@ -1,4 +1,4 @@
-local Default =  {
+local Player =  {
     Weapons = {},
     Coords = vector3(235.71, -411.25, 50.13),
     Health = 150,
@@ -15,7 +15,7 @@ local Default =  {
 }
 
 for i = 0, 19 do
-    Default.Customization[i] = {0, 0}
+    Player.Customization[i] = {0, 0}
 end
 
-return Default
+return Player

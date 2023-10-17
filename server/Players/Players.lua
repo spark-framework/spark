@@ -2,7 +2,7 @@ Spark.Players = {
     Players = {},
     Raw = {},
 
-    Default = Spark:Config('Default')
+    Default = Spark:Config('Player')
 }
 
 Spark.Driver:Ready(function()
