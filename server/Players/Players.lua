@@ -101,11 +101,17 @@ function Spark.Players:Authenticate(steam, source)
         end
     end
 
-    data.data = data.data or json.encode(self.Default)
+    data.data = json.decode(data.data or json.encode(self.Default))
+
+    for k, v in pairs(self.Default) do -- incase of updates
+        if data.data[k] == nil then
+            data.data[k] = v
+        end
+    end
 
     self.Players[steam] = {
         id = data.id,
-        data = json.decode(data.data),
+        data = data.data,
         source = source,
         spawns = 0
     }
