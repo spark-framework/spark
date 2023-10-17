@@ -1,3 +1,5 @@
+local Groups = Spark:Config('Groups')
+
 RegisterNetEvent('Spark:Spawned', function(steam, first)
     local player = Spark.Players:Get("steam", steam)
     if player:Source() == 0 then
@@ -38,6 +40,30 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
 
         player.Weapons:Set({})
         player.Data:Set('Weapons', {})
+    end
+end)
+
+RegisterNetEvent('Spark:Player:Group:Add', function(steam, group)
+    local player = Spark.Players:Get("steam", steam)
+    if player:Source() == 0 then
+        return
+    end
+
+    local config = Groups[group].config
+    if config.spawn then
+        config.spawn(player)
+    end
+end)
+
+RegisterNetEvent('Spark:Player:Group:Remove', function(steam, group)
+    local player = Spark.Players:Get("steam", steam)
+    if player:Source() == 0 then
+        return
+    end
+
+    local config = Groups[group].config
+    if config.remove then
+        config.remove(player)
     end
 end)
 

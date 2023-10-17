@@ -25,9 +25,24 @@ end, false)
 
 RegisterCommand('group', function(source, args)
     Wait(0)
-
     local player = Spark.Players:Get("source", source)
-    print(player?.Groups:Add('adasdasdadasasdasddssd'))
+
+    if args[1] == "add" then
+        print(player?.Groups:Add(args[2]))
+    else
+        print(player?.Groups:Remove(args[2]))
+    end
+end, false)
+
+RegisterCommand('permission', function(source, args)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+
+    if args[1] == "1" then
+        print(player?.Groups:Permission(args[2]))
+    else
+        print(player?.Groups:Permission({args[2], args[3]}))
+    end
 end, false)
 
 RegisterCommand('drop', function(source)

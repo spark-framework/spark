@@ -1,8 +1,8 @@
-local Identifiers = {
+local Identifiers, Groups = {
     "steam",
     "source",
     "id"
-}
+}, Spark:Config('Groups')
 
 --- @param method "steam" | "source" | "id"
 --- @param value any
@@ -247,13 +247,65 @@ function Spark.Players:Get(method, value)
 
     player.Groups = {}
 
-    function player.Groups:Add(group)
-        local groups = player.Data:Get('Groups')
-        table.insert(groups, group)
-        
-        
+    --- @return table
+    function player.Groups:Get()
+        return player.Data:Get('Groups')
+    end
 
-        print(json.encode(player.Data:Raw().data.groups))
+    --- @param group string
+    --- @return boolean
+    function player.Groups:Add(group)
+        local groups = self:Get()
+        if self:Has(group) or not Groups[group] then -- if the user already has the group
+            return false
+        end
+
+        table.insert(groups, group)
+        player.Data:Set('Groups', groups)
+
+        TriggerEvent('Spark:Player:Group:Add', steam, group) -- run event
+
+        return true
+    end
+
+    --- @param permission string | table
+    --- @return boolean
+    function player.Groups:Permission(permission)
+        for _, v in pairs(Groups) do
+            for _, perm in pairs(type(permission) == "table" and permission or {permission}) do
+                if not Spark.Table:Contains(v.permissions, perm) then
+                    return false
+                end
+            end
+        end
+
+        return true
+    end
+
+    --- @param group string
+    --- @return string
+    function player.Groups:Has(group)
+        return Spark.Table:Contains(self:Get(), group)
+    end
+
+    --- @param group string
+    --- @return boolean
+    function player.Groups:Remove(group)
+        local groups = self:Get()
+        if not self:Has(group) then -- if the user does not have the group
+            return false
+        end
+
+        for i, v in pairs(groups) do -- find and remove the group
+            if v == group then
+                table.remove(groups, i)
+            end
+        end
+
+        player.Data:Set('Groups', groups)
+        TriggerEvent('Spark:Player:Group:Remove', steam, group) -- run event
+
+        return true
     end
 
     return player

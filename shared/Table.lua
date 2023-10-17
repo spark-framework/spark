@@ -2,11 +2,11 @@ Spark.Table = {}
 
 --- @param table table
 --- @param value any
---- @return boolean
+--- @return boolean | any
 function Spark.Table:Contains(table, value)
     for _, v in pairs(table) do
         if v == value then
-            return true
+            return v
         end
     end
 
