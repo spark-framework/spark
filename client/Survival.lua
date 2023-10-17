@@ -2,7 +2,7 @@ local Config = Spark:Config('Survival')
 Spark.Survival = {
     Dead = false,
     Left = 0,
-    Token = false
+    Token = false -- respawn token
 }
 
 --- Revive command (debugging)
@@ -69,7 +69,7 @@ end
 CreateThread(function() -- timer clicking down
     while true do
         Wait(1000)
-        
+
         if Spark.Survival.Left > 0 and Spark.Survival.Dead then
             Spark.Survival.Left = Spark.Survival.Left - 1 -- remove 1 second
         end
