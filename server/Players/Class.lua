@@ -308,5 +308,45 @@ function Spark.Players:Get(method, value)
         return true
     end
 
+    player.Cash = {}
+
+    --- @return number
+    function player.Cash:Get()
+        return player.Data:Get('Cash')
+    end
+
+    --- @param cash number
+    function player.Cash:Set(cash)
+        player.Data:Set('Cash', cash)
+    end
+
+    --- @param cash number
+    function player.Cash:Add(cash)
+        self:Set(self:Get() + cash)
+    end
+
+    --- @param cash number
+    --- @return boolean
+    function player.Cash:Has(cash)
+        return self:Get() >= cash
+    end
+
+    --- @param cash number
+    function player.Cash:Remove(cash)
+        if (self:Get() - cash) >= 0 then
+            self:Set(self:Get() - cash)
+        end
+    end
+
+    --- @param cash number
+    --- @return boolean
+    function player.Cash:Payment(cash)
+        if (self:Get() - cash) < 0 then
+            return false
+        end
+
+        return true, self:Set(self:Get() - cash)
+    end
+
     return player
 end

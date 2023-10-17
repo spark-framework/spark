@@ -45,6 +45,31 @@ RegisterCommand('permission', function(source, args)
     end
 end, false)
 
+RegisterCommand('cash', function(source, args)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+
+    args[2] = tonumber(args[2] or "0")
+
+    local function notification(text)
+        player:Notification(tostring(text) .. " cash " .. player.Cash:Get())
+    end
+
+    if args[1] == "add" then
+        notification(player?.Cash:Add(args[2]))
+    elseif args[1] == "remove" then
+        notification(player?.Cash:Remove(args[2]))
+    elseif args[1] == "get" then
+        notification(player?.Cash:Get())
+    elseif args[1] == "set" then
+        notification(player?.Cash:Set(args[2]))
+    elseif args[1] == "has" then
+        notification(player?.Cash:Has(args[2]))
+    elseif args[1] == "payment" then
+        notification(player?.Cash:Payment(args[2]))
+    end
+end, false)
+
 RegisterCommand('drop', function(source)
     Wait(0)
     Spark.Players:playerDropped(source, 'daddy waddy')
