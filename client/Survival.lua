@@ -76,6 +76,13 @@ CreateThread(function() -- timer clicking down
     end
 end)
 
+CreateThread(function() -- disable health regen
+    while true do
+        Wait(100)
+        SetPlayerHealthRechargeMultiplier(PlayerId(), 0)
+    end
+end)
+
 CreateThread(function()
     while true do
         Wait(0)
