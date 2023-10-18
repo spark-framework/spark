@@ -54,52 +54,47 @@ Spark.Player.Customization = {}
 --- @param custom table
 function Spark.Player.Customization:Set(custom)
     local ped = PlayerPedId()
-    local hash = nil
-
-    if custom.modelhash ~= nil then
-        hash = custom.modelhash
-    elseif custom.model ~= nil then
-        hash = GetHashKey(custom.model)
+    local hash = custom.hash ~= nil and custom.hash
+    if not hash then
+        return
     end
 
-    if hash ~= nil then
-        local i = 0
-        while not HasModelLoaded(hash) and i < 10000 do
-            RequestModel(hash)
-            Wait(10)
-        end
-
-        if HasModelLoaded(hash) then
-            SetPlayerModel(PlayerId(), hash)
-            SetModelAsNoLongerNeeded(hash)
-        end
+    while not HasModelLoaded(hash) do
+        RequestModel(hash)
+        Wait(10)
     end
 
-    ped = PlayerPedId()
-    for k,v in pairs(custom) do
-        if k ~= "model" and k ~= "modelhash" then
-            local isprop, index = self:Parse(k)
-            if isprop then
-                if v[1] < 0 then
-                    ClearPedProp(ped, index)
-                else
-                    SetPedPropIndex(ped, index, v[1], v[2], true)
-                end
+    if HasModelLoaded(hash) then -- update player model
+        SetPlayerModel(PlayerId(), hash)
+        SetModelAsNoLongerNeeded(hash)
+    end
+
+    ped = PlayerPedId() -- player is now new ped
+
+    for k, v in pairs(custom.data) do
+        local isprop, index = self:Parse(k)
+        if isprop then
+            if v[1] < 0 then
+                ClearPedProp(ped, index)
             else
-                SetPedComponentVariation(ped, index, v[1], v[2], v[3] or 2)
+                SetPedPropIndex(ped, index, v[1], v[2], true)
             end
+        else
+            SetPedComponentVariation(ped, index, v[1], v[2], v[3] or 2)
         end
     end
 end
 
 --- @return table
 function Spark.Player.Customization:Get()
-    local ped = GetPlayerPed(-1)
-    local custom = {}
-    custom.modelhash = GetEntityModel(ped)
+    local ped = PlayerPedId()
+    local custom = {
+        hash = GetEntityModel(ped),
+        data = {}
+    }
 
     for i = 0, 20 do
-        custom[i] = {
+        custom.data[i] = {
             GetPedDrawableVariation(ped, i),
             GetPedTextureVariation(ped, i),
             GetPedPaletteVariation(ped, i)
@@ -107,7 +102,7 @@ function Spark.Player.Customization:Get()
     end
 
     for i = 0, 10 do
-        custom["p"..i] = {
+        custom.data["p"..i] = {
             GetPedPropIndex(ped, i),
             math.max(GetPedPropTextureIndex(ped, i), 0)
         }
@@ -174,7 +169,7 @@ function Spark.Player.Weapons:Get()
             local weapon = {}
             weapons[v] = weapon
 
-            local type = Citizen.InvokeNative(0x7FEAD38B326B9F74, player, hash)
+            local type = GetPedAmmoTypeFromWeapon(player, hash)
             if ammo[type] == nil then
                 ammo[type] = true
                 weapon.ammo = GetAmmoInPedWeapon(player,hash)
@@ -241,28 +236,6 @@ end
 --- @return number
 function Spark.Player.Heading:Get()
     return GetEntityHeading(PlayerPedId())
-end
-
-local Keys = {
-    ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
-    ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
-    ["TAB"] = 37, ["Q"] = 44, ["W"] = 32, ["E"] = 38, ["R"] = 45, ["T"] = 245, ["Y"] = 246, ["U"] = 303, ["P"] = 199, ["["] = 39, ["]"] = 40, ["ENTER"] = 18,
-    ["CAPS"] = 137, ["A"] = 34, ["S"] = 8, ["D"] = 9, ["F"] = 23, ["G"] = 47, ["H"] = 74, ["K"] = 311, ["L"] = 182,
-    ["LEFTSHIFT"] = 21, ["Z"] = 20, ["X"] = 73, ["C"] = 26, ["V"] = 0, ["B"] = 29, ["N"] = 249, ["M"] = 244, [","] = 82, ["."] = 81,
-    ["LEFTCTRL"] = 36, ["LEFTALT"] = 19, ["SPACE"] = 22, ["RIGHTCTRL"] = 70,
-    ["HOME"] = 213, ["PAGEUP"] = 10, ["PAGEDOWN"] = 11, ["DELETE"] = 178,
-    ["LEFT"] = 174, ["RIGHT"] = 175, ["TOP"] = 27, ["DOWN"] = 173,
-    ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
-}
-
---- @param key string | number
---- @return boolean
-function Spark.Player:Key(key)
-    if not tonumber(key) then
-        key = Keys[key]
-    end
-
-    return IsControlJustPressed(0, key)
 end
 
 --- @param text string
