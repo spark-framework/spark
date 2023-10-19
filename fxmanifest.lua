@@ -1,4 +1,6 @@
-
+-- ############### --
+--     FX INFO     --
+-- ############### --
 fx_version  'cerulean'
 game        'gta5'
 lua54       'yes'
@@ -12,6 +14,20 @@ description 'FiveM framework based on Lua'
 
 dependency  '/onesync'
 
+-- ############### --
+--       NUI       --
+-- ############### --
+ui_page 'html/index.html'
+
+files {
+    'html/index.html',
+    'html/css/index.css',
+    'html/js/index.js'
+}
+
+-- ############### --
+--     SCRIPTS     --
+-- ############### --
 shared_scripts {
     'shared/Spark.lua',
     'shared/String.lua',
@@ -21,7 +37,7 @@ shared_scripts {
 }
 
 client_scripts {
-    'cfg/Weapons.lua', -- what configs the client have access to
+    'cfg/Weapons.lua',
     'cfg/Survival.lua',
     'cfg/Components.lua',
 
@@ -29,11 +45,12 @@ client_scripts {
     'client/Callback.lua',
     'client/Ped.lua',
 
-    'client/Prompt.lua',
-
     'client/Player.lua',
     'client/Player/State.lua',
     'client/Survival.lua',
+    
+    'client/Prompt.lua',
+    'client/Menu.lua',
 
     'client/Map/*.lua'
 }
