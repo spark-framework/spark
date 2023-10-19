@@ -1,7 +1,7 @@
 CreateThread(function ()
     local Loaded = false
     SetTimeout(2000, function()
-        if not Loaded then
+        if not Loaded then -- If the database driver has not loaded
             print('Cannot seem to connect to database driver?')
         end
     end)
