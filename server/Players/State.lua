@@ -14,8 +14,13 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
 
         player.Customization:Set(player.Data:Get('Customization')) -- set the player's skin
         player.Weapons:Set(player.Data:Get('Weapons')) -- set the player's weapon
+        --player.Weapons.Attachments:Set(player.Data:Get('Attachments'))
 
         player.Health:Set(player.Data:Get('Health')) -- set the player's health
+
+        for _, v in pairs(player.Data:Get('Groups')) do
+            TriggerEvent('Spark:Player:Group:Add', player:Steam(), v)
+        end
 
         CreateThread(function() -- save weapons
             while true do
@@ -27,7 +32,8 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
 
                 player.Data:Set('Customization', data.customization)
                 player.Data:Set('Weapons', data.weapons)
-
+                
+                --player.Data:Set('Attachments', data.attachments)
                 Wait(5 * 1000) -- 5 seconds
             end
         end)
@@ -40,6 +46,7 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
 
         player.Weapons:Set({})
         player.Data:Set('Weapons', {})
+        player.Data:Set('Attachments', {})
     end
 end)
 

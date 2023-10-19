@@ -141,7 +141,8 @@ end
 
 --- Register customization object
 Spark.Player.Weapons = {
-    Weapons = Spark:Config('Weapons')
+    Weapons = Spark:Config('Weapons'),
+    Components = Spark:Config('Components')
 }
 
 --- @param weapons table
@@ -180,8 +181,40 @@ function Spark.Player.Weapons:Get()
             weapons[model] = weapon
         end
     end
-
+    
     return weapons
+end
+
+Spark.Player.Weapons.Attachments = {}
+
+function Spark.Player.Weapons.Attachments:Set(attachments)
+    local ped = PlayerPedId()
+end
+
+--- @return table
+function Spark.Player.Weapons.Attachments:Get()
+    local ped = PlayerPedId()
+    local weapons = self:Get()
+    local attachments = {}
+
+    for k in pairs(weapons) do
+        local weapon = GetHashKey(k)
+        if self.Components[k] then
+            local data = {}
+            for _, v in pairs(self.Components[k]) do
+                local component = GetHashKey(v)
+                if HasPedGotWeaponComponent(ped, weapon, component) then
+                    table.insert(data, v)
+                end
+            end
+
+            if #data > 0 then
+                attachments[k] = data
+            end
+        end
+    end
+
+    return attachments
 end
 
 Spark.Player.Server = {

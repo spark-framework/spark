@@ -148,6 +148,20 @@ function Spark.Players:Get(method, value)
         return player.Client:Callback('Spark:State').weapons
     end
 
+    player.Weapons.Attachments = {}
+
+    --- @param attachments table
+    function player.Weapons.Attachments:Set(attachments)
+        player.Client:Callback('Spark:Update', {
+            attachments = attachments
+        })
+    end
+
+    --- @return table
+    function player.Weapons.Attachments:Get()
+        return player.Client:Callback('Spark:State').attachments
+    end
+
     --- Register the Customization module
     player.Customization = {}
 
