@@ -1,18 +1,35 @@
-Spark.Area = { Id = 0 }
-
 local Areas = {}
 
---- @param coords vector3
+--- @param position vector3
 --- @param radius number
 --- @param height number
 --- @param enter fun()
 --- @param leave fun()
---- @return number
-function Spark.Area:Add(coords, radius, height, enter, leave)
-    local id = self.Id + 1
-    self.Id = id
+function Spark:Area(position, radius, height, enter, leave)
+    local area = {}
+    local id = Spark.Table:Entries(Areas)
 
-    local resource = GetInvokingResource()
+    --- @param coords vector3
+    ---@ return boolean
+    function area:Coords(coords)
+        return (
+            #(coords - position) <= radius and
+            math.abs(coords.z - position.z) <= height
+        )
+    end
+
+    --- @return boolean
+    function area:Player()
+        return self:Coords(Spark.Player.Position:Get())
+    end
+
+    --- @param entity number
+    --- @return boolean
+    function area:Entity(entity)
+        return self:Coords(GetEntityCoords(entity))
+    end
+
+    local resource = GetInvokingResource() -- remove area when invocking resource restarts
     AddEventHandler('onResourceStop', function(name)
         if resource == name then
             Areas[id] = nil
@@ -20,38 +37,28 @@ function Spark.Area:Add(coords, radius, height, enter, leave)
     end)
 
     Areas[id] = {
-        coords = coords,
-        radius = radius,
-        height = height,
-        enter = enter or function () end,
-        leave = leave or function () end
+        enter = enter,
+        leave = leave,
+        area = area
     }
 
-    return id
+    return area
 end
 
---- @param area number
-function Spark.Area:Remove(area)
-    Areas[area] = nil
-end
-
-CreateThread(function() -- Displays all areas
+CreateThread(function()
     while true do
-        Wait(250)
+        Wait(300)
 
-        for id, v in pairs(Areas) do
-            local isIn = (
-                Spark.Player.Position:Distance(v.coords) <= v.radius and
-                math.abs(Spark.Player.Position:Get().z - v.z) <= v.height
-            )
+        for _, data in pairs(Areas) do
+            local success = data.area:Player()
 
-            if v.in_area and not isIn then
-                v.leave(id)
-            elseif not v.in_area and isIn then
-                v.enter(id)
+            if data.in_area and not success and data.leave then
+                data.leave()
+            elseif not data.in_area and success and data.enter then
+                data.enter()
             end
 
-            v.in_area = isIn
+            data.in_area = success
         end
     end
 end)

@@ -18,10 +18,10 @@ function Spark.Survival:Start() -- start the death timer
     StartScreenEffect(Config.Effect, 0, false) -- start the death screen effect
 
     CreateThread(function()
+        Spark.Player:Invincible(true)
         while Spark.Survival.Left > 0 and Spark.Survival.Dead do -- while the player is death and the time is over 0
             Wait(5)
             Spark.Player:DrawText2Ds("You can respawn in ~r~".. Spark.Survival.Left .."~w~ seconds")
-            Spark.Player:Invincible(true)
         end
 
         if not Spark.Survival.Token then
@@ -85,7 +85,7 @@ end)
 
 CreateThread(function()
     while true do
-        Wait(0)
+        Wait(100)
         if NetworkIsPlayerActive(PlayerId()) then -- is player active
             if not IsPedFatallyInjured(PlayerPedId()) and Spark.Survival.Left == 0 then
                 Spark.Survival.Dead = false -- set that the user is not dead

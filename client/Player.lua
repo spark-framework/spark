@@ -277,3 +277,23 @@ function Spark.Player:Notification(text)
     SetNotificationTextEntry("NOTIFICATION")
     DrawNotification(true, false)
 end
+
+local Keybinds = 0
+
+--- @param name string
+--- @param key string
+--- @param callback fun()
+function Spark.Player:Keybind(name, key, callback)
+    local id = Keybinds + 1
+    local command = '+' .. (GetInvokingResource() or GetCurrentResourceName()) .. tostring(id)
+    Keybinds = id
+
+    RegisterCommand(command, function()
+        callback()
+    end, false)
+
+    RegisterKeyMapping(command, name, 'keyboard', key)
+    SetTimeout(500, function ()
+        TriggerEvent('chat:removeSuggestion', '/+' .. command)
+    end)
+end

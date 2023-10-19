@@ -6,7 +6,7 @@ Spark.String = {
 }
 
 --- @param length number
---- @param symbols boolean
+--- @param symbols boolean?
 --- @return string
 function Spark.String:Generate(length, symbols)
     local result = ''

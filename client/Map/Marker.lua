@@ -42,7 +42,7 @@ end
 
 CreateThread(function() -- draw markers (high ms)
     while true do
-        Wait(0)
+        Wait(1)
 
         for _, v in pairs(Markers) do
             if Spark.Player.Position:Distance(v.coords) <= v.distance then
