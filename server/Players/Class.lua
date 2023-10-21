@@ -4,6 +4,8 @@ local Identifiers, Groups = {
     "id"
 }, Spark:Config('Groups')
 
+local CallbackId, MenuId, KeybindId = 0, 0, 0
+
 --- @param method "steam" | "source" | "id"
 --- @param value any
 function Spark.Players:Get(method, value)
@@ -112,9 +114,7 @@ function Spark.Players:Get(method, value)
     end
 
     --- Register the Client module
-    player.Client = {
-        CurrentId = 0
-    }
+    player.Client = {}
 
     --- @param name string
     function player.Client:Event(name, ...)
@@ -125,11 +125,14 @@ function Spark.Players:Get(method, value)
     --- @return any
     function player.Client:Callback(name, ...)
         local promise = promise.new()
-        local id = self.CurrentId + 1
-        self.CurrentId = id
+        local id = CallbackId + 1
+        CallbackId = id
 
         RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name .. ':' .. id, function(response)
-            promise:resolve(response)
+            local source = source
+            if player:Source() == source then
+                promise:resolve(response)
+            end
         end)
 
         self:Event('Spark:Callbacks:Client:Run:' .. name, id, ...)
@@ -364,6 +367,47 @@ function Spark.Players:Get(method, value)
         end
 
         return true, self:Set(self:Get() - cash)
+    end
+
+    player.Menu = {}
+
+    --- @param title string
+    --- @param color string
+    --- @param data table
+    --- @param callback fun(button: string)
+    function player.Menu:Show(title, color, data, callback)
+        local id = MenuId + 1
+        MenuId = id
+
+        RegisterNetEvent('Spark:Menu:' .. id, function(button)
+            local source = source
+            if player:Source() == source then
+                callback(button)
+            end
+        end)
+
+        player.Client:Callback('Spark:Menu:Show', title, color, data, id)
+    end
+
+    function player.Menu:Close()
+        player.Client:Callback('Spark:Menu:Close')
+    end
+
+    --- @param name string
+    --- @param key string
+    --- @param callback fun()
+    function player:Keybind(name, key, callback)
+        local id = KeybindId + 1
+        KeybindId = id
+
+        RegisterNetEvent('Spark:Keybind:' .. id, function()
+            local source = source
+            if player:Source() == source then
+                callback()
+            end
+        end)
+
+        player.Client:Event('Spark:Keybind', name, key, id)
     end
 
     return player

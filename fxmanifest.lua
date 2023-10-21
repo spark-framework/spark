@@ -70,5 +70,6 @@ server_scripts {
     'server/Players/Class.lua',
 
     'server/Players/Commands.lua',
-    'server/Players/State.lua'
+    'server/Players/State.lua',
+    'server/Players/Menu.lua'
 }

@@ -9,7 +9,7 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
     local coords = player.Data:Get('Coords')
 
     if first then
-        player:Notification('Welcome to the server! Use F9 to get started')
+        player:Notification('Welcome to the server! Use F9 to open the main menu')
         player.Position:Set(coords)
 
         player.Customization:Set(player.Data:Get('Customization')) -- set the player's skin

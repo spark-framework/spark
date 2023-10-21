@@ -288,12 +288,18 @@ function Spark.Player:Keybind(name, key, callback)
     local command = '+' .. (GetInvokingResource() or GetCurrentResourceName()) .. tostring(id)
     Keybinds = id
 
-    RegisterCommand(command, function()
-        callback()
-    end, false)
+    RegisterCommand(command, callback, false)
 
     RegisterKeyMapping(command, name, 'keyboard', key)
     SetTimeout(500, function ()
         TriggerEvent('chat:removeSuggestion', '/+' .. command)
+    end)
+end
+
+if GetCurrentResourceName() == "spark" then
+    RegisterNetEvent('Spark:Keybind', function(name, key, id)
+        Spark.Player:Keybind(name, key, function()
+            TriggerServerEvent('Spark:Keybind:' .. id)
+        end)
     end)
 end

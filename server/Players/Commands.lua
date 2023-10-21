@@ -75,6 +75,22 @@ RegisterCommand('drop', function(source)
     Spark.Players:playerDropped(source, 'daddy waddy')
 end, false)
 
+RegisterCommand('openmenu', function(source, args, raw)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+    player.Menu:Show('hello', 'rgb(39, 78, 223)', {
+        "Hello"
+    }, function(button)
+        print(button)
+    end)
+end, false)
+
+RegisterCommand('closemenu', function(source, args, raw)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+    player.Menu:Close()
+end, false)
+
 CreateThread(function()
     Wait(2000)
     for _, source in pairs(GetPlayers()) do

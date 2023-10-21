@@ -16,7 +16,7 @@ end
 --- @param title string
 --- @param color string
 --- @param data table
---- @param callback fun()
+--- @param callback fun(button:  string)
 function Spark.Menu:Show(title, color, data, callback)
     Open, Index, Data = true, 1, data
     Color, Callback = color, callback
@@ -77,4 +77,14 @@ Spark.Player:Keybind('Move Down', 'DOWN', function()
             and 1 or Index + 1
         Spark.Menu:Update()
     end
+end)
+
+Spark:Callback('Spark:Menu:Show', function(title, color, data, id)
+    Spark.Menu:Show(title, color, data, function(button)
+        TriggerServerEvent('Spark:Menu:' .. id, button)
+    end)
+end)
+
+Spark:Callback('Spark:Menu:Close', function()
+    Spark.Menu:Close()
 end)
