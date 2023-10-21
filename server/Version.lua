@@ -1,6 +1,5 @@
 Spark.Version = {
-    URL = "https://pastebin.com/raw/JuV2wzZ6",
-    Loaded = promise.new()
+    URL = "https://pastebin.com/raw/JuV2wzZ6"
 }
 
 --- @return number?
@@ -15,9 +14,3 @@ function Spark.Version:Newest()
         return tonumber(text)
     end
 end
-
-print(Spark.Version:Get() == Spark.Version:Newest()
-    and "Spark is up-to-date"
-    or "Spark is out-of-date. Please download the newest version")
-
-Spark.Version.Loaded:resolve()

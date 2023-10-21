@@ -4,12 +4,12 @@ window.addEventListener('message', event => {
     if (item.type !== "menu") return
 
     if (item.action === "open") {
-        $('.menu').css({
+        $('.menu').css({ // make menu visible
             display: "flex"
         })
 
-        $('.title').text(data.title)
-        $('.header').css({
+        $('.title').text(data.title) // update title on menu
+        $('.header').css({ // update background color on header
             "background-color": data.color
         })
 
@@ -20,16 +20,16 @@ window.addEventListener('message', event => {
             index += 1
 
             $(`<div id="${index.toString()}" class="button">${element}</div>`)
-                .appendTo('.buttons')
+                .appendTo('.buttons') // Add buttons to menu
         })
 
-        $(`.menu .button:first-child`).css({
+        $(`.menu .button:first-child`).css({ // make the first button primary
             "color": 'black',
             'background-color': 'white'
         })
     }
 
-    if (item.action === "close") {
+    if (item.action === "close") { // close menu
         $('.menu').css({
             display: 'none'
         })
@@ -37,14 +37,14 @@ window.addEventListener('message', event => {
 
     if (item.action === "update") {
         $('.buttons .button').each(function(index, element) {
-            $(element).css({
+            $(element).css({ // reset all buttons
                 "color": '#ffffff',
                 "background-color": "transparent",
                 "margin-top": '7px',
             })
         })
 
-        $('.buttons #' + data.index.toString()).css({
+        $('.buttons #' + data.index.toString()).css({ // make button primary
             "color": 'black',
             'background-color': 'white',
         })

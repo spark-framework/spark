@@ -2,15 +2,8 @@ Spark.Players = {
     Players = {},
     Raw = {},
 
-    Default = Spark:Config('Player')
+    Default = Spark:Config('Player') -- default user data
 }
-
-Spark.Driver:Ready(function()
-    Citizen.Await(Spark.Version.Loaded) -- Wait for the version to be printed
-
-    local users = Spark.Driver:Query('SELECT * FROM users')
-    print("Loaded " .. #users .. " user(s)!")
-end)
 
 --- @param source number?
 --- @param def table

@@ -8,7 +8,7 @@ local Identifiers, Groups = {
 --- @param value any
 function Spark.Players:Get(method, value)
     if not Spark.Table:Contains(Identifiers, method) then
-        return print("method not found")
+        return error("Method " .. method .. " is invalid!")
     end
 
     local steam, id = value, nil
@@ -44,18 +44,21 @@ function Spark.Players:Get(method, value)
 
     --- @param key string
     --- @param value any
+    --- @return boolean
     function player.Data:Set(key, value)
         if player.Is:Online() then
             self:Raw().data[key] = value
         else
             local user = Spark.Players.Raw:Data(steam)
             if not user then
-                return print("user not found")
+                return false
             end
 
             user[key] = value
             Spark.Players.Raw:Dump(steam, user)
         end
+
+        return true
     end
 
     --- @param key string
@@ -65,9 +68,9 @@ function Spark.Players:Get(method, value)
             return Spark.Table:Clone(self:Raw().data)[key]
         else
             local user = Spark.Players.Raw:Data(steam)
-            
+
             if not user then
-                return print("user not found")
+                return
             end
 
             return user[key]
@@ -218,7 +221,8 @@ function Spark.Players:Get(method, value)
     --- @return boolean
     function player.Ban:Set(value, reason)
         if not value then
-            return true, player.Data:Set('Banned', nil)
+            player.Data:Set('Banned', nil)
+            return true
         end
 
         player.Data:Set('Banned', reason)

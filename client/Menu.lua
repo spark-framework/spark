@@ -3,14 +3,20 @@ local Open, Index, Data, Color, Callback = false, 1, {}, '', nil
 
 Spark.Menu = {}
 
+--- @return boolean
 function Spark.Menu:Open()
     return Open
 end
 
+--- @return string
 function Spark.Menu:Current()
     return Data[Index]
 end
 
+--- @param title string
+--- @param color string
+--- @param data table
+--- @param callback fun()
 function Spark.Menu:Show(title, color, data, callback)
     Open, Index, Data = true, 1, data
     Color, Callback = color, callback
@@ -27,7 +33,6 @@ function Spark.Menu:Show(title, color, data, callback)
 end
 
 function Spark.Menu:Close()
-    print("CLOSE?")
     Open, Callback = false, nil
     return SendNUIMessage({
         type = "menu",
@@ -35,7 +40,7 @@ function Spark.Menu:Close()
     })
 end
 
-function Spark.Menu:Update()
+function Spark.Menu:Update() -- update key index in NUI
     return SendNUIMessage({
         type = "menu",
         action = "update",
