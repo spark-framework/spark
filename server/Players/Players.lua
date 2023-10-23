@@ -34,7 +34,7 @@ function Spark.Players:playerConnecting(source, def)
     --print("Data: " .. data.data)
 
     -- Give scripts a way to reject users
-    TriggerEvent('Spark:Connect', Spark.Players:Get("steam", steam), def)
+    TriggerEvent('Spark:Connect', steam, def)
     Wait(0)
 
     def.done()

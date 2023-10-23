@@ -71,16 +71,15 @@ function Spark.Player.Customization:Set(custom)
 
     ped = PlayerPedId() -- player is now new ped
 
-    for k, v in pairs(custom.data) do
-        local isprop, index = self:Parse(k)
-        if isprop then
-            if v[1] < 0 then
-                ClearPedProp(ped, index)
-            else
-                SetPedPropIndex(ped, index, v[1], v[2], true)
-            end
+    for k, v in pairs(custom.variations) do
+        SetPedComponentVariation(ped, tonumber(k), v[1], v[2], v[3] or 2)
+    end
+
+    for k, v in pairs(custom.props) do
+        if v[1] < 0 then
+            ClearPedProp(ped, tonumber(k))
         else
-            SetPedComponentVariation(ped, index, v[1], v[2], v[3] or 2)
+            SetPedPropIndex(ped, tonumber(k), v[1], v[2], true)
         end
     end
 end
@@ -90,11 +89,12 @@ function Spark.Player.Customization:Get()
     local ped = PlayerPedId()
     local custom = {
         hash = GetEntityModel(ped),
-        data = {}
+        variations = {},
+        props = {}
     }
 
     for i = 0, 20 do
-        custom.data[i] = {
+        custom.variations[i] = {
             GetPedDrawableVariation(ped, i),
             GetPedTextureVariation(ped, i),
             GetPedPaletteVariation(ped, i)
@@ -102,7 +102,7 @@ function Spark.Player.Customization:Get()
     end
 
     for i = 0, 10 do
-        custom.data["p"..i] = {
+        custom.props[i] = {
             GetPedPropIndex(ped, i),
             math.max(GetPedPropTextureIndex(ped, i), 0)
         }
@@ -111,16 +111,6 @@ function Spark.Player.Customization:Get()
     return custom
 end
 
---- @return boolean, number?
-function Spark.Player.Customization:Parse(key)
-    if type(key) == "string" and string.sub(key,1,1) == "p" then
-        return true, tonumber(string.sub(key,2))
-    else
-        return false, tonumber(key)
-    end
-end
-
---- Register position object
 Spark.Player.Position = {}
 
 --- @return vector3
@@ -139,7 +129,6 @@ function Spark.Player.Position:Set(coords)
     return SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z, false, false, false, false)
 end
 
---- Register customization object
 Spark.Player.Weapons = {
     Weapons = Spark:Config('Weapons'),
     Components = Spark:Config('Components')
@@ -233,7 +222,10 @@ function Spark.Player.Server:Callback(name, ...)
     local id = self.CurrentId + 1
     self.CurrentId = id
 
-    RegisterNetEvent('Spark:Callbacks:Client:Response:'.. name .. ':' .. id, function(response)
+    RegisterNetEvent(('Spark:Callbacks:Client:Response:%s+%s'):format(
+        name,
+        GetPlayerServerId(PlayerId())
+    ), function(response)
         promise:resolve(response)
     end)
 

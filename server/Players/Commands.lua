@@ -91,6 +91,12 @@ RegisterCommand('closemenu', function(source, args, raw)
     player.Menu:Close()
 end, false)
 
+RegisterCommand('ban', function(source, args, raw)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+    player.Ban:Set(true, 'Welp')
+end, false)
+
 CreateThread(function()
     Wait(2000)
     for _, source in pairs(GetPlayers()) do

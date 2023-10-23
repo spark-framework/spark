@@ -36,7 +36,6 @@ function Spark.Players:Get(method, value)
 
     local player = {}
 
-    --- Register the Data module
     player.Data = {}
 
     --- @return table
@@ -98,7 +97,6 @@ function Spark.Players:Get(method, value)
         return GetPlayerPed(self:Source() or 0)
     end
 
-    --- Register the Is module
     player.Is = {}
 
     --- @return boolean
@@ -110,10 +108,9 @@ function Spark.Players:Get(method, value)
     --- @param reason string
     function player:Kick(reason)
         reason = reason or ''
-        DropPlayer(self.Get:Source(), reason)
+        DropPlayer(self:Source(), reason)
     end
 
-    --- Register the Client module
     player.Client = {}
 
     --- @param name string
@@ -139,7 +136,6 @@ function Spark.Players:Get(method, value)
         return Citizen.Await(promise)
     end
 
-    --- Register the Weapons module
     player.Weapons = {}
 
     --- @param weapons table
@@ -168,7 +164,6 @@ function Spark.Players:Get(method, value)
         return player.Client:Callback('Spark:State').attachments
     end
 
-    --- Register the Customization module
     player.Customization = {}
 
     --- @param customization table
@@ -183,7 +178,6 @@ function Spark.Players:Get(method, value)
         return player.Client:Callback('Spark:State').customization
     end
 
-    --- Register the Health module
     player.Health = {}
 
     --- @param health number
@@ -203,7 +197,6 @@ function Spark.Players:Get(method, value)
         return GetEntityHealth(player:Ped())
     end
 
-    --- Register the Position module
     player.Position = {}
 
     --- @param coords vector3
@@ -216,7 +209,6 @@ function Spark.Players:Get(method, value)
         return GetEntityCoords(player:Ped())
     end
 
-    --- Register the Ban module
     player.Ban = {}
 
     --- @param value boolean
@@ -228,9 +220,9 @@ function Spark.Players:Get(method, value)
             return true
         end
 
-        player.Data:Set('Banned', reason)
+        player.Data:Set('Banned', reason or '')
         if player.Is:Online() then
-            player:Kick('[Banned] ' .. reason)
+            player:Kick('[Banned] ' .. (reason or ''))
         end
 
         return true
@@ -246,7 +238,6 @@ function Spark.Players:Get(method, value)
         return player.Data:Get('Banned') ~= nil
     end
 
-    --- Register the Whitelist module
     player.Whitelist = {}
 
     --- @param value boolean

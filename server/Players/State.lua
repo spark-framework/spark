@@ -1,4 +1,20 @@
 local Groups = Spark:Config('Groups')
+local Server = Spark:Config('Server')
+
+RegisterNetEvent('Spark:Connect', function(steam, def)
+    local player = Spark.Players:Get("steam", steam)
+    if player:Source() == 0 then
+        return
+    end
+
+    if player.Ban:Is() then
+        return def.done('You are banned!')
+    end
+
+    if not player.Whitelist:Is() and Server.Whitelisted then
+        return def.done('You are not whitelisted!')
+    end
+end)
 
 RegisterNetEvent('Spark:Spawned', function(steam, first)
     local player = Spark.Players:Get("steam", steam)

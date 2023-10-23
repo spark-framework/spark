@@ -4,7 +4,7 @@ local Player =  {
     Health = 150,
     Cash = 20 * 1000, -- 20 thousand
 
-    Customization = { hash = GetHashKey("mp_m_freemode_01"), data = {} },
+    Customization = { hash = GetHashKey("mp_m_freemode_01"), variations = {}, props = {} },
 
     Identity = {
         First = "Jørgen",
@@ -15,7 +15,7 @@ local Player =  {
 }
 
 for i = 0, 19 do
-    Player.Customization.data[i] = {0, 0}
+    Player.Customization.variations[i] = {0, 0}
 end
 
 return Player
