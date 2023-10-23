@@ -33,11 +33,23 @@ function Spark.Players:playerConnecting(source, def)
     print('Player joined! ID: ' .. data.id .. " Steam: " .. steam .. " Source: " .. source)
     --print("Data: " .. data.data)
 
+    SetTimeout(5000, function()
+        if not self.Players[steam]?.netid then -- User has not been asigned a netid (cancelled or kicked)
+            self.Players[steam] = nil
+        end
+    end)
+
     -- Give scripts a way to reject users
     TriggerEvent('Spark:Connect', steam, def)
     Wait(0)
 
     def.done()
+end
+
+function Spark.Players:playerJoining(source, netid)
+    local steam = Spark.Source:Steam(source)
+
+    self.Players[steam].netid = netid -- update netid
 end
 
 function Spark.Players:playerSpawned(source)
@@ -146,6 +158,11 @@ end
 AddEventHandler('playerConnecting', function(_, __, def)
     local source = source
     Spark.Players:playerConnecting(source, def)
+end)
+
+AddEventHandler('playerJoining', function(old)
+    local source = source
+    Spark.Players:playerJoining(old, source)
 end)
 
 --- Attach the event to the connecting function.
