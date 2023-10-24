@@ -1,20 +1,10 @@
 Spark.Ped = {}
 
---- @class PedOptions 
---- @field delete? boolean
---- @field freeze? boolean
---- @field invincible? boolean
---- @field block? boolean
---- @field ragdoll? boolean
---- @field injured? boolean
---- @field canPlay? boolean
---- @field functions? table[]
-
 --- @param type number
 --- @param model string
 --- @param coords vector3
 --- @param heading number
---- @param options PedOptions | nil
+--- @param options ped | nil
 --- @return number
 function Spark.Ped:Create(type, model, coords, heading, options)
     local hash = GetHashKey(model)

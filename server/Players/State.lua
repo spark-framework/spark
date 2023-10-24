@@ -2,27 +2,21 @@ local Groups = Spark:Config('Groups')
 local Server = Spark:Config('Server')
 local Jobs = Spark:Config('Jobs')
 
-RegisterNetEvent('Spark:Connect', function(steam, def)
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
-    if player.Ban:Is() then
+--- @param player player
+--- @param def defferals
+Spark.Events:Listen('Connecting', function(player, def)
+    if player.Ban:Is() then -- Is user banned
         return def.done('You are banned!')
     end
 
-    if not player.Whitelist:Is() and Server.Whitelisted then
+    if not player.Whitelist:Is() and Server.Whitelisted then -- Is server whitelisted and user is not
         return def.done('You are not whitelisted!')
     end
 end)
 
-RegisterNetEvent('Spark:Spawned', function(steam, first)
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
+--- @param player player
+--- @param first boolean
+Spark.Events:Listen('Spawned', function(player, first)
     local coords = player.Data:Get('Coords')
 
     if first then
@@ -35,12 +29,12 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
 
         player.Health:Set(player.Data:Get('Health')) -- set the player's health
 
-        for _, v in pairs(player.Data:Get('Groups')) do
-            TriggerEvent('Spark:Player:Group:Add', player:Steam(), v)
+        for _, group in pairs(player.Data:Get('Groups')) do
+            Spark.Events:Trigger('AddGroup', player, group)
         end
 
         local job, grade = player.Job:Get()
-        TriggerEvent('Spark:Player:Job', player:Steam(), job, grade, Jobs[job].grades and Jobs[job].grades[grade].name or job)
+        Spark.Events:Trigger('Job', player, job, grade, Jobs[job].grades and Jobs[job].grades[grade].name or job)
 
         CreateThread(function() -- save weapons
             while true do
@@ -95,50 +89,36 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
     end
 end)
 
-RegisterNetEvent('Spark:Player:Job', function(steam, job, grade, name)
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
-    local config = Jobs[job]
-    if config.events.recieved then
-        print(job,grade,name)
-        config.events.recieved(player, grade, name)
+--- @param player player
+--- @param job job
+--- @param lastJob job
+Spark.Events:Listen('SetJob', function(player, job, lastJob)
+    local events = Jobs[job.name].events
+    if events.recieved then
+        events.recieved(player, job)
     end
 end)
 
-RegisterNetEvent('Spark:Player:Group:Add', function(steam, group)
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
-    local config = Groups[group].config
-    if config.spawn then
-        config.spawn(player)
+--- @param player player
+--- @param group string
+Spark.Events:Listen('AddGroup', function(player, group)
+    local events = Groups[group].events
+    if events.spawn then
+        events.spawn(player)
     end
 end)
 
-RegisterNetEvent('Spark:Player:Group:Remove', function(steam, group)
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
-    local config = Groups[group].config
-    if config.remove then
-        config.remove(player)
+--- @param player player
+--- @param group string
+Spark.Events:Listen('RemoveGroup', function(player, group)
+    local events = Groups[group].events
+    if events.remove then
+        events.remove(player)
     end
 end)
 
-
-RegisterNetEvent('Spark:Dropped', function(steam)
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
+--- @param player player
+Spark.Events:Listen('Dropped', function(player)
     local coords = player.Position:Get()
 
     player.Data:Set('Coords', {x = coords.x, y = coords.y, z = coords.z})

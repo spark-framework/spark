@@ -34,6 +34,8 @@ shared_scripts {
     'shared/Table.lua',
     'shared/Files.lua',
     'shared/Config.lua',
+
+    'shared/Events.lua',
 }
 
 client_scripts {
@@ -60,8 +62,6 @@ server_scripts {
     'server/Network.lua',
     'server/Version.lua',
     'server/Driver.lua',
-
-    'server/Events.lua',
 
     'server/Callback.lua',
 

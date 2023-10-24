@@ -34,6 +34,7 @@ function Spark.Players:Get(method, value)
         id, steam = data.id, data.steam
     end
 
+    --- @class player
     local player = {}
 
     player.Data = {}
@@ -59,7 +60,7 @@ function Spark.Players:Get(method, value)
             Spark.Players.Raw:Dump(steam, user)
         end
 
-        TriggerEvent('Spark:Player:Update', steam, key, value)
+        Spark.Events:Trigger('Data', player, key, value)
         return true
     end
 
@@ -276,8 +277,7 @@ function Spark.Players:Get(method, value)
         table.insert(groups, group)
         player.Data:Set('Groups', groups)
 
-        TriggerEvent('Spark:Player:Group:Add', steam, group) -- run event
-
+        Spark.Events:Trigger('AddGroup', player, group)
         return true
     end
 
@@ -316,7 +316,7 @@ function Spark.Players:Get(method, value)
         end
 
         player.Data:Set('Groups', groups)
-        TriggerEvent('Spark:Player:Group:Remove', steam, group) -- run event
+        Spark.Events:Trigger('RemoveGroup', player, group)
 
         return true
     end
@@ -434,7 +434,7 @@ function Spark.Players:Get(method, value)
             time = data.grades and data.grades[grade].time or data.time
         })
 
-        TriggerEvent('Spark:Player:Job', steam, job, grade, data.grades and data.grades[grade].name or job)
+        Spark.Events:Trigger('Job', player, job, grade, data.grades and data.grades[grade].name or job)
 
         return true
     end

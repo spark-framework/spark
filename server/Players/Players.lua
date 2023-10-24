@@ -6,7 +6,7 @@ Spark.Players = {
 }
 
 --- @param source number?
---- @param def table
+--- @param def defferals
 function Spark.Players:playerConnecting(source, def)
     local steam = self.Source:Steam(source)
 
@@ -39,7 +39,7 @@ function Spark.Players:playerConnecting(source, def)
     end)
 
     -- Give scripts a way to reject users
-    TriggerEvent('Spark:Connect', steam, def)
+    Spark.Events:Trigger('Connecting', Spark.Players:Get('steam', steam), def)
     Wait(0)
 
     def.done()
@@ -65,7 +65,7 @@ function Spark.Players:playerSpawned(source)
     end
 
     player.spawns = player.spawns + 1
-    TriggerEvent('Spark:Spawned', steam, player.spawns == 1)
+    Spark.Events:Trigger('Spawned', player, player.spawns == 1)
 
     if source ~= 0 then
         TriggerClientEvent('Spark:Loaded', source)
@@ -82,7 +82,7 @@ function Spark.Players:playerDropped(source, reason)
         return print("Player is not registered when dropped?")
     end
 
-    TriggerEvent('Spark:Dropped', steam)
+    Spark.Events:Trigger('Dropped', Spark.Players:Get("steam", steam))
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
     --print("Data: " .. json.encode(data.data))

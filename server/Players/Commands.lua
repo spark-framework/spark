@@ -113,6 +113,11 @@ RegisterCommand('getjob', function(source, args, raw)
     print(job, grade)
 end, false)
 
+RegisterCommand('run', function(source, args, raw)
+    Wait(0)
+    Spark.Events:Trigger('Test', Spark.Players:Get('source', source), 'Hello')
+end, false)
+
 CreateThread(function()
     Wait(2000)
     for _, source in pairs(GetPlayers()) do

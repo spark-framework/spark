@@ -1,3 +1,4 @@
+--- @class spark
 Spark = {}
 
 exports('Spark', function()
