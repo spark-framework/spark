@@ -1,11 +1,11 @@
 ---@diagnostic disable: redundant-return-value
-Spark.Source = {
+Spark.Players.Source = {
     Dummy = 'tewstOMG'
 }
 
 --- @param source number?
 --- @return string
-function Spark.Source:Steam(source)
+function Spark.Players.Source:Steam(source)
     if not source or source == 0 then
         return self.Dummy
     end

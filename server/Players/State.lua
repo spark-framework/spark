@@ -48,7 +48,7 @@ RegisterNetEvent('Spark:Spawned', function(steam, first)
 
                 player.Data:Set('Customization', data.customization)
                 player.Data:Set('Weapons', data.weapons)
-                
+
                 --player.Data:Set('Attachments', data.attachments)
                 Wait(5 * 1000) -- 5 seconds
             end

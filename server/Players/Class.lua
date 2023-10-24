@@ -1,8 +1,8 @@
-local Identifiers, Groups = {
+local Identifiers, Groups, Jobs = {
     "steam",
     "source",
     "id"
-}, Spark:Config('Groups')
+}, Spark:Config('Groups'), Spark:Config('Jobs')
 
 local CallbackId, MenuId, KeybindId = 0, 0, 0
 
@@ -17,7 +17,7 @@ function Spark.Players:Get(method, value)
     if method == "id" then
         steam, id = self.Raw:Convert(value), value
     elseif method == "source" then
-        steam = Spark.Source:Steam(value)
+        steam = self.Source:Steam(value)
     end
 
     id = id or self.Players[steam]?.id
@@ -399,6 +399,35 @@ function Spark.Players:Get(method, value)
         end)
 
         player.Client:Event('Spark:Keybind', name, key, id)
+    end
+
+    player.Job = {}
+
+    --- @return string, number
+    function player.Job:Get()
+        local data = player.Data:Get('Job')
+        return data.job, data.grade
+    end
+
+    --- @param job string
+    --- @param grade number
+    --- @return boolean
+    function player.Job:Set(job, grade)
+        local data = Jobs[job]
+        if not data then
+            return false
+        end
+
+        if data.grades and not data.grades[grade] then
+            return false
+        end
+
+        player.Data:Set('Job', { -- set job
+            job = job,
+            grade = data.grades and grade or 1
+        })
+
+        return true
     end
 
     return player

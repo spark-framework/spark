@@ -4,14 +4,18 @@ local Player =  {
     Health = 150,
     Cash = 20 * 1000, -- 20 thousand
 
-    Customization = { hash = GetHashKey("mp_m_freemode_01"), variations = {}, props = {} },
+    Customization = { hash = `mp_m_freemode_01`, variations = {}, props = {} },
 
     Identity = {
         First = "Jørgen",
         Last = "Olsen"
     },
 
-    Groups = {}
+    Groups = {},
+    Job = {
+        job = "unemployed",
+        grade = 1
+    }
 }
 
 for i = 0, 19 do

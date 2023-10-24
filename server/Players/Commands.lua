@@ -1,9 +1,11 @@
+-- hardcoded test commands
+
 RegisterCommand('join', function(source)
     Wait(0)
     Spark.Players:playerConnecting(source, {
         defer = function () end,
-        update = function () end,
-        done = function () end
+        update = function (text) end,
+        done = function (text) end
     })
 end, false)
 
@@ -95,6 +97,20 @@ RegisterCommand('ban', function(source, args, raw)
     Wait(0)
     local player = Spark.Players:Get("source", source)
     player.Ban:Set(true, 'Welp')
+end, false)
+
+RegisterCommand('setjob', function(source, args, raw)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+    player.Job:Set(args[1], tonumber(args[2]) or 1)
+end, false)
+
+RegisterCommand('getjob', function(source, args, raw)
+    Wait(0)
+    local player = Spark.Players:Get("source", source)
+    local job, grade = player.Job:Get()
+
+    print(job, grade)
 end, false)
 
 CreateThread(function()

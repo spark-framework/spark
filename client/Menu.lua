@@ -1,5 +1,5 @@
 ---@diagnostic disable: param-type-mismatch
-local Open, Index, Data, Color, Callback = false, 1, {}, '', nil
+local Open, Index, Data, Color, Callback, Close = false, 1, {}, '', nil, nil
 
 Spark.Menu = {}
 
@@ -17,9 +17,10 @@ end
 --- @param color string
 --- @param data table
 --- @param callback fun(button:  string)
-function Spark.Menu:Show(title, color, data, callback)
+--- @param close? fun()
+function Spark.Menu:Show(title, color, data, callback, close)
     Open, Index, Data = true, 1, data
-    Color, Callback = color, callback
+    Color, Callback, Close = color, callback, close
 
     return SendNUIMessage({
         type = "menu",
@@ -53,7 +54,11 @@ end
 
 Spark.Player:Keybind('Close Menu', 'BACK', function()
     if Open then
-        Spark.Menu:Close()
+        if not Close then
+            return Spark.Menu:Close()
+        end
+
+        Close()
     end
 end)
 

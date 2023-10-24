@@ -65,8 +65,8 @@ server_scripts {
 
     'server/Callback.lua',
 
-    'server/Players/Source.lua',
     'server/Players/Players.lua',
+    'server/Players/Source.lua',
     'server/Players/Class.lua',
 
     'server/Players/Commands.lua',

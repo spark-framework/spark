@@ -8,12 +8,11 @@ Spark.Players = {
 --- @param source number?
 --- @param def table
 function Spark.Players:playerConnecting(source, def)
-    local steam = Spark.Source:Steam(source)
+    local steam = self.Source:Steam(source)
 
     def.defer()
     Wait(0)
 
-    -- Check if the steam identifier is valid
     if not steam then
         return def.done('Cannot find your steam')
     end
@@ -34,7 +33,7 @@ function Spark.Players:playerConnecting(source, def)
     --print("Data: " .. data.data)
 
     SetTimeout(5000, function()
-        if not self.Players[steam]?.netid then -- User has not been asigned a netid (cancelled or kicked)
+        if not self.Players[steam]?.netid and steam ~= self.Source.Dummy then -- User has not been asigned a netid (cancelled or kicked)
             self.Players[steam] = nil
         end
     end)
@@ -47,13 +46,13 @@ function Spark.Players:playerConnecting(source, def)
 end
 
 function Spark.Players:playerJoining(source, netid)
-    local steam = Spark.Source:Steam(source)
+    local steam = self.Source:Steam(source)
 
     self.Players[steam].netid = netid -- update netid
 end
 
 function Spark.Players:playerSpawned(source)
-    local steam = Spark.Source:Steam(source)
+    local steam = self.Source:Steam(source)
     local player = self.Players[steam]
 
     if not player then -- Checks if the user is registered.
@@ -76,7 +75,7 @@ end
 --- @param source number?
 --- @param reason string
 function Spark.Players:playerDropped(source, reason)
-    local steam = Spark.Source:Steam(source)
+    local steam = self.Source:Steam(source)
 
     local data = self.Players[steam]
     if not data then -- Checks if the user is registered.
