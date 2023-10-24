@@ -4,7 +4,11 @@ local Identifiers, Groups, Jobs = {
     "id"
 }, Spark:Config('Groups'), Spark:Config('Jobs')
 
-local CallbackId, MenuId, KeybindId = 0, 0, 0
+local Ids = {
+    Callback = 0,
+    Menu = 0,
+    Keybind = 0
+}
 
 --- @param method "steam" | "source" | "id"
 --- @param value any
@@ -124,8 +128,8 @@ function Spark.Players:Get(method, value)
     --- @return any
     function player.Client:Callback(name, ...)
         local promise = promise.new()
-        local id = CallbackId + 1
-        CallbackId = id
+        local id = Ids.Callback + 1
+        Ids.Callback = id
 
         RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name .. ':' .. id, function(response)
             local source = source
@@ -368,8 +372,8 @@ function Spark.Players:Get(method, value)
     --- @param data table
     --- @param callback fun(button: string)
     function player.Menu:Show(title, color, data, callback)
-        local id = MenuId + 1
-        MenuId = id
+        local id = Ids.Menu + 1
+        Ids.Menu = id
 
         RegisterNetEvent('Spark:Menu:' .. id, function(button)
             local source = source
@@ -389,8 +393,8 @@ function Spark.Players:Get(method, value)
     --- @param key string
     --- @param callback fun()
     function player:Keybind(name, key, callback)
-        local id = KeybindId + 1
-        KeybindId = id
+        local id = Ids.Keybind + 1
+        Ids.Keybind = id
 
         RegisterNetEvent('Spark:Keybind:' .. id, function()
             local source = source

@@ -39,7 +39,7 @@ function Spark.Players:playerConnecting(source, def)
     end)
 
     -- Give scripts a way to reject users
-    Spark.Events:Trigger('Connecting', Spark.Players:Get('steam', steam), def)
+    Spark.Events:Trigger('Connecting', self:Get('steam', steam), def)
     Wait(0)
 
     def.done()
@@ -65,7 +65,7 @@ function Spark.Players:playerSpawned(source)
     end
 
     player.spawns = player.spawns + 1
-    Spark.Events:Trigger('Spawned', player, player.spawns == 1)
+    Spark.Events:Trigger('Spawned', self:Get("steam", steam), player.spawns == 1)
 
     if source ~= 0 then
         TriggerClientEvent('Spark:Loaded', source)

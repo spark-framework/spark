@@ -1,6 +1,4 @@
-local Groups = Spark:Config('Groups')
-local Server = Spark:Config('Server')
-local Jobs = Spark:Config('Jobs')
+local Groups, Server, Jobs = Spark:Config('Groups'), Spark:Config('Server'), Spark:Config('Jobs')
 
 --- @param player player
 --- @param def defferals

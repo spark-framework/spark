@@ -1,12 +1,10 @@
-Spark.Ped = {}
-
 --- @param type number
 --- @param model string
 --- @param coords vector3
 --- @param heading number
 --- @param options ped | nil
 --- @return number
-function Spark.Ped:Create(type, model, coords, heading, options)
+function Spark:Ped(type, model, coords, heading, options)
     local hash = GetHashKey(model)
 
     RequestModel(hash)
@@ -24,7 +22,11 @@ function Spark.Ped:Create(type, model, coords, heading, options)
     )
 
     if options?.delete then -- delete ped when resource stops
-        Spark.Ped:Delete(GetInvokingResource(), ped)
+        AddEventHandler('onResourceStop', function(name)
+            if name == (GetInvokingResource() or GetCurrentResourceName()) then
+                DeleteEntity(ped)
+            end
+        end)
     end
 
     if options?.freeze then -- freeze ped
@@ -58,13 +60,4 @@ function Spark.Ped:Create(type, model, coords, heading, options)
     end
 
     return ped
-end
-
---- @param ped number
-function Spark.Ped:Delete(resource, ped)
-    AddEventHandler('onResourceStop', function(name)
-        if name == resource then
-            DeleteEntity(ped)
-        end
-    end)
 end

@@ -33,16 +33,8 @@ function Spark.Players.Menu:Developer(player)
     end)
 end
 
-AddEventHandler('Spark:Spawned', function(steam, first)
-    if not first then
-        return
-    end
-
-    local player = Spark.Players:Get("steam", steam)
-    if player:Source() == 0 then
-        return
-    end
-
+--- @param player player
+Spark.Events:Listen('Spawned', function(player)
     player:Keybind('Open Main Menu', 'F9', function()
         Spark.Players.Menu:Main(player)
     end)

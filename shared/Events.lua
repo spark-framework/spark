@@ -1,5 +1,6 @@
-Spark.Events = { Events = {} }
-
+Spark.Events = {
+    Events = {}
+}
 
 --- @param name string
 function Spark.Events:Register(name)
@@ -8,6 +9,10 @@ end
 
 --- @param name string
 function Spark.Events:Trigger(name, ...)
+    if IsDuplicityVersion() and (...)?.Source() == 0 then
+        return
+    end
+
     for _, v in pairs(Spark.Events.Events[name] or {}) do
         v(...)
     end
