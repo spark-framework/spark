@@ -87,6 +87,8 @@ function Spark.Players:playerDropped(source, reason)
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
     --print("Data: " .. json.encode(data.data))
 
+    data.data['__temp'] = nil -- remove temporary data
+
     self.Raw:Dump(steam, data.data)
     self.Players[steam] = nil
 end

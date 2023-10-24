@@ -13,7 +13,7 @@ local Player =  {
 
     Groups = {},
     Job = {
-        job = "unemployed",
+        name = "unemployed",
         grade = 1
     }
 }

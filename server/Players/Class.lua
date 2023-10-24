@@ -71,7 +71,7 @@ function Spark.Players:Get(method, value)
     --- @param key string
     --- @return any
     function player.Data:Get(key)
-        if player.Is:Online() then   
+        if player.Is:Online() then
             return Spark.Table:Clone(self:Raw().data)[key]
         else
             local user = Spark.Players.Raw:Data(steam)
@@ -82,6 +82,22 @@ function Spark.Players:Get(method, value)
 
             return user[key]
         end
+    end
+
+    player.Data.Temp = {}
+
+    --- @param key string
+    --- @param value any
+    function player.Data.Temp:Set(key, value)
+        local temp = player.Data:Get('__temp') or {}
+        temp[key] = value
+
+        player.Data:Set('__temp', temp)
+    end
+
+    --- @param key string
+    function player.Data.Temp:Get(key)
+        return player.Data:Get('__temp')[key]
     end
 
     --- @return number
@@ -335,6 +351,7 @@ function Spark.Players:Get(method, value)
     --- @param cash number
     function player.Cash:Set(cash)
         player.Data:Set('Cash', cash)
+        Spark.Events:Trigger('SetCash', player, cash)
     end
 
     --- @param cash number
@@ -408,15 +425,14 @@ function Spark.Players:Get(method, value)
 
     player.Job = {}
 
-    --- @return table
-    function player.Job:Raw()
+    --- @return job
+    function player.Job:Get()
         return player.Data:Get('Job')
     end
 
-    --- @return string, number, number
-    function player.Job:Get()
-        local data = self:Raw()
-        return data.job, data.grade, data.time
+    --- @param group string
+    function player.Job:Is(group)
+        return self:Get().name == group
     end
 
     --- @param job string
@@ -433,7 +449,7 @@ function Spark.Players:Get(method, value)
         end
 
         player.Data:Set('Job', { -- set job
-            job = job,
+            name = job,
             grade = data.grades and grade or 1,
             time = data.grades and data.grades[grade].time or data.time
         })

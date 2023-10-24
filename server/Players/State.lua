@@ -28,11 +28,11 @@ Spark.Events:Listen('Spawned', function(player, first)
         player.Health:Set(player.Data:Get('Health')) -- set the player's health
 
         for _, group in pairs(player.Data:Get('Groups')) do
-            Spark.Events:Trigger('AddGroup', player, group)
+            Spark.Events:Trigger('AddGroup', player, group) -- TODO: fix this
         end
 
-        local job, grade = player.Job:Get()
-        Spark.Events:Trigger('Job', player, job, grade, Jobs[job].grades and Jobs[job].grades[grade].name or job)
+        local job = player.Job:Get()
+        Spark.Events:Trigger('SetJob', player, job) -- TODO: fix this
 
         CreateThread(function() -- save weapons
             while true do
@@ -56,8 +56,8 @@ Spark.Events:Listen('Spawned', function(player, first)
                     return
                 end
 
-                local user = player.Job:Raw()
-                local data = Jobs[user.job]
+                local user = player.Job:Get()
+                local data = Jobs[user.name]
 
                 local job = data.grades and data.grades[user.grade] or data
 
@@ -68,7 +68,7 @@ Spark.Events:Listen('Spawned', function(player, first)
                     data.events.paycheck(player, job.paycheck)
                 end
 
-                user.time = user.time - 1000
+                user.time = (user.time or job.time) - 1000
                 player.Data:Set('Job', user)
 
                 Wait(1000)
