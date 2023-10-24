@@ -42,7 +42,7 @@ AddEventHandler('Spark:Spawned', function(steam, first)
     if player:Source() == 0 then
         return
     end
-    
+
     player:Keybind('Open Main Menu', 'F9', function()
         Spark.Players.Menu:Main(player)
     end)

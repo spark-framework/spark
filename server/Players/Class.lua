@@ -59,6 +59,7 @@ function Spark.Players:Get(method, value)
             Spark.Players.Raw:Dump(steam, user)
         end
 
+        TriggerEvent('Spark:Player:Update', steam, key, value)
         return true
     end
 
@@ -403,10 +404,15 @@ function Spark.Players:Get(method, value)
 
     player.Job = {}
 
-    --- @return string, number
+    --- @return table
+    function player.Job:Raw()
+        return player.Data:Get('Job')
+    end
+
+    --- @return string, number, number
     function player.Job:Get()
-        local data = player.Data:Get('Job')
-        return data.job, data.grade
+        local data = self:Raw()
+        return data.job, data.grade, data.time
     end
 
     --- @param job string
@@ -424,8 +430,11 @@ function Spark.Players:Get(method, value)
 
         player.Data:Set('Job', { -- set job
             job = job,
-            grade = data.grades and grade or 1
+            grade = data.grades and grade or 1,
+            time = data.grades and data.grades[grade].time or data.time
         })
+
+        TriggerEvent('Spark:Player:Job', steam, job, grade, data.grades and data.grades[grade].name or job)
 
         return true
     end
