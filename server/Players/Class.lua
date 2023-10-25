@@ -454,7 +454,7 @@ function Spark.Players:Get(method, value)
             time = data.grades and data.grades[grade].time or data.time
         })
 
-        Spark.Events:Trigger('Job', player, job, grade, data.grades and data.grades[grade].name or job)
+        Spark.Events:Trigger('SetJob', player, job, grade, data.grades and data.grades[grade].name or job)
 
         return true
     end
