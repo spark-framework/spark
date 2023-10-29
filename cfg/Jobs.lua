@@ -7,13 +7,13 @@ return {
         events = {
             --- @param player player
             recieved = function(player)
-                player:Notification('You are now unemployed')
+                player:notification('You are now unemployed')
             end,
 
             --- @param player player
             --- @param amount number
             paycheck = function(player, amount)
-                player:Notification('You recieved ' .. amount .. '!')
+                player:notification('You recieved ' .. amount .. '!')
             end
         }
     },
@@ -36,12 +36,12 @@ return {
         events = {
             --- @param player player
             recieved = function(player, job)
-                player:Notification('You are now a ' .. job.label .. '!')
+                player:notification('You are now a ' .. job.label .. '!')
             end,
 
             --- @param player player
             paycheck = function(player, amount)
-                player:Notification('You recieved ' .. amount .. ' from your paycheck! Thank you officer')
+                player:notification('You recieved ' .. amount .. ' from your paycheck! Thank you officer')
             end
         }
     }

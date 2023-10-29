@@ -3,14 +3,19 @@ if not Spark then
     Spark = exports['spark']
 end
 
-local Keybinds = 0
+local Weapons = Spark:getConfig('Weapons')
+
+local Ids = {
+    Keybind = 0,
+    Callback = 0
+}
 
 function Spark:getPlayer()
     local player = {}
 
     --- @param coords vector3
     --- @param text string
-    function player:DrawText3Ds(coords, text)
+    function player:drawText3Ds(coords, text)
         SetTextScale(0.35, 0.35)
         SetTextFont(4)
         SetTextProportional(true)
@@ -27,7 +32,7 @@ function Spark:getPlayer()
     end
 
     --- @param text string
-    function player:DrawText2Ds(text)
+    function player:drawText2Ds(text)
         SetTextFont(4)
         SetTextProportional(0)
         SetTextScale(0.0, 0.5)
@@ -43,19 +48,24 @@ function Spark:getPlayer()
         DrawText(0.5, 0.8)
     end
 
+    --- @param text string
+    function player:notification(text)
+        AddTextEntry("NOTIFICATION", text)
+        SetNotificationTextEntry("NOTIFICATION")
+        DrawNotification(true, false)
+    end
+
     --- @param value boolean
-    function player:Invincible(value)
+    function player:setInvincible(value)
         SetEntityInvincible(PlayerPedId(), value)
     end
 
-    function player:Blood()
+    function player:clearBlood()
         ClearPedBloodDamage(PlayerPedId())
     end
 
-    player.Customization = {}
-
     --- @param custom table
-    function player.Customization:Set(custom)
+    function player:setCustomization(custom)
         local ped = PlayerPedId()
         local hash = custom.hash ~= nil and custom.hash
         if not hash then
@@ -88,7 +98,7 @@ function Spark:getPlayer()
     end
 
     --- @return table
-    function player.Customization:Get()
+    function player:getCustomization()
         local ped = PlayerPedId()
         local custom = {
             hash = GetEntityModel(ped),
@@ -114,48 +124,41 @@ function Spark:getPlayer()
         return custom
     end
 
-    player.Position = {}
-
     --- @return vector3
-    function player.Position:Get()
+    function player:getPosition()
         return GetEntityCoords(PlayerPedId())
     end
 
     --- @param coords vector3
     --- @return number
-    function player.Position:Distance(coords)
-        return #(coords - self:Get())
+    function player:getDistance(coords)
+        return #(coords - self:getPosition())
     end
 
     --- @param coords vector3
-    function player.Position:Set(coords)
+    function player:setPosition(coords)
         return SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z, false, false, false, false)
     end
 
-    player.Weapons = {
-        Weapons = Spark:getConfig('Weapons'),
-        Components = Spark:getConfig('Components')
-    }
-
     --- @param weapons table
-    function player.Weapons:Set(weapons)
-        local player = PlayerPedId()
+    function player:setWeapons(weapons)
+        local ped = PlayerPedId()
 
-        RemoveAllPedWeapons(player, true)
+        RemoveAllPedWeapons(ped, true)
 
         for key, weapon in pairs(weapons) do
-            GiveWeaponToPed(player, GetHashKey(key), weapon.ammo or 0, false, false)
+            GiveWeaponToPed(ped, GetHashKey(key), weapon.ammo or 0, false, false)
         end
     end
 
     --- @return table
-    function player.Weapons:Get()
+    function player:getWeapons()
         local player = PlayerPedId()
 
         local ammo = {}
         local weapons = {}
 
-        for _, v in pairs(self.Weapons) do
+        for _, v in pairs(Weapons) do
             local model = string.upper(v)
             local hash = GetHashKey(model)
             if HasPedGotWeapon(player, hash, false) then
@@ -173,57 +176,21 @@ function Spark:getPlayer()
                 weapons[model] = weapon
             end
         end
-        
+
         return weapons
     end
 
-    player.Weapons.Attachments = {}
-
-    function player.Weapons.Attachments:Set(attachments)
-        local ped = PlayerPedId()
-    end
-
-    --- @return table
-    function player.Weapons.Attachments:Get()
-        local ped = PlayerPedId()
-        local weapons = self:Get()
-        local attachments = {}
-
-        for k in pairs(weapons) do
-            local weapon = GetHashKey(k)
-            if self.Components[k] then
-                local data = {}
-                for _, v in pairs(self.Components[k]) do
-                    local component = GetHashKey(v)
-                    if HasPedGotWeaponComponent(ped, weapon, component) then
-                        table.insert(data, v)
-                    end
-                end
-
-                if #data > 0 then
-                    attachments[k] = data
-                end
-            end
-        end
-
-        return attachments
-    end
-
-    player.Server = {
-        CurrentId = 0
-    }
-
     --- @param name string
-    function player.Server:Event(name, ...)
+    function player:triggerEvent(name, ...)
         return TriggerServerEvent(name, ...)
     end
 
     --- @param name string
     --- @return any
-    function player.Server:Callback(name, ...)
+    function player:triggerCallback(name, ...)
         local promise = promise.new()
-        local id = self.CurrentId + 1
-        self.CurrentId = id
+        local id = Ids.Callback + 1
+        Ids.Callback = id
 
         RegisterNetEvent(('Spark:Callbacks:Client:Response:%s+%s'):format(
             name,
@@ -232,54 +199,42 @@ function Spark:getPlayer()
             promise:resolve(response)
         end)
 
-        self:Event('Spark:Callbacks:Server:Run:' .. name, id, ...)
-
+        self:triggerEvent('Spark:Callbacks:Server:Run:' .. name, id, ...)
         return Citizen.Await(promise)
     end
 
-    player.Health = {}
-
     --- @param health number
-    function player.Health:Set(health)
+    function player:setHealth(health)
         SetEntityHealth(PlayerPedId(), health)
     end
 
     --- @return number
-    function player.Health:Max()
+    function player:getMaxHealth()
         return GetEntityMaxHealth(PlayerPedId())
     end
 
     --- @return number
-    function player.Health:Get()
+    function player:getHealth()
         return GetEntityHealth(PlayerPedId())
     end
 
-    player.Heading = {}
-
     --- @param heading number
-    function player.Heading:Set(heading)
+    function player:setHeading(heading)
         SetEntityHeading(PlayerPedId(), heading)
     end
 
     --- @return number
-    function player.Heading:Get()
+    function player:getHeading()
         return GetEntityHeading(PlayerPedId())
-    end
-
-    --- @param text string
-    function player:Notification(text)
-        AddTextEntry("NOTIFICATION", text)
-        SetNotificationTextEntry("NOTIFICATION")
-        DrawNotification(true, false)
     end
 
     --- @param name string
     --- @param key string
     --- @param callback fun()
-    function player:Keybind(name, key, callback)
-        local id = Keybinds + 1
+    function player:keybind(name, key, callback)
+        local id = Ids.Keybind + 1
         local command = '+' .. (GetInvokingResource() or GetCurrentResourceName()) .. tostring(id)
-        Keybinds = id
+        Ids.Keybind = id
 
         RegisterCommand(command, callback, false)
 
@@ -294,7 +249,7 @@ end
 
 if GetCurrentResourceName() == "spark" then
     RegisterNetEvent('Spark:Keybind', function(name, key, id)
-        Spark:getPlayer():Keybind(name, key, function()
+        Spark:getPlayer():keybind(name, key, function()
             TriggerServerEvent('Spark:Keybind:' .. id)
         end)
     end)

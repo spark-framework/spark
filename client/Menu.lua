@@ -52,7 +52,7 @@ function Spark:updateMenu() -- update key index in NUI
     })
 end
 
-Player:Keybind('Close Menu', 'BACK', function()
+Player:keybind('Close Menu', 'BACK', function()
     if Open then
         if not Close then
             return Spark:closeMenu()
@@ -62,13 +62,13 @@ Player:Keybind('Close Menu', 'BACK', function()
     end
 end)
 
-Player:Keybind('Press Button', 'RETURN', function()
+Player:keybind('Press Button', 'RETURN', function()
     if Open then
         Callback(Spark:getCurrentButton())
     end
 end)
 
-Player:Keybind('Move Up', 'UP', function()
+Player:keybind('Move Up', 'UP', function()
     if Open then
         Index = Index == 1
             and #Data or Index - 1
@@ -76,7 +76,7 @@ Player:Keybind('Move Up', 'UP', function()
     end
 end)
 
-Player:Keybind('Move Down', 'DOWN', function()
+Player:keybind('Move Down', 'DOWN', function()
     if Open then
         Index = Index == #Data
             and 1 or Index + 1

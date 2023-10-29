@@ -42,19 +42,17 @@ function Spark:getPlayer(method, value)
     --- @class player
     local player = {}
 
-    player.Data = {}
-
     --- @return table
-    function player.Data:Raw()
+    function player:getRawData()
         return Players[steam]
     end
 
     --- @param key string
     --- @param value any
     --- @return boolean
-    function player.Data:Set(key, value)
-        if player.Is:Online() then
-            self:Raw().data[key] = value
+    function player:setData(key, value)
+        if player:isOnline() then
+            self:getRawData().data[key] = value
         else
             local user = Spark:getRawDataBySteam(steam)
             if not user then
@@ -71,9 +69,9 @@ function Spark:getPlayer(method, value)
 
     --- @param key string
     --- @return any
-    function player.Data:Get(key)
-        if player.Is:Online() then
-            return Spark:cloneTable(self:Raw().data)[key]
+    function player:getData(key)
+        if player:isOnline() then
+            return Spark:cloneTable(self:getRawData().data)[key]
         else
             local user = Players.Raw:Data(steam)
 
@@ -85,228 +83,181 @@ function Spark:getPlayer(method, value)
         end
     end
 
-    player.Data.Temp = {}
-
-    --- @param key string
-    --- @param value any
-    function player.Data.Temp:Set(key, value)
-        local temp = player.Data:Get('__temp') or {}
-        temp[key] = value
-
-        player.Data:Set('__temp', temp)
-    end
-
-    --- @param key string
-    function player.Data.Temp:Get(key)
-        return player.Data:Get('__temp')[key]
-    end
-
     --- @return number
-    function player:ID()
+    function player:getId()
         return id
     end
 
     --- @return string
-    function player:Steam()
+    function player:getSteam()
         return steam
     end
 
-    function player:Source()
-        return player.Data:Raw().source
+    function player:getSource()
+        return player:getRawData().source
     end
 
     --- @return number
-    function player:Ped()
-        return GetPlayerPed(self:Source() or 0)
+    function player:getPed()
+        return GetPlayerPed(self:getSource() or 0)
     end
-    
+
     --- @param event string
     --- @param callback fun(player: player, ...)
-    function player:Listen(event, callback)
+    function player:listen(event, callback)
+        --- @param plr player
         Spark:listenEvent(event, function(plr, ...)
-            if plr:Steam() == player:Steam() then
+            if plr:getSteam() == player:getSteam() then
                 callback(...)
             end
         end)
     end
 
-    player.Is = {}
+    --- @return boolean
+    function player:isOnline() return player:getRawData() ~= nil end
 
     --- @return boolean
-    function player.Is:Online() return player.Data:Raw() ~= nil end
-
-    --- @return boolean
-    function player.Is:Loaded() return(player.Data:Raw()?.spawns or 0) > 0 end
+    function player:isLoaded() return (player:getRawData()?.spawns or 0) > 0 end
 
     --- @param reason string
-    function player:Kick(reason)
+    function player:kick(reason)
         reason = reason or ''
-        DropPlayer(self:Source(), reason)
+        DropPlayer(self:getSource(), reason)
     end
 
-    player.Client = {}
-
     --- @param name string
-    function player.Client:Event(name, ...)
-        return TriggerClientEvent(name, player:Source(), ...)
+    function player:triggerEvent(name, ...)
+        return TriggerClientEvent(name, player:getSource(), ...)
     end
 
     --- @param name string
     --- @return any
-    function player.Client:Callback(name, ...)
+    function player:triggerCallback(name, ...)
         local promise = promise.new()
         local id = Ids.Callback + 1
         Ids.Callback = id
 
         RegisterNetEvent('Spark:Callbacks:Server:Response:'.. name .. ':' .. id, function(response)
             local source = source
-            if player:Source() == source then
+            if player:getSource() == source then
                 promise:resolve(response)
             end
         end)
 
-        self:Event('Spark:Callbacks:Client:Run:' .. name, id, ...)
+        self:triggerEvent('Spark:Callbacks:Client:Run:' .. name, id, ...)
         return Citizen.Await(promise)
     end
 
-    player.Weapons = {}
-
     --- @param weapons table
-    function player.Weapons:Set(weapons)
-        player.Client:Callback('Spark:Update', {
+    function player:setWeapons(weapons)
+        player:triggerCallback('Spark:Update', {
             weapons = weapons
         })
     end
 
     --- @return table
-    function player.Weapons:Get()
-        return player.Client:Callback('Spark:State').weapons
+    function player:getWeapons()
+        return player:triggerCallback('Spark:State').weapons
     end
-
-    player.Weapons.Attachments = {}
-
-    --- @param attachments table
-    function player.Weapons.Attachments:Set(attachments)
-        player.Client:Callback('Spark:Update', {
-            attachments = attachments
-        })
-    end
-
-    --- @return table
-    function player.Weapons.Attachments:Get()
-        return player.Client:Callback('Spark:State').attachments
-    end
-
-    player.Customization = {}
 
     --- @param customization table
-    function player.Customization:Set(customization)
-        player.Client:Callback('Spark:Update', {
+    function player:setCustomization(customization)
+        player:triggerCallback('Spark:Update', {
             customization = customization
         })
     end
 
     --- @return table
-    function player.Customization:Get()
-        return player.Client:Callback('Spark:State').customization
+    function player:getCustomization()
+        return player:triggerCallback('Spark:State').customization
     end
 
-    player.Health = {}
-
     --- @param health number
-    function player.Health:Set(health)
-        player.Client:Callback('Spark:Update', {
+    function player:setHealth(health)
+        player:triggerCallback('Spark:Update', {
             health = health
         })
     end
 
     --- @return number
-    function player.Health:Max()
-        return GetEntityMaxHealth(player:Ped())
+    function player:getMaxHealth()
+        return GetEntityMaxHealth(player:getPed())
     end
 
     --- @return number
-    function player.Health:Get()
-        return GetEntityHealth(player:Ped())
+    function player:getHealth()
+        return GetEntityHealth(player:getPed())
     end
 
-    player.Position = {}
-
     --- @param coords vector3
-    function player.Position:Set(coords)
-        SetEntityCoords(player:Ped(), coords.x, coords.y, coords.z, false, false, false, false)
+    function player:setPosition(coords)
+        SetEntityCoords(player:getPed(), coords.x, coords.y, coords.z, false, false, false, false)
     end
 
     --- @return vector3
-    function player.Position:Get()
-        return GetEntityCoords(player:Ped())
+    function player:getPosition()
+        return GetEntityCoords(player:getPed())
     end
-
-    player.Ban = {}
 
     --- @param value boolean
     --- @param reason? string
     --- @return boolean
-    function player.Ban:Set(value, reason)
+    function player:setBanned(value, reason)
         if not value then
-            player.Data:Set('Banned', nil)
+            player:setData('Banned', nil)
             return true
         end
 
-        player.Data:Set('Banned', reason or '')
-        if player.Is:Online() then
-            player:Kick('[Banned] ' .. (reason or ''))
+        player:setData('Banned', reason or '')
+        if player:isOnline() then
+            player:kick('[Banned] ' .. (reason or ''))
         end
 
         return true
     end
 
     --- @return string | boolean
-    function player.Ban:Reason()
-        return player.Data:Get('Banned') or false
+    function player:getBanReason()
+        return player:getData('Banned') or false
     end
 
     --- @return boolean
-    function player.Ban:Is()
-        return player.Data:Get('Banned') ~= nil
+    function player:isBanned()
+        return player:getData('Banned') ~= nil
     end
-
-    player.Whitelist = {}
 
     --- @param value boolean
-    function player.Whitelist:Set(value)
-        return player.Data:Set('Whitelisted', value)
+    function player:setWhitelisted(value)
+        return player:setData('Whitelisted', value)
     end
 
     --- @return boolean
-    function player.Whitelist:Is()
-        return player.Data:Get('Whitelisted') ~= nil
+    function player:isWhitelisted()
+        return player:getData('Whitelisted') ~= nil
     end
 
     --- @param text string
-    function player:Notification(text)
-        player.Client:Callback('Spark:Update', {
+    function player:notification(text)
+        player:triggerCallback('Spark:Update', {
             notification = text
         })
     end
 
-    player.Groups = {}
-
     --- @return table
-    function player.Groups:Get()
-        return player.Data:Get('Groups')
+    function player:getGroups()
+        return player:getData('Groups')
     end
 
     --- @param group string
     --- @return boolean
-    function player.Groups:Add(group)
-        local groups = self:Get()
-        if self:Has(group) or not Groups[group] then -- if the user already has the group
+    function player:addGroup(group)
+        local groups = self:getGroups()
+        if self:hasGroup(group) or not Groups[group] then -- if the user already has the group
             return false
         end
 
         table.insert(groups, group)
-        player.Data:Set('Groups', groups)
+        player:setData('Groups', groups)
 
         Spark:triggerEvent('AddGroup', player, group)
         return true
@@ -314,7 +265,7 @@ function Spark:getPlayer(method, value)
 
     --- @param permission string | table
     --- @return boolean
-    function player.Groups:Permission(permission)
+    function player:hasPermission(permission)
         for _, v in pairs(Groups) do
             for _, perm in pairs(type(permission) == "table" and permission or {permission}) do
                 if not Spark:tableContains(v.permissions, perm) then
@@ -328,15 +279,15 @@ function Spark:getPlayer(method, value)
 
     --- @param group string
     --- @return string
-    function player.Groups:Has(group)
-        return Spark:tableContains(self:Get(), group)
+    function player:hasGroup(group)
+        return Spark:tableContains(self:getGroups(), group)
     end
 
     --- @param group string
     --- @return boolean
-    function player.Groups:Remove(group)
-        local groups = self:Get()
-        if not self:Has(group) then -- if the user does not have the group
+    function player:removeGroup(group)
+        local groups = self:getGroups()
+        if not self:hasGroup(group) then -- if the user does not have the group
             return false
         end
 
@@ -346,67 +297,63 @@ function Spark:getPlayer(method, value)
             end
         end
 
-        player.Data:Set('Groups', groups)
+        player:setData('Groups', groups)
         Spark:triggerEvent('RemoveGroup', player, group)
 
         return true
     end
 
-    player.Cash = {}
-
     --- @return number
-    function player.Cash:Get()
-        return player.Data:Get('Cash')
+    function player:getCash()
+        return player:getData('Cash')
     end
 
     --- @param cash number
-    function player.Cash:Set(cash)
-        player.Data:Set('Cash', cash)
+    function player:setCash(cash)
+        player:setData('Cash', cash)
         Spark:triggerEvent('SetCash', player, cash)
     end
 
     --- @param cash number
-    function player.Cash:Add(cash)
-        self:Set(self:Get() + cash)
+    function player:addCash(cash)
+        self:setCash(self:getCash() + cash)
     end
 
     --- @param cash number
     --- @return boolean
-    function player.Cash:Has(cash)
-        return self:Get() >= cash
+    function player:hasCash(cash)
+        return self:getCash() >= cash
     end
 
     --- @param cash number
-    function player.Cash:Remove(cash)
-        if (self:Get() - cash) >= 0 then
-            self:Set(self:Get() - cash)
+    function player:removeCash(cash)
+        if (self:getCash() - cash) >= 0 then
+            self:setCash(self:getCash() - cash)
         end
     end
 
     --- @param cash number
     --- @return boolean
-    function player.Cash:Payment(cash)
-        if (self:Get() - cash) < 0 then
+    function player:payment(cash)
+        if (self:getCash() - cash) < 0 then
             return false
         end
 
-        return true, self:Set(self:Get() - cash)
+        return true, self:setCash(self:getCash() - cash)
     end
-
-    player.Menu = {}
 
     --- @param title string
     --- @param color string
     --- @param data table
     --- @param callback fun(button: string)
     --- @param close? fun()
-    function player.Menu:Show(title, color, data, callback, close)
+    function player:showMenu(title, color, data, callback, close)
         local id = Ids.Menu + 1
         Ids.Menu = id
 
         RegisterNetEvent('Spark:Menu:Button:' .. id, function(button)
             local source = source
-            if player:Source() == source then
+            if player:getSource() == source then
                 callback(button)
             end
         end)
@@ -414,41 +361,39 @@ function Spark:getPlayer(method, value)
         if close then
             RegisterNetEvent('Spark:Menu:Close:' .. id, function()
                 local source = source
-                if player:Source() == source then
+                if player:getSource() == source then
                     close()
                 end
             end)
         end
 
-        player.Client:Callback('Spark:Menu:Show', title, color, data, id, close and id)
+        player:triggerCallback('Spark:Menu:Show', title, color, data, id, close and id)
     end
 
-    function player.Menu:Close()
-        player.Client:Callback('Spark:Menu:Close')
+    function player:closeMenu()
+        player:triggerCallback('Spark:Menu:Close')
     end
 
     --- @param name string
     --- @param key string
     --- @param callback fun()
-    function player:Keybind(name, key, callback)
+    function player:keybind(name, key, callback)
         local id = Ids.Keybind + 1
         Ids.Keybind = id
 
         RegisterNetEvent('Spark:Keybind:' .. id, function()
             local source = source
-            if player:Source() == source then
+            if player:getSource() == source then
                 callback()
             end
         end)
 
-        player.Client:Event('Spark:Keybind', name, key, id)
+        player:triggerEvent('Spark:Keybind', name, key, id)
     end
 
-    player.Job = {}
-
     --- @return job
-    function player.Job:Get()
-        local job = player.Data:Get('Job')
+    function player:getJob()
+        local job = player:getData('Job')
 
         return {
             name = job.name,
@@ -458,15 +403,15 @@ function Spark:getPlayer(method, value)
         }
     end
 
-    --- @param group string
-    function player.Job:Is(group)
-        return self:Get().name == group
+    --- @param job string
+    function player:hasJob(job)
+        return self:getJob().name == job
     end
 
     --- @param job string
     --- @param grade number
     --- @return boolean
-    function player.Job:Set(job, grade)
+    function player:setJob(job, grade)
         local data = Jobs[job]
         if not data then
             return false
@@ -482,8 +427,8 @@ function Spark:getPlayer(method, value)
             time = data.grades and data.grades[grade].time or data.time
         }
 
-        player.Data:Set('Job', job)
-        Spark:triggerEvent('SetJob', player, self:Get())
+        player:setData('Job', job)
+        Spark:triggerEvent('SetJob', player, self:getJob())
 
         return true
     end

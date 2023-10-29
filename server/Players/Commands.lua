@@ -19,9 +19,9 @@ RegisterCommand('data', function(source, args)
 
     local player = Spark:getPlayer("source", source)
     if args[1] == "set" then
-        player?.Data:Set(args[2], args[3])
+        player:setData(args[2], args[3])
     else
-        print(player?.Data:Get(args[2]))
+        print(player:getData(args[2]))
     end
 end, false)
 
@@ -30,9 +30,9 @@ RegisterCommand('group', function(source, args)
     local player = Spark:getPlayer("source", source)
 
     if args[1] == "add" then
-        print(player?.Groups:Add(args[2]))
+        print(player:addGroup(args[2]))
     else
-        print(player?.Groups:Remove(args[2]))
+        print(player:removeGroup(args[2]))
     end
 end, false)
 
@@ -41,9 +41,9 @@ RegisterCommand('permission', function(source, args)
     local player = Spark:getPlayer("source", source)
 
     if args[1] == "1" then
-        print(player?.Groups:Permission(args[2]))
+        print(player:hasPermission(args[2]))
     else
-        print(player?.Groups:Permission({args[2], args[3]}))
+        print(player:hasPermission({args[2], args[3]}))
     end
 end, false)
 
@@ -54,21 +54,21 @@ RegisterCommand('cash', function(source, args)
     args[2] = tonumber(args[2] or "0")
 
     local function notification(text)
-        player:Notification(tostring(text) .. " cash " .. player.Cash:Get())
+        player:notification(tostring(text) .. " cash " .. player:getCash())
     end
 
     if args[1] == "add" then
-        notification(player?.Cash:Add(args[2]))
+        notification(player:addCash(args[2]))
     elseif args[1] == "remove" then
-        notification(player?.Cash:Remove(args[2]))
+        notification(player:removeCash(args[2]))
     elseif args[1] == "get" then
-        notification(player?.Cash:Get())
+        notification(player:getCash())
     elseif args[1] == "set" then
-        notification(player?.Cash:Set(args[2]))
+        notification(player:setCash(args[2]))
     elseif args[1] == "has" then
-        notification(player?.Cash:Has(args[2]))
+        notification(player:hasCash(args[2]))
     elseif args[1] == "payment" then
-        notification(player?.Cash:Payment(args[2]))
+        notification(player:payment(args[2]))
     end
 end, false)
 
@@ -80,7 +80,7 @@ end, false)
 RegisterCommand('openmenu', function(source, args, raw)
     Wait(0)
     local player = Spark:getPlayer("source", source)
-    player.Menu:Show('hello', 'rgb(39, 78, 223)', {
+    player:showMenu('hello', 'rgb(39, 78, 223)', {
         "Hello"
     }, function(button)
         print(button)
@@ -90,25 +90,25 @@ end, false)
 RegisterCommand('closemenu', function(source, args, raw)
     Wait(0)
     local player = Spark:getPlayer("source", source)
-    player.Menu:Close()
+    player:closeMenu()
 end, false)
 
 RegisterCommand('ban', function(source, args, raw)
     Wait(0)
     local player = Spark:getPlayer("source", source)
-    player.Ban:Set(true, 'Welp')
+    player:setBanned(true, 'Welp')
 end, false)
 
 RegisterCommand('setjob', function(source, args, raw)
     Wait(0)
     local player = Spark:getPlayer("source", source)
-    player.Job:Set(args[1], tonumber(args[2]) or 1)
+    player:setJob(args[1], tonumber(args[2]) or 1)
 end, false)
 
 RegisterCommand('getjob', function(source, args, raw)
     Wait(0)
     local player = Spark:getPlayer("source", source)
-    local job, grade = player.Job:Get()
+    local job, grade = player:getJob()
 
     print(job, grade)
 end, false)

@@ -2,11 +2,11 @@ return {
     ["admin"] = {
         events = {
             spawn = function(player)
-                player:Notification('You are now admin.')
+                player:notification('You are now admin.')
             end,
 
             remove = function(player)
-                player:Notification('You are no longer admin.')
+                player:notification('You are no longer admin.')
             end
         },
         permissions = {
@@ -17,11 +17,11 @@ return {
     ["developer"] = {
         events = {
             spawn = function(player)
-                player:Notification('You are now a developer.')
+                player:notification('You are now a developer.')
             end,
             
             remove = function(player)
-                player:Notification('You are no longer a developer.')
+                player:notification('You are no longer a developer.')
             end
         },
         permissions = {

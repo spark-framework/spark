@@ -7,7 +7,7 @@ end
 
 --- @param name string
 function Spark:triggerEvent(name, ...)
-    if IsDuplicityVersion() and (...)?.Source() == 0 then
+    if IsDuplicityVersion() and (...)?.getSource() == 0 then
         return
     end
 

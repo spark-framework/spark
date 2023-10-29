@@ -21,7 +21,7 @@ function Spark:addArea(position, radius, height, enter, leave)
 
     --- @return boolean
     function area:Player()
-        return self:Coords(Player.Position:Get())
+        return self:Coords(Player:getPosition())
     end
 
     --- @param entity number

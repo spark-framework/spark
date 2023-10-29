@@ -6,11 +6,11 @@ local Groups, Server, Jobs =
 --- @param player player
 --- @param def defferals
 Spark:listenEvent('Connecting', function(player, def)
-    if player.Ban:Is() then -- Is user banned
+    if player:isBanned() then -- Is user banned
         return def.done('You are banned!')
     end
 
-    if not player.Whitelist:Is() and Server.Whitelisted then -- Is server whitelisted and user is not
+    if not player:isWhitelisted() and Server.Whitelisted then -- Is server whitelisted and user is not
         return def.done('You are not whitelisted!')
     end
 end)
@@ -18,74 +18,72 @@ end)
 --- @param player player
 --- @param first boolean
 Spark:listenEvent('Spawned', function(player, first)
-    local coords = player.Data:Get('Coords')
+    local coords = player:getData('Coords')
 
     if first then
-        player:Notification('Welcome to the server! Use F9 to open the main menu')
-        player.Position:Set(coords)
+        player:notification('Welcome to the server! Use F9 to open the main menu')
+        player:setPosition(coords)
 
-        player.Customization:Set(player.Data:Get('Customization')) -- set the player's skin
-        player.Weapons:Set(player.Data:Get('Weapons')) -- set the player's weapon
-        --player.Weapons.Attachments:Set(player.Data:Get('Attachments'))
+        player:setCustomization(player:getData('Customization')) -- set the player's skin
+        player:setWeapons(player:getData('Weapons')) -- set the player's weapon
 
-        player.Health:Set(player.Data:Get('Health')) -- set the player's health
+        player:setHealth(player:getData('Health')) -- set the player's health
 
-        for _, group in pairs(player.Data:Get('Groups')) do
+        for _, group in pairs(player:getData('Groups')) do
             Spark:triggerEvent('AddGroup', player, group) -- TODO: fix this
         end
 
-        Spark:triggerEvent('SetJob', player, player.Job:Get())
+        Spark:triggerEvent('SetJob', player, player:getJob())
 
         CreateThread(function() -- save weapons
             while true do
-                if not player.Is:Loaded() then
+                if not player:isLoaded() then
                     return
                 end
 
-                local data = player.Client:Callback('Spark:State')
+                local data = player:triggerCallback('Spark:State')
 
-                player.Data:Set('Customization', data.customization)
-                player.Data:Set('Weapons', data.weapons)
+                player:setData('Customization', data.customization)
+                player:setData('Weapons', data.weapons)
 
-                --player.Data:Set('Attachments', data.attachments)
                 Wait(5 * 1000) -- 5 seconds
             end
         end)
 
         CreateThread(function()
             while true do
-                if not player.Is:Loaded() then
+                if not player:isLoaded() then
                     return
                 end
 
-                local user = player.Job:Get()
+                local user = player:getJob()
                 local data = Jobs[user.name]
 
                 local job = data.grades and data.grades[user.grade] or data
 
                 if user.time == 0 then -- pay user
                     user.time = job.time + 1000
-                    player.Cash:Add(job.paycheck)
+                    player:addCash(job.paycheck)
 
                     data.events.paycheck(player, job.paycheck)
                 end
 
                 user.time = (user.time or job.time) - 1000
-                player.Data:Set('Job', user)
+                player:setData('Job', user)
 
                 Wait(1000)
             end
         end)
     else -- if the user died and spawned again
         coords = Default.Coords
-        player.Position:Set(coords)
+        player:setPosition(coords)
 
-        player.Customization:Set(player.Data:Get('Customization'))
-        player.Health:Set(player.Health:Max())
+        player:setCustomization(player:getData('Customization'))
+        -- player:setHealth(player:getMaxHealth()) client handles this
 
-        player.Weapons:Set({})
-        player.Data:Set('Weapons', {})
-        player.Data:Set('Attachments', {})
+        player:setWeapons({})
+        player:setData('Weapons', {})
+        player:setData('Attachments', {})
     end
 end)
 
@@ -118,8 +116,8 @@ end)
 
 --- @param player player
 Spark:listenEvent('Dropped', function(player)
-    local coords = player.Position:Get()
+    local coords = player:getPosition()
 
-    player.Data:Set('Coords', {x = coords.x, y = coords.y, z = coords.z})
-    player.Data:Set('Health', player.Health:Get())
+    player:setData('Coords', {x = coords.x, y = coords.y, z = coords.z})
+    player:setData('Health', player:getHealth())
 end)

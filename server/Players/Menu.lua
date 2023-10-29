@@ -2,38 +2,40 @@
 function Spark:openMainMenu(player)
     local buttons = {}
 
-    if player.Groups:Has('admin') then -- admin menu
+    if player:hasGroup('admin') then -- admin menu
         table.insert(buttons, "Admin")
     end
 
-    if player.Groups:Has('developer') then -- developer menu
+    if player:hasGroup('developer') then -- developer menu
         table.insert(buttons, "Development")
     end
 
-    player.Menu:Show('Main Menu', 'rgb(230, 140, 14)', buttons, function(button)
+    player:showMenu('Main Menu', 'rgb(230, 140, 14)', buttons, function(button)
+        player:closeMenu()
         if button == "Admin" then
             self:openAdminMenu(player)
         end
     end, function ()
-        player.Menu:Close()
+        player:closeMenu()
     end)
 end
 
+--- @param player player
 function Spark:openAdminMenu(player)
-    player.Menu:Show('Admin Menu', 'rgb(214, 45, 30)', {}, function(button)
-        
+    player:showMenu('Admin Menu', 'rgb(214, 45, 30)', {}, function(button)
+
     end)
 end
 
 function Spark:openDeveloperMenu(player)
-    player.Menu:Show('Developer Menu', 'rgb(214, 45, 30)', {}, function(button)
+    player:showMenu('Developer Menu', 'rgb(214, 45, 30)', {}, function(button)
         
     end)
 end
 
 --- @param player player
 Spark:listenEvent('Spawned', function(player)
-    player:Keybind('Open Main Menu', 'F9', function()
+    player:keybind('Open Main Menu', 'F9', function()
         Spark:openMainMenu(player)
     end)
 end)
