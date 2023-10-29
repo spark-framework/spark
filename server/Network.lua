@@ -1,11 +1,9 @@
-Spark.Network = {}
-
 --- @param url string
 --- @param method "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 --- @param data? string
 --- @param headers? table
 --- @return string, boolean
-function Spark.Network:HTTP(url, method, data, headers)
+function Spark:perform(url, method, data, headers)
     local promise = promise.new()
 
     PerformHttpRequest(url, function(err, data)
@@ -14,8 +12,4 @@ function Spark.Network:HTTP(url, method, data, headers)
 
     local result = Citizen.Await(promise)
     return result[1], result[2]
-end
-
-function Spark.Network:WebSocket()
-    return error('WebSocket is not yet supported.')
 end

@@ -1,6 +1,9 @@
 --- @class spark
-Spark = {}
-
-exports('Spark', function()
-    return Spark
-end)
+Spark = setmetatable({}, {
+    __newindex = function(self, key, func)
+        rawset(self, key, func)
+        exports(key, function(...)
+            return Spark[key](self, ...)
+        end)
+    end
+})

@@ -3,7 +3,7 @@ local Files = {}
 --- @param resource string
 --- @param path string
 --- @return table
-function Spark:Files(resource, path)
+function Spark:getFile(resource, path)
     assert(path, "Cannot access file because path is nil")
     if Files[path] then
         return Files[path]

@@ -2,7 +2,7 @@
 
 RegisterCommand('join', function(source)
     Wait(0)
-    Spark.Players:playerConnecting(source, {
+    Spark:playerConnecting(source, {
         defer = function () end,
         update = function (text) end,
         done = function (text) end
@@ -11,13 +11,13 @@ end, false)
 
 RegisterCommand('spawn', function(source)
     Wait(0)
-    Spark.Players:playerSpawned(source)
+    Spark:playerSpawned(source)
 end, false)
 
 RegisterCommand('data', function(source, args)
     Wait(0)
 
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
     if args[1] == "set" then
         player?.Data:Set(args[2], args[3])
     else
@@ -27,7 +27,7 @@ end, false)
 
 RegisterCommand('group', function(source, args)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
 
     if args[1] == "add" then
         print(player?.Groups:Add(args[2]))
@@ -38,7 +38,7 @@ end, false)
 
 RegisterCommand('permission', function(source, args)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
 
     if args[1] == "1" then
         print(player?.Groups:Permission(args[2]))
@@ -49,7 +49,7 @@ end, false)
 
 RegisterCommand('cash', function(source, args)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
 
     args[2] = tonumber(args[2] or "0")
 
@@ -74,12 +74,12 @@ end, false)
 
 RegisterCommand('drop', function(source)
     Wait(0)
-    Spark.Players:playerDropped(source, 'daddy waddy')
+    Spark:playerDropped(source, 'daddy waddy')
 end, false)
 
 RegisterCommand('openmenu', function(source, args, raw)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
     player.Menu:Show('hello', 'rgb(39, 78, 223)', {
         "Hello"
     }, function(button)
@@ -89,25 +89,25 @@ end, false)
 
 RegisterCommand('closemenu', function(source, args, raw)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
     player.Menu:Close()
 end, false)
 
 RegisterCommand('ban', function(source, args, raw)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
     player.Ban:Set(true, 'Welp')
 end, false)
 
 RegisterCommand('setjob', function(source, args, raw)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
     player.Job:Set(args[1], tonumber(args[2]) or 1)
 end, false)
 
 RegisterCommand('getjob', function(source, args, raw)
     Wait(0)
-    local player = Spark.Players:Get("source", source)
+    local player = Spark:getPlayer("source", source)
     local job, grade = player.Job:Get()
 
     print(job, grade)
@@ -115,14 +115,15 @@ end, false)
 
 RegisterCommand('run', function(source, args, raw)
     Wait(0)
-    Spark.Events:Trigger('Test', Spark.Players:Get('source', source), 'Hello')
+    Spark:triggerEvent('Test', Spark:getPlayer('source', source), 'Hello')
 end, false)
+
 
 CreateThread(function()
     Wait(2000)
     for _, source in pairs(GetPlayers()) do
         local src = tonumber(source)
-        Spark.Players:playerConnecting(src, {
+        Spark:playerConnecting(src, {
             defer = function () end,
             update = function () end,
             done = function () end
@@ -130,6 +131,6 @@ CreateThread(function()
 
         Wait(250)
 
-        Spark.Players:playerSpawned(src)
+        Spark:playerSpawned(src)
     end
 end)

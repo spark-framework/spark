@@ -4,7 +4,7 @@
 --- @param heading number
 --- @param options ped | nil
 --- @return number
-function Spark:Ped(type, model, coords, heading, options)
+function Spark:createPed(type, model, coords, heading, options)
     local hash = GetHashKey(model)
 
     RequestModel(hash)

@@ -12,6 +12,7 @@
 --- @field name string
 --- @field grade number
 --- @field time number
+--- @field label string
 
 --- @class defferals
 --- @field defer fun()

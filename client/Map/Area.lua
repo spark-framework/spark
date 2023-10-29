@@ -1,3 +1,4 @@
+local Player = Spark:getPlayer()
 local Areas = {}
 
 --- @param position vector3
@@ -5,9 +6,9 @@ local Areas = {}
 --- @param height number
 --- @param enter fun()
 --- @param leave fun()
-function Spark:Area(position, radius, height, enter, leave)
+function Spark:createArea(position, radius, height, enter, leave)
     local area = {}
-    local id = Spark.Table:Entries(Areas)
+    local id = Spark:tableEntries(Areas)
 
     --- @param coords vector3
     ---@ return boolean
@@ -20,7 +21,7 @@ function Spark:Area(position, radius, height, enter, leave)
 
     --- @return boolean
     function area:Player()
-        return self:Coords(Spark.Player.Position:Get())
+        return self:Coords(Player.Position:Get())
     end
 
     --- @param entity number

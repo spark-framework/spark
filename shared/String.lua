@@ -1,16 +1,15 @@
-Spark.String = {
-    Characters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-    Symbols =
-        "!@#$%^&*()_+-={}|[]`~"
-}
+local Characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+local Symbols =
+    "!@#$%^&*()_+-={}|[]`~"
 
 --- @param length number
 --- @param symbols boolean?
 --- @return string
-function Spark.String:Generate(length, symbols)
+function Spark:generateString(length, symbols)
     local result = ''
-    local chars = self:Split(self.Characters .. (symbols and self.Symbols or ''), '')
+    local chars = self:splitString(Characters .. (symbols and Symbols or ''), '')
 
     math.randomseed(os.time())
     for i = 1, length do
@@ -23,7 +22,7 @@ end
 --- @param text string
 --- @param separator string
 --- @return table
-function Spark.String:Split(text, separator)
+function Spark:splitString(text, separator)
     local result = {}
 
     if separator == "" then

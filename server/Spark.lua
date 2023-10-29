@@ -1,7 +1,7 @@
 local Loaded = false
 
 CreateThread(function ()
-    print(Spark.Version:Get() == Spark.Version:Newest()
+    print(Spark:getVersion() == Spark:getNewestVersion()
         and "Spark is up-to-date"
         or "Spark is out-of-date. Please download the newest version")
 
@@ -11,7 +11,7 @@ CreateThread(function ()
         end
     end)
 
-    Spark.Driver:Ready(function()
+    Spark:ready(function()
         Loaded = true
         print('Database driver is ready!')
     end)

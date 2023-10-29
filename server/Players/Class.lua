@@ -1,8 +1,9 @@
+---@diagnostic disable: duplicate-set-field
 local Identifiers, Groups, Jobs = {
     "steam",
     "source",
     "id"
-}, Spark:Config('Groups'), Spark:Config('Jobs')
+}, Spark:getConfig('Groups'), Spark:getConfig('Jobs')
 
 local Ids = {
     Callback = 0,
@@ -12,25 +13,25 @@ local Ids = {
 
 --- @param method "steam" | "source" | "id"
 --- @param value any
-function Spark.Players:Get(method, value)
-    if not Spark.Table:Contains(Identifiers, method) then
+function Spark:getPlayer(method, value)
+    if not Spark:tableContains(Identifiers, method) then
         return error("Method " .. method .. " is invalid!")
     end
 
     local steam, id = value, nil
     if method == "id" then
-        steam, id = self.Raw:Convert(value), value
+        steam, id = self:getSteamById(value), value
     elseif method == "source" then
-        steam = self.Source:Steam(value)
+        steam = self:getSteamBySource(value)
     end
 
-    id = id or self.Players[steam]?.id
-    if not self.Players[steam] then
+    id = id or Players[steam]?.id
+    if not Players[steam] then
         if method == "source" then
             return false, "user_does_not_exist"
         end
 
-        local data = self.Raw:Pull(method, value)
+        local data = self:getRawDataByMethod(method, value)
         if not data then
             return false, "user_cannot_be_found"
         end
@@ -45,7 +46,7 @@ function Spark.Players:Get(method, value)
 
     --- @return table
     function player.Data:Raw()
-        return Spark.Players.Players[steam]
+        return Players[steam]
     end
 
     --- @param key string
@@ -55,16 +56,16 @@ function Spark.Players:Get(method, value)
         if player.Is:Online() then
             self:Raw().data[key] = value
         else
-            local user = Spark.Players.Raw:Data(steam)
+            local user = Spark:getRawDataBySteam(steam)
             if not user then
                 return false
             end
 
             user[key] = value
-            Spark.Players.Raw:Dump(steam, user)
+            Spark:dumpUser(steam, user)
         end
 
-        Spark.Events:Trigger('Data', player, key, value)
+        Spark:triggerEvent('Data', player, key, value)
         return true
     end
 
@@ -72,9 +73,9 @@ function Spark.Players:Get(method, value)
     --- @return any
     function player.Data:Get(key)
         if player.Is:Online() then
-            return Spark.Table:Clone(self:Raw().data)[key]
+            return Spark:cloneTable(self:Raw().data)[key]
         else
-            local user = Spark.Players.Raw:Data(steam)
+            local user = Players.Raw:Data(steam)
 
             if not user then
                 return
@@ -117,6 +118,16 @@ function Spark.Players:Get(method, value)
     --- @return number
     function player:Ped()
         return GetPlayerPed(self:Source() or 0)
+    end
+    
+    --- @param event string
+    --- @param callback fun(player: player, ...)
+    function player:Listen(event, callback)
+        Spark:listenEvent(event, function(plr, ...)
+            if plr:Steam() == player:Steam() then
+                callback(...)
+            end
+        end)
     end
 
     player.Is = {}
@@ -297,7 +308,7 @@ function Spark.Players:Get(method, value)
         table.insert(groups, group)
         player.Data:Set('Groups', groups)
 
-        Spark.Events:Trigger('AddGroup', player, group)
+        Spark:triggerEvent('AddGroup', player, group)
         return true
     end
 
@@ -306,7 +317,7 @@ function Spark.Players:Get(method, value)
     function player.Groups:Permission(permission)
         for _, v in pairs(Groups) do
             for _, perm in pairs(type(permission) == "table" and permission or {permission}) do
-                if not Spark.Table:Contains(v.permissions, perm) then
+                if not Spark:tableContains(v.permissions, perm) then
                     return false
                 end
             end
@@ -318,7 +329,7 @@ function Spark.Players:Get(method, value)
     --- @param group string
     --- @return string
     function player.Groups:Has(group)
-        return Spark.Table:Contains(self:Get(), group)
+        return Spark:tableContains(self:Get(), group)
     end
 
     --- @param group string
@@ -336,7 +347,7 @@ function Spark.Players:Get(method, value)
         end
 
         player.Data:Set('Groups', groups)
-        Spark.Events:Trigger('RemoveGroup', player, group)
+        Spark:triggerEvent('RemoveGroup', player, group)
 
         return true
     end
@@ -351,7 +362,7 @@ function Spark.Players:Get(method, value)
     --- @param cash number
     function player.Cash:Set(cash)
         player.Data:Set('Cash', cash)
-        Spark.Events:Trigger('SetCash', player, cash)
+        Spark:triggerEvent('SetCash', player, cash)
     end
 
     --- @param cash number
@@ -388,18 +399,28 @@ function Spark.Players:Get(method, value)
     --- @param color string
     --- @param data table
     --- @param callback fun(button: string)
-    function player.Menu:Show(title, color, data, callback)
+    --- @param close? fun()
+    function player.Menu:Show(title, color, data, callback, close)
         local id = Ids.Menu + 1
         Ids.Menu = id
 
-        RegisterNetEvent('Spark:Menu:' .. id, function(button)
+        RegisterNetEvent('Spark:Menu:Button:' .. id, function(button)
             local source = source
             if player:Source() == source then
                 callback(button)
             end
         end)
 
-        player.Client:Callback('Spark:Menu:Show', title, color, data, id)
+        if close then
+            RegisterNetEvent('Spark:Menu:Close:' .. id, function()
+                local source = source
+                if player:Source() == source then
+                    close()
+                end
+            end)
+        end
+
+        player.Client:Callback('Spark:Menu:Show', title, color, data, id, close and id)
     end
 
     function player.Menu:Close()
@@ -427,7 +448,14 @@ function Spark.Players:Get(method, value)
 
     --- @return job
     function player.Job:Get()
-        return player.Data:Get('Job')
+        local job = player.Data:Get('Job')
+
+        return {
+            name = job.name,
+            grade = job.grade,
+            time = job.time,
+            label = Jobs[job.name].grades and Jobs[job.name].grades[job.grade].label or Jobs[job.name].label
+        }
     end
 
     --- @param group string
@@ -448,13 +476,14 @@ function Spark.Players:Get(method, value)
             return false
         end
 
-        player.Data:Set('Job', { -- set job
+        local job = { -- set job
             name = job,
             grade = data.grades and grade or 1,
             time = data.grades and data.grades[grade].time or data.time
-        })
+        }
 
-        Spark.Events:Trigger('Job', player, job, grade, data.grades and data.grades[grade].name or job)
+        player.Data:Set('Job', job)
+        Spark:triggerEvent('SetJob', player, self:Get())
 
         return true
     end

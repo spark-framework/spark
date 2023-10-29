@@ -1,14 +1,10 @@
-Spark.Players = {
-    Players = {},
-    Raw = {},
-
-    Default = Spark:Config('Player') -- default user data
-}
+Players = {}
+Default = Spark:getConfig('Player') -- default user data
 
 --- @param source number?
 --- @param def defferals
-function Spark.Players:playerConnecting(source, def)
-    local steam = self.Source:Steam(source)
+function Spark:playerConnecting(source, def)
+    local steam = self:getSteamBySource(source)
 
     def.defer()
     Wait(0)
@@ -18,12 +14,12 @@ function Spark.Players:playerConnecting(source, def)
     end
 
     -- Check if the user is already cached, if this occurs- there is an error in Spark.
-    if self.Players[steam] then
+    if Players[steam] then
         return def.done('You are already registered?')
     end
 
     -- Register/or gets data from the database
-    local data = self:Authenticate(steam, source)
+    local data = self:authenticateUser(steam, source)
     if not data?.id then
         return def.done("Error while returning your data, please report this.")
     end
@@ -33,27 +29,27 @@ function Spark.Players:playerConnecting(source, def)
     --print("Data: " .. data.data)
 
     SetTimeout(5000, function()
-        if not self.Players[steam]?.netid and steam ~= self.Source.Dummy then -- User has not been asigned a netid (cancelled or kicked)
-            self.Players[steam] = nil
+        if not Players[steam]?.netid and steam ~= self:getDummySteam() then -- User has not been asigned a netid (cancelled or kicked)
+            Players[steam] = nil
         end
     end)
 
     -- Give scripts a way to reject users
-    Spark.Events:Trigger('Connecting', self:Get('steam', steam), def)
+    Spark:triggerEvent('Connecting', self:getPlayer('steam', steam), def)
     Wait(0)
 
     def.done()
 end
 
-function Spark.Players:playerJoining(source, netid)
-    local steam = self.Source:Steam(source)
+function Spark:playerJoining(source, netid)
+    local steam = self:getSteamBySource(source)
 
-    self.Players[steam].netid = netid -- update netid
+    Players[steam].netid = netid -- update netid
 end
 
-function Spark.Players:playerSpawned(source)
-    local steam = self.Source:Steam(source)
-    local player = self.Players[steam]
+function Spark:playerSpawned(source)
+    local steam = self:getSteamBySource(source)
+    local player = Players[steam]
 
     if not player then -- Checks if the user is registered.
         return print("Player is not registered when spawned?")
@@ -65,7 +61,8 @@ function Spark.Players:playerSpawned(source)
     end
 
     player.spawns = player.spawns + 1
-    Spark.Events:Trigger('Spawned', self:Get("steam", steam), player.spawns == 1)
+
+    Spark:triggerEvent('Spawned', self:getPlayer("steam", steam), player.spawns == 1)
 
     if source ~= 0 then
         TriggerClientEvent('Spark:Loaded', source)
@@ -74,48 +71,48 @@ end
 
 --- @param source number?
 --- @param reason string
-function Spark.Players:playerDropped(source, reason)
-    local steam = self.Source:Steam(source)
+function Spark:playerDropped(source, reason)
+    local steam = self:getSteamBySource(source)
 
-    local data = self.Players[steam]
+    local data = Players[steam]
     if not data then -- Checks if the user is registered.
         return print("Player is not registered when dropped?")
     end
 
-    Spark.Events:Trigger('Dropped', Spark.Players:Get("steam", steam))
+    Spark:triggerEvent('Dropped', self:getPlayer("steam", steam))
 
     print("User left! Steam " .. steam .. " id " .. data.id .. " source " .. source .. " reason " .. reason)
     --print("Data: " .. json.encode(data.data))
 
     data.data['__temp'] = nil -- remove temporary data
 
-    self.Raw:Dump(steam, data.data)
-    self.Players[steam] = nil
+    self:dumpUser(steam, data.data)
+    Players[steam] = nil
 end
 
 --- @param steam string
 --- @return table
-function Spark.Players:Authenticate(steam, source)
-    local data = self.Raw:Pull('steam', steam)
+function Spark:authenticateUser(steam, source)
+    local data = self:getRawDataByMethod('steam', steam)
 
     if not data then -- If the user is not registered, it will create a account for the person
-        if Spark.Driver:Execute('INSERT INTO users (steam) VALUES (?)', steam) == 1 then
+        if Spark:execute('INSERT INTO users (steam) VALUES (?)', steam) == 1 then
             data = {
-                id = self.Raw:Pull('steam', steam).id,
+                id = self:getRawDataByMethod('steam', steam).id,
                 steam = steam
             }
         end
     end
 
-    data.data = json.decode(data.data or json.encode(self.Default))
+    data.data = json.decode(data.data or json.encode(Default))
 
-    for k, v in pairs(self.Default) do -- incase of updates
+    for k, v in pairs(Default) do -- incase of updates
         if data.data[k] == nil then
             data.data[k] = v
         end
     end
 
-    self.Players[steam] = {
+    Players[steam] = {
         id = data.id,
         data = data.data,
         source = source,
@@ -125,30 +122,47 @@ function Spark.Players:Authenticate(steam, source)
     return data
 end
 
+function Spark:getRawPlayers()
+    return Players
+end
+
+--- @return player[]
+function Spark:getPlayers()
+    local players = {}
+    for steam in pairs(Players) do
+        local player = self:getPlayer("steam", steam)
+        if player then
+            table.insert(players, player)
+        end
+    end
+
+    return players
+end
+
 --- @param method string
 --- @param value any
 --- @return table
-function Spark.Players.Raw:Pull(method, value)
-    return Spark.Driver:Query('SELECT * FROM users WHERE ' .. method .. ' = ?', value)[1]
+function Spark:getRawDataByMethod(method, value)
+    return Spark:query('SELECT * FROM users WHERE ' .. method .. ' = ?', value)[1]
 end
 
 --- @param steam string
 --- @return table
-function Spark.Players.Raw:Data(steam)
-    local data = self:Pull('steam', steam)
+function Spark:getRawDataBySteam(steam)
+    local data = self:getRawDataByMethod('steam', steam)
     return not data and false or json.decode(data.data or "{}")
 end
 
 --- @param steam string
 --- @param data table
-function Spark.Players.Raw:Dump(steam, data)
-    return Spark.Driver:Execute('UPDATE users SET data = ? WHERE steam = ?', json.encode(data), steam)
+function Spark:dumpUser(steam, data)
+    return Spark:execute('UPDATE users SET data = ? WHERE steam = ?', json.encode(data), steam)
 end
 
 --- @param id number
 --- @return string | nil
-function Spark.Players.Raw:Convert(id)
-    for k,v in pairs(Spark.Players.Players) do
+function Spark:getSteamById(id)
+    for k,v in pairs(Players) do
         if v.id == id then
             return k
         end
@@ -158,22 +172,22 @@ end
 --- Attach the event to the connecting function.
 AddEventHandler('playerConnecting', function(_, __, def)
     local source = source
-    Spark.Players:playerConnecting(source, def)
+    Spark:playerConnecting(source, def)
 end)
 
 AddEventHandler('playerJoining', function(old)
     local source = source
-    Spark.Players:playerJoining(old, source)
+    Spark:playerJoining(old, source)
 end)
 
 --- Attach the event to the connecting function.
 RegisterNetEvent('playerSpawned', function()
     local source = source
-    Spark.Players:playerSpawned(source)
+    Spark:playerSpawned(source)
 end)
 
 --- Attach the event to the connecting function.
 AddEventHandler('playerDropped', function(reason)
     local source = source
-    Spark.Players:playerDropped(source, reason)
+    Spark:playerDropped(source, reason)
 end)

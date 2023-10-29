@@ -1,9 +1,7 @@
-Spark.Table = {}
-
 --- @param table table
 --- @param value any
 --- @return boolean | any
-function Spark.Table:Contains(table, value)
+function Spark:tableContains(table, value)
     for _, v in pairs(table) do
         if v == value then
             return v
@@ -15,7 +13,7 @@ end
 
 --- @param table table
 --- @return number
-function Spark.Table:Entries(table)
+function Spark:tableEntries(table)
     local count = 0
     for _ in pairs(table) do
         count = count + 1
@@ -26,10 +24,10 @@ end
 
 --- @param table table
 --- @return table
-function Spark.Table:Clone(table)
+function Spark:cloneTable(table)
     local result = {}
     for k, v in pairs(table) do
-        result[k] = type(v) == "table" and self:Clone(v) or v
+        result[k] = type(v) == "table" and self:cloneTable(v) or v
     end
 
     return result

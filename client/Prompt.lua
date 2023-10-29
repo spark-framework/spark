@@ -1,9 +1,7 @@
-Spark.Prompt = {}
-
 local Text = nil
 
 --- @param text string
-function Spark.Prompt:Show(text)
+function Spark:showPrompt(text)
     Text = text
 
     CreateThread(function()
@@ -21,6 +19,6 @@ function Spark.Prompt:Show(text)
     end)
 end
 
-function Spark.Prompt:Remove()
+function Spark:removePrompt()
     Text = nil
 end

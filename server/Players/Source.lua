@@ -1,13 +1,15 @@
 ---@diagnostic disable: redundant-return-value
-Spark.Players.Source = {
-    Dummy = 'tewstOMG'
-}
+local Dummy = 'tewstOMG'
+
+function Spark:getDummySteam()
+    return Dummy
+end
 
 --- @param source number?
 --- @return string
-function Spark.Players.Source:Steam(source)
+function Spark:getSteamBySource(source)
     if not source or source == 0 then
-        return self.Dummy
+        return Dummy
     end
 
     for _, v in pairs(GetPlayerIdentifiers(source) or {}) do
@@ -16,5 +18,5 @@ function Spark.Players.Source:Steam(source)
         end
     end
 
-    return self.Dummy
+    return Dummy
 end

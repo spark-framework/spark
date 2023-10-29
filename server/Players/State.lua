@@ -1,8 +1,11 @@
-local Groups, Server, Jobs = Spark:Config('Groups'), Spark:Config('Server'), Spark:Config('Jobs')
+local Groups, Server, Jobs =
+    Spark:getConfig('Groups'),
+    Spark:getConfig('Server'),
+    Spark:getConfig('Jobs')
 
 --- @param player player
 --- @param def defferals
-Spark.Events:Listen('Connecting', function(player, def)
+Spark:listenEvent('Connecting', function(player, def)
     if player.Ban:Is() then -- Is user banned
         return def.done('You are banned!')
     end
@@ -14,7 +17,7 @@ end)
 
 --- @param player player
 --- @param first boolean
-Spark.Events:Listen('Spawned', function(player, first)
+Spark:listenEvent('Spawned', function(player, first)
     local coords = player.Data:Get('Coords')
 
     if first then
@@ -28,11 +31,10 @@ Spark.Events:Listen('Spawned', function(player, first)
         player.Health:Set(player.Data:Get('Health')) -- set the player's health
 
         for _, group in pairs(player.Data:Get('Groups')) do
-            Spark.Events:Trigger('AddGroup', player, group) -- TODO: fix this
+            Spark:triggerEvent('AddGroup', player, group) -- TODO: fix this
         end
 
-        local job = player.Job:Get()
-        Spark.Events:Trigger('SetJob', player, job) -- TODO: fix this
+        Spark:triggerEvent('SetJob', player, player.Job:Get())
 
         CreateThread(function() -- save weapons
             while true do
@@ -75,7 +77,7 @@ Spark.Events:Listen('Spawned', function(player, first)
             end
         end)
     else -- if the user died and spawned again
-        coords = Spark.Players.Default.Coords
+        coords = Default.Coords
         player.Position:Set(coords)
 
         player.Customization:Set(player.Data:Get('Customization'))
@@ -89,8 +91,7 @@ end)
 
 --- @param player player
 --- @param job job
---- @param lastJob job
-Spark.Events:Listen('SetJob', function(player, job, lastJob)
+Spark:listenEvent('SetJob', function(player, job)
     local events = Jobs[job.name].events
     if events.recieved then
         events.recieved(player, job)
@@ -99,7 +100,7 @@ end)
 
 --- @param player player
 --- @param group string
-Spark.Events:Listen('AddGroup', function(player, group)
+Spark:listenEvent('AddGroup', function(player, group)
     local events = Groups[group].events
     if events.spawn then
         events.spawn(player)
@@ -108,7 +109,7 @@ end)
 
 --- @param player player
 --- @param group string
-Spark.Events:Listen('RemoveGroup', function(player, group)
+Spark:listenEvent('RemoveGroup', function(player, group)
     local events = Groups[group].events
     if events.remove then
         events.remove(player)
@@ -116,7 +117,7 @@ Spark.Events:Listen('RemoveGroup', function(player, group)
 end)
 
 --- @param player player
-Spark.Events:Listen('Dropped', function(player)
+Spark:listenEvent('Dropped', function(player)
     local coords = player.Position:Get()
 
     player.Data:Set('Coords', {x = coords.x, y = coords.y, z = coords.z})

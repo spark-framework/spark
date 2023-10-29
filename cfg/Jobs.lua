@@ -1,5 +1,6 @@
 return {
     ["unemployed"] = {
+        label = "Unemployed",
         paycheck = 1000,
         time = 1000 * 20, -- paycheck interval
 
@@ -20,13 +21,13 @@ return {
     ["police"] = {
         grades = {
             [1] = {
-                name = "Police Officer",
+                label = "Police Officer",
                 paycheck = 25000,
                 time = 1000 * 20 -- paycheck interval
             },
 
             [2] = {
-                name = "Police Chief",
+                label = "Police Chief",
                 paycheck = 50000,
                 time = 1000 * 20 -- paycheck interval
             }
@@ -34,8 +35,8 @@ return {
 
         events = {
             --- @param player player
-            recieved = function(player, grade, name)
-                player:Notification('You are now a ' .. name .. '!')
+            recieved = function(player, job)
+                player:Notification('You are now a ' .. job.label .. '!')
             end,
 
             --- @param player player

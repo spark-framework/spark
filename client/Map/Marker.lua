@@ -1,6 +1,5 @@
 ---@diagnostic disable: param-type-mismatch, missing-parameter
-Spark.Marker = { Id = 0 }
-
+local Player = Spark:getPlayer()
 local Markers = {}
 
 --- @param coords vector3
@@ -10,7 +9,7 @@ local Markers = {}
 --- @param b number
 --- @param distance number
 --- @return number
-function Spark.Marker:Add(coords, dcoords, r, g, b, distance)
+function Spark:addMarker(coords, dcoords, r, g, b, distance)
     local id = self.Id + 1
     self.Id = id
 
@@ -36,7 +35,7 @@ function Spark.Marker:Add(coords, dcoords, r, g, b, distance)
 end
 
 --- @param marker number
-function Spark.Marker:Remove(marker)
+function Spark:removeMarker(marker)
     Markers[marker] = nil
 end
 
@@ -45,7 +44,7 @@ CreateThread(function() -- draw markers (high ms)
         Wait(1)
 
         for _, v in pairs(Markers) do
-            if Spark.Player.Position:Distance(v.coords) <= v.distance then
+            if Player.Position:Distance(v.coords) <= v.distance then
                 DrawMarker(1, v.coords.x, v.coords.y, v.coords.z, 0, 0, 0, 0, 0, 0, v.dx, v.dy, v.dz, v.r, v.g, v.b, 200, 0, 0, 0, 50)
             end
         end

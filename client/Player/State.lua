@@ -1,16 +1,21 @@
-Spark:Callback('Spark:Update', function(data) -- Update user-data, with original delays
+local Player = Spark:getPlayer()
+
+Spark:createCallback('Spark:Update', function(data) -- Update user-data, with original delays
     local player = PlayerPedId()
+    for name, value in pairs(data) do
+        print("Updating " .. name .. " to " .. tostring(value))
+    end
 
     if data.customization then
-        Spark.Player.Customization:Set(data.customization)
+        Player.Customization:Set(data.customization)
     end
 
     if data.weapons then
-        Spark.Player.Weapons:Set(data.weapons)
+        Player.Weapons:Set(data.weapons)
     end
 
     if data.attachments then
-        --Spark.Player.Weapons.Attachments:Set(data.attachments)
+        --Player.Weapons.Attachments:Set(data.attachments)
     end
 
     if data.health then
@@ -18,14 +23,14 @@ Spark:Callback('Spark:Update', function(data) -- Update user-data, with original
     end
 
     if data.notification then
-        Spark.Player:Notification(data.notification)
+        Player:Notification(data.notification)
     end
 end)
 
-Spark:Callback('Spark:State', function() -- Get state-data from the client
+Spark:createCallback('Spark:State', function() -- Get state-data from the client
     return {
-        weapons = Spark.Player.Weapons:Get(),
-        customization = Spark.Player.Customization:Get(),
-        --attachments = Spark.Player.Weapons.Attachments:Get()
+        weapons = Player.Weapons:Get(),
+        customization = Player.Customization:Get(),
+        --attachments = Player.Weapons.Attachments:Get()
     }
 end)

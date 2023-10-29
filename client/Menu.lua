@@ -1,15 +1,15 @@
 ---@diagnostic disable: param-type-mismatch
+local Player = Spark:getPlayer()
+
 local Open, Index, Data, Color, Callback, Close = false, 1, {}, '', nil, nil
 
-Spark.Menu = {}
-
 --- @return boolean
-function Spark.Menu:Open()
+function Spark:isMenuOpen()
     return Open
 end
 
 --- @return string
-function Spark.Menu:Current()
+function Spark:getCurrentButton()
     return Data[Index]
 end
 
@@ -18,7 +18,7 @@ end
 --- @param data table
 --- @param callback fun(button:  string)
 --- @param close? fun()
-function Spark.Menu:Show(title, color, data, callback, close)
+function Spark:showMenu(title, color, data, callback, close)
     Open, Index, Data = true, 1, data
     Color, Callback, Close = color, callback, close
 
@@ -33,7 +33,7 @@ function Spark.Menu:Show(title, color, data, callback, close)
     })
 end
 
-function Spark.Menu:Close()
+function Spark:closeMenu()
     Open, Callback = false, nil
     return SendNUIMessage({
         type = "menu",
@@ -41,7 +41,7 @@ function Spark.Menu:Close()
     })
 end
 
-function Spark.Menu:Update() -- update key index in NUI
+function Spark:updateMenu() -- update key index in NUI
     return SendNUIMessage({
         type = "menu",
         action = "update",
@@ -52,44 +52,46 @@ function Spark.Menu:Update() -- update key index in NUI
     })
 end
 
-Spark.Player:Keybind('Close Menu', 'BACK', function()
+Player:Keybind('Close Menu', 'BACK', function()
     if Open then
         if not Close then
-            return Spark.Menu:Close()
+            return Spark:closeMenu()
         end
 
         Close()
     end
 end)
 
-Spark.Player:Keybind('Press Button', 'RETURN', function()
+Player:Keybind('Press Button', 'RETURN', function()
     if Open then
-        Callback(Spark.Menu:Current())
+        Callback(Spark:getCurrentButton())
     end
 end)
 
-Spark.Player:Keybind('Move Up', 'UP', function()
+Player:Keybind('Move Up', 'UP', function()
     if Open then
         Index = Index == 1
             and #Data or Index - 1
-        Spark.Menu:Update()
+        Spark:updateMenu()
     end
 end)
 
-Spark.Player:Keybind('Move Down', 'DOWN', function()
+Player:Keybind('Move Down', 'DOWN', function()
     if Open then
         Index = Index == #Data
             and 1 or Index + 1
-        Spark.Menu:Update()
+        Spark:updateMenu()
     end
 end)
 
-Spark:Callback('Spark:Menu:Show', function(title, color, data, id)
-    Spark.Menu:Show(title, color, data, function(button)
-        TriggerServerEvent('Spark:Menu:' .. id, button)
-    end)
+Spark:createCallback('Spark:Menu:Show', function(title, color, data, buttonId, closeId)
+    Spark:showMenu(title, color, data, function(button)
+        TriggerServerEvent('Spark:Menu:Button:' .. buttonId, button)
+    end, closeId and function()
+        TriggerServerEvent('Spark:Menu:Close:' .. closeId)
+    end or nil)
 end)
 
-Spark:Callback('Spark:Menu:Close', function()
-    Spark.Menu:Close()
+Spark:createCallback('Spark:Menu:Close', function()
+    Spark:closeMenu()
 end)
