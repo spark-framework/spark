@@ -6,7 +6,7 @@ local Areas = {}
 --- @param height number
 --- @param enter fun()
 --- @param leave fun()
-function Spark:createArea(position, radius, height, enter, leave)
+function Spark:addArea(position, radius, height, enter, leave)
     local area = {}
     local id = Spark:tableEntries(Areas)
 
