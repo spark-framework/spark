@@ -151,6 +151,23 @@ function Spark:getPlayer()
         end
     end
 
+    --- @param weapon string
+    --- @return boolean
+    function player:hasWeapon(weapon)
+        return HasPedGotWeapon(PlayerPedId(), GetHashKey(weapon), false)
+    end
+
+    --- @param weapon string
+    --- @param ammo number
+    function player:giveWeapon(weapon, ammo)
+        GiveWeaponToPed(PlayerPedId(), GetHashKey(weapon), ammo or 0, false, false)
+    end
+
+    --- @param weapon string
+    function player:removeWeapon(weapon)
+        RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon))
+    end
+
     --- @return table
     function player:getWeapons()
         local player = PlayerPedId()
