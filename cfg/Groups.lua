@@ -10,7 +10,9 @@ return {
             end
         },
         permissions = {
-            "revive"
+            "revive",
+            "setjob",
+            "removejob"
         }
     },
 
@@ -19,7 +21,7 @@ return {
             spawn = function(player)
                 player:notification('You are now a developer.')
             end,
-            
+
             remove = function(player)
                 player:notification('You are no longer a developer.')
             end

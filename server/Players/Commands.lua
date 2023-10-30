@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil
 -- hardcoded test commands
 
 RegisterCommand('join', function(source)

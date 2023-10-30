@@ -6,10 +6,8 @@ function Spark:getVersion()
     return tonumber(GetResourceMetadata(GetCurrentResourceName(), 'version', 0))
 end
 
---- @return number | nil
+--- @return number
 function Spark:getNewestVersion()
     local text, status = self:perform(URL, 'GET')
-    if status == 200 then
-        return tonumber(text)
-    end
+    return status == 200 and tonumber(text) or 1.0
 end

@@ -26,7 +26,6 @@ function Spark:playerConnecting(source, def)
 
     -- Let the player join the server
     print('Player joined! ID: ' .. data.id .. " Steam: " .. steam .. " Source: " .. source)
-    --print("Data: " .. data.data)
 
     SetTimeout(5000, function()
         if not Players[steam]?.netid and steam ~= self:getDummySteam() then -- User has not been asigned a netid (cancelled or kicked)
@@ -175,6 +174,7 @@ AddEventHandler('playerConnecting', function(_, __, def)
     Spark:playerConnecting(source, def)
 end)
 
+--- Attach the event to the connecting function.
 AddEventHandler('playerJoining', function(old)
     local source = source
     Spark:playerJoining(old, source)
