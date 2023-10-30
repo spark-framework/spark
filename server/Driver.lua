@@ -10,7 +10,7 @@ function Spark:execute(query, ...) return 0 end
 function Spark:query(query, ...) return {} end
 
 local driver = Spark:getFile(
-    GetCurrentResourceName(),
+    Spark:getSparkName(),
     'server/Drivers/' .. Spark:getConfig('Driver') .. '.lua'
 )
 

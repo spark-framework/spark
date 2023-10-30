@@ -30,6 +30,7 @@ files {
 -- ############### --
 shared_scripts {
     'shared/Spark.lua',
+    'shared/Resources.lua',
     'shared/String.lua',
     'shared/Table.lua',
     'shared/Files.lua',

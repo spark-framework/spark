@@ -3,11 +3,9 @@
 --- @param name string
 --- @param callback function
 function Spark:createCallback(name, callback)
-    local resource, allowed = GetInvokingResource(), true
-    AddEventHandler('onResourceStop', function(resourceName)
-        if resourceName == resource then
-            allowed = false
-        end
+    local allowed = true
+    Spark:onResourceStop(GetInvokingResource(), function ()
+        allowed = false
     end)
 
     RegisterNetEvent('Spark:Callbacks:Server:Run:' .. name, function(id, ...)

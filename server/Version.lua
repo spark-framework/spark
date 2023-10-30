@@ -3,7 +3,7 @@ local URL =
 
 --- @return number?
 function Spark:getVersion()
-    return tonumber(GetResourceMetadata(GetCurrentResourceName(), 'version', 0))
+    return tonumber(GetResourceMetadata(Spark:getSparkName(), 'version', 0))
 end
 
 --- @return number

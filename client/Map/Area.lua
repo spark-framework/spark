@@ -30,11 +30,8 @@ function Spark:addArea(position, radius, height, enter, leave)
         return self:Coords(GetEntityCoords(entity))
     end
 
-    local resource = GetInvokingResource() -- remove area when invocking resource restarts
-    AddEventHandler('onResourceStop', function(name)
-        if resource == name then
-            Areas[id] = nil
-        end
+    Spark:onResourceStop(GetInvokingResource(), function ()
+        Areas[id] = nil
     end)
 
     Areas[id] = {

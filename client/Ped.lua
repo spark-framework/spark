@@ -22,10 +22,8 @@ function Spark:createPed(type, model, coords, heading, options)
     )
 
     if options?.delete then -- delete ped when resource stops
-        AddEventHandler('onResourceStop', function(name)
-            if name == (GetInvokingResource() or GetCurrentResourceName()) then
-                DeleteEntity(ped)
-            end
+        Spark:onResourceStop(GetInvokingResource() or GetCurrentResourceName(), function ()
+            DeleteEntity(ped)
         end)
     end
 

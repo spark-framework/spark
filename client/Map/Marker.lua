@@ -11,12 +11,8 @@ local Markers = {}
 --- @return number
 function Spark:addMarker(coords, dcoords, r, g, b, distance)
     local id = Spark:tableEntries(Markers)
-
-    local resource = GetInvokingResource()
-    AddEventHandler('onResourceStop', function(name)
-        if resource == name then
-            Markers[id] = nil
-        end
+    Spark:onResourceStop(GetInvokingResource(), function()
+        Markers[id] = nil
     end)
 
     Markers[id] = {
