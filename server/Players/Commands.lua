@@ -1,130 +1,113 @@
 ---@diagnostic disable: need-check-nil
 -- hardcoded test commands
 
-RegisterCommand('join', function(source)
-    Wait(0)
-    Spark:playerConnecting(source, {
-        defer = function () end,
-        update = function (text) end,
-        done = function (text) end
-    })
-end, false)
+local Commands = {
+    --- @param player player
+    join = function(player)
+        Spark:playerConnecting(player:getSource(), {
+            defer = function () end,
+            update = function (text) end,
+            done = function (text) end
+        })
+    end,
 
-RegisterCommand('spawn', function(source)
-    Wait(0)
-    Spark:playerSpawned(source)
-end, false)
+    --- @param player player
+    spawn = function(player)
+        Spark:playerSpawned(player:getSource())
+    end,
 
-RegisterCommand('data', function(source, args)
-    Wait(0)
+    --- @param player player
+    drop = function(player)
+        Spark:playerDropped(player:getSource(), "Testing")
+    end,
 
-    local player = Spark:getPlayer("source", source)
-    if args[1] == "set" then
-        player:setData(args[2], args[3])
-    else
-        print(player:getData(args[2]))
-    end
-end, false)
+    --- @param player player
+    data = function(player, args)
+        if args[1] == "set" then
+            player:setData(args[2], args[3])
+        else
+            print(player:getData(args[2]))
+        end
+    end,
 
-RegisterCommand('group', function(source, args)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
+    --- @param player player
+    group = function(player, args)
+        if args[1] == "add" then
+            player:addGroup(args[2])
+        elseif args[1] == "remove" then
+            player:removeGroup(args[2])
+        end
+    end,
 
-    if args[1] == "add" then
-        print(player:addGroup(args[2]))
-    else
-        print(player:removeGroup(args[2]))
-    end
-end, false)
+    --- @param player player
+    permission = function(player, args)
+        print(player:hasPermission(args[1]))
+    end,
 
-RegisterCommand('permission', function(source, args)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
+    --- @param player player
+    cash = function(player, args)
+        args[2] = tonumber(args[2] or "0")
 
-    if args[1] == "1" then
-        print(player:hasPermission(args[2]))
-    else
-        print(player:hasPermission({args[2], args[3]}))
-    end
-end, false)
+        if args[1] == "add" then
+            player:addCash(args[2])
+        elseif args[1] == "remove" then
+            player:removeCash(args[2])
+        elseif args[1] == "get" then
+            print(player:getCash())
+        elseif args[1] == "set" then
+            player:setCash(args[2])
+        elseif args[1] == "has" then
+            print(player:hasCash(args[2]))
+        elseif args[1] == "payment" then
+            print(player:payment(args[2]))
+        end
+    end,
 
-RegisterCommand('cash', function(source, args)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
+    --- @param player player
+    menu = function(player, args)
+        if args[1] == "open" then
+            player:showMenu('hello', 'rgb(39, 78, 223)', {
+                "Hello"
+            }, function(button)
+                print(button)
+            end)
+        elseif args[1] == "close" then
+            player:closeMenu()
+        end
+    end,
 
-    args[2] = tonumber(args[2] or "0")
+    --- @param player player
+    ban = function(player, args)
+        player:setBanned(true, args[1])
+    end,
 
-    local function notification(text)
-        player:notification(tostring(text) .. " cash " .. player:getCash())
-    end
+    --- @param player player
+    job = function(player, args)
+        if args[1] == "set" then
+            player:setJob(args[1], tonumber(args[2]) or 1)
+        elseif args[1] == "get" then
+            local job, grade = player:getJob()
+            print(job, grade)
+        end
+    end,
+}
 
-    if args[1] == "add" then
-        notification(player:addCash(args[2]))
-    elseif args[1] == "remove" then
-        notification(player:removeCash(args[2]))
-    elseif args[1] == "get" then
-        notification(player:getCash())
-    elseif args[1] == "set" then
-        notification(player:setCash(args[2]))
-    elseif args[1] == "has" then
-        notification(player:hasCash(args[2]))
-    elseif args[1] == "payment" then
-        notification(player:payment(args[2]))
-    end
-end, false)
+for command, callback in pairs(Commands) do
+    RegisterCommand(command, function(source, args)
+        Wait(0) -- Wait so prints doesn't get printed in player's chat
 
-RegisterCommand('drop', function(source)
-    Wait(0)
-    Spark:playerDropped(source, 'daddy waddy')
-end, false)
-
-RegisterCommand('openmenu', function(source, args, raw)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
-    player:showMenu('hello', 'rgb(39, 78, 223)', {
-        "Hello"
-    }, function(button)
-        print(button)
-    end)
-end, false)
-
-RegisterCommand('closemenu', function(source, args, raw)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
-    player:closeMenu()
-end, false)
-
-RegisterCommand('ban', function(source, args, raw)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
-    player:setBanned(true, 'Welp')
-end, false)
-
-RegisterCommand('setjob', function(source, args, raw)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
-    player:setJob(args[1], tonumber(args[2]) or 1)
-end, false)
-
-RegisterCommand('getjob', function(source, args, raw)
-    Wait(0)
-    local player = Spark:getPlayer("source", source)
-    local job, grade = player:getJob()
-
-    print(job, grade)
-end, false)
-
-RegisterCommand('run', function(source, args, raw)
-    Wait(0)
-    Spark:triggerEvent('Test', Spark:getPlayer('source', source), 'Hello')
-end, false)
-
+        local player = Spark:getPlayer("source", source)
+        if player then
+            callback(player, args)
+        end
+    end, false)
+end
 
 CreateThread(function()
-    Wait(2000)
-    for _, source in pairs(GetPlayers()) do
-        local src = tonumber(source)
-        Spark:playerConnecting(src, {
+    Wait(1500) -- Wait for Spark to load
+
+    for _, source in pairs(GetPlayers()) do -- Loop all players
+        Spark:playerConnecting(tonumber(source), {
             defer = function () end,
             update = function () end,
             done = function () end
@@ -132,6 +115,6 @@ CreateThread(function()
 
         Wait(250)
 
-        Spark:playerSpawned(src)
+        Spark:playerSpawned(tonumber(source))
     end
 end)
