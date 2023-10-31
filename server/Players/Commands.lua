@@ -2,9 +2,9 @@
 -- hardcoded test commands
 
 local Commands = {
-    --- @param player player
-    join = function(player)
-        Spark:playerConnecting(player:getSource(), {
+    --- @param source number
+    join = function(source)
+        Spark:playerConnecting(source, {
             defer = function () end,
             update = function (text) end,
             done = function (text) end
@@ -96,9 +96,11 @@ for command, callback in pairs(Commands) do
     RegisterCommand(command, function(source, args)
         Wait(0) -- Wait so prints doesn't get printed in player's chat
 
-        local player = Spark:getPlayer("source", source)
-        if player then
+        local player = Spark:getPlayer("steam", Spark:getSteamBySource(source))
+        if player:getRawData() and player then
             callback(player, args)
+        else
+            callback(source, args)
         end
     end, false)
 end

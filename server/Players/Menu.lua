@@ -58,7 +58,7 @@ function Spark:openAdminMenu(player)
     player:showMenu('Admin Menu', 'rgb(214, 45, 30)', result, function(button)
         local data
         for _, v in pairs(buttons) do
-            data = v.label == button and v
+            data = v.label == button and v or data
         end
 
         if not player:hasPermission(data.permission) then

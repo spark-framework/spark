@@ -77,7 +77,7 @@ CreateThread(function() -- disable health regen
 end)
 
 CreateThread(function() -- disable health regen
-    while true do
+    --[[ while true do
         Wait(100)
         SetPlayerHealthRechargeMultiplier(PlayerId(), 0)
 
@@ -91,5 +91,5 @@ CreateThread(function() -- disable health regen
                 end
             end
         end
-    end
+    end--]]
 end)

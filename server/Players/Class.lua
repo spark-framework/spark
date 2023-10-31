@@ -263,18 +263,17 @@ function Spark:getPlayer(method, value)
         return true
     end
 
-    --- @param permission string | table
+    --- @param permission string
     --- @return boolean
     function player:hasPermission(permission)
-        for _, v in pairs(Groups) do
-            for _, perm in pairs(type(permission) == "table" and permission or {permission}) do
-                if not Spark:tableContains(v.permissions, perm) then
-                    return false
-                end
+        for _, v in pairs(self:getGroups()) do
+            local group = Groups[v]
+            if Spark:tableContains(group.permissions, permission) then
+                return true
             end
         end
 
-        return true
+        return false
     end
 
     --- @param group string
