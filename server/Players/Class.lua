@@ -278,7 +278,7 @@ function Spark:getPlayer(method, value)
     end
 
     --- @param group string
-    --- @return string
+    --- @return boolean
     function player:hasGroup(group)
         return Spark:tableContains(self:getGroups(), group)
     end

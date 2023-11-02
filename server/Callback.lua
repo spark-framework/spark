@@ -1,7 +1,7 @@
 ---@diagnostic disable: duplicate-set-field
 
 --- @param name string
---- @param callback function
+--- @param callback fun(player: player, ...)
 function Spark:createCallback(name, callback)
     local allowed = true
     Spark:onResourceStop(GetInvokingResource(), function ()
@@ -14,9 +14,12 @@ function Spark:createCallback(name, callback)
             return
         end
 
-        TriggerClientEvent('Spark:Callbacks:Client:Response:' .. name .. ':' .. id,
-            source,
-            callback(Spark:getPlayer('source', source), table.unpack(...))
-        )
+        local player = Spark:getPlayer('source', source)
+        if player then
+            TriggerClientEvent('Spark:Callbacks:Client:Response:' .. name .. ':' .. id,
+                source,
+                callback(player, table.unpack(...))
+            )
+        end
     end)
 end

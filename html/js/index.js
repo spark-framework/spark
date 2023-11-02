@@ -49,6 +49,10 @@ window.addEventListener('message', event => {
             'background-color': 'white',
         })
     }
+
+    if (item.action === "updateButton") {
+        $('.buttons #' + data.index.toString()).html(data.text)
+    }
 })
 
 $(document).ready(() => {

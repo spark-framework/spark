@@ -13,6 +13,15 @@ function Spark:getCurrentButton()
     return Data[Index]
 end
 
+function Spark:getMenuIndex()
+    return Index
+end
+
+function Spark:setMenuIndex(index)
+    Index = index
+    self:updateMenu()
+end
+
 --- @param title string
 --- @param color string
 --- @param data table
@@ -29,6 +38,17 @@ function Spark:showMenu(title, color, data, callback, close)
             title = title,
             buttons = data,
             color = color
+        }
+    })
+end
+
+function Spark:updateButton(index, text)
+    return SendNUIMessage({
+        type = "menu",
+        action = "updateButton",
+        data = {
+            index = index,
+            text = text
         }
     })
 end
