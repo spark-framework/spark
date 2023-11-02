@@ -64,7 +64,7 @@ end)
 
 Player:keybind('Press Button', 'RETURN', function()
     if Open then
-        Callback(Spark:getCurrentButton())
+        pcall(Callback, Spark:getCurrentButton())
     end
 end)
 

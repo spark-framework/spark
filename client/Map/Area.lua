@@ -51,9 +51,9 @@ CreateThread(function()
             local success = data.area:Player()
 
             if data.in_area and not success and data.leave then
-                data.leave()
+                pcall(data.leave)
             elseif not data.in_area and success and data.enter then
-                data.enter()
+                pcall(data.enter)
             end
 
             data.in_area = success

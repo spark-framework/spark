@@ -26,7 +26,7 @@ local Commands = {
         if args[1] == "set" then
             player:setData(args[2], args[3])
         else
-            print(player:getData(args[2]))
+            player:notification(player:getData(args[2]))
         end
     end,
 
@@ -41,7 +41,7 @@ local Commands = {
 
     --- @param player player
     permission = function(player, args)
-        print(player:hasPermission(args[1]))
+        player:notification(tostring(player:hasPermission(args[1])))
     end,
 
     --- @param player player
@@ -53,13 +53,13 @@ local Commands = {
         elseif args[1] == "remove" then
             player:removeCash(args[2])
         elseif args[1] == "get" then
-            print(player:getCash())
+            player:notification(tostring(player:getCash()))
         elseif args[1] == "set" then
             player:setCash(args[2])
         elseif args[1] == "has" then
-            print(player:hasCash(args[2]))
+            player:notification(tostring(player:hasCash(args[2])))
         elseif args[1] == "payment" then
-            print(player:payment(args[2]))
+            player:notification(tostring(player:payment(args[2])))
         end
     end,
 
@@ -68,9 +68,7 @@ local Commands = {
         if args[1] == "open" then
             player:showMenu('hello', 'rgb(39, 78, 223)', {
                 "Hello"
-            }, function(button)
-                print(button)
-            end)
+            }, function(button) end)
         elseif args[1] == "close" then
             player:closeMenu()
         end
@@ -87,9 +85,16 @@ local Commands = {
             player:setJob(args[1], tonumber(args[2]) or 1)
         elseif args[1] == "get" then
             local job, grade = player:getJob()
-            print(job, grade)
+            player:notification(job .. " " .. grade)
         end
     end,
+
+    --- @param player player
+    showPrompt = function(player)
+        player:showSurvey('HEllo', 32, function(result, text)
+            player:notification(result .. " " .. text)
+        end)
+    end
 }
 
 for command, callback in pairs(Commands) do

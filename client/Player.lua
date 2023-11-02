@@ -250,10 +250,20 @@ function Spark:getPlayer()
     --- @param callback fun()
     function player:keybind(name, key, callback)
         local id = Ids.Keybind + 1
-        local command = '+' .. (GetInvokingResource() or GetCurrentResourceName()) .. tostring(id)
+        local resource = GetInvokingResource()
+
+        local command = '+' .. (resource or GetCurrentResourceName()) .. tostring(id)
         Ids.Keybind = id
 
-        RegisterCommand(command, callback, false)
+        if resource then
+            Spark:onResourceStop(resource, function()
+                callback = function() end
+            end)
+        end
+
+        RegisterCommand(command, function()
+            pcall(callback)
+        end, false)
 
         RegisterKeyMapping(command, name, 'keyboard', key)
         SetTimeout(500, function ()

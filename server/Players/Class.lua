@@ -8,7 +8,8 @@ local Identifiers, Groups, Jobs = {
 local Ids = {
     Callback = 0,
     Menu = 0,
-    Keybind = 0
+    Keybind = 0,
+    Survey = 0
 }
 
 --- @param method "steam" | "source" | "id"
@@ -108,7 +109,7 @@ function Spark:getPlayer(method, value)
         --- @param plr player
         Spark:listenEvent(event, function(plr, ...)
             if plr:getSteam() == player:getSteam() then
-                callback(...)
+                pcall(callback, ...) -- maybe not work because of ... unpack?
             end
         end)
     end
@@ -353,7 +354,7 @@ function Spark:getPlayer(method, value)
         RegisterNetEvent('Spark:Menu:Button:' .. id, function(button)
             local source = source
             if player:getSource() == source then
-                callback(button)
+                pcall(callback, button)
             end
         end)
 
@@ -361,7 +362,7 @@ function Spark:getPlayer(method, value)
             RegisterNetEvent('Spark:Menu:Close:' .. id, function()
                 local source = source
                 if player:getSource() == source then
-                    close()
+                    pcall(close)
                 end
             end)
         end
@@ -371,6 +372,23 @@ function Spark:getPlayer(method, value)
 
     function player:closeMenu()
         player:triggerCallback('Spark:Menu:Close')
+    end
+
+    --- @param text string
+    --- @param size number
+    --- @param callback fun(result: boolean, text?: string)
+    function player:showSurvey(text, size, callback)
+        local id = Ids.Survey + 1
+        Ids.Survey = id
+
+        RegisterNetEvent('Spark:Survey:' .. id, function(result, text)
+            local source = source
+            if player:getSource() == source then
+                pcall(callback, result, text)
+            end
+        end)
+
+        player:triggerCallback('Spark:Survey', text, size, id)
     end
 
     --- @param name string
@@ -383,7 +401,7 @@ function Spark:getPlayer(method, value)
         RegisterNetEvent('Spark:Keybind:' .. id, function()
             local source = source
             if player:getSource() == source then
-                callback()
+                pcall(callback)
             end
         end)
 

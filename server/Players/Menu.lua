@@ -35,7 +35,10 @@ function Spark:openAdminMenu(player)
             label = "Set Job",
             permission = "setjob",
             action = function()
-                player:notification("Not made yet")
+                local target = Spark:askForPlayer(player)
+                if not target then
+                    return player:notification('Cannot find player!')
+                end
             end
         },
 
@@ -44,6 +47,26 @@ function Spark:openAdminMenu(player)
             permission = "removejob",
             action = function()
                 player:notification("Not made yet")
+            end
+        },
+
+        {
+            label = "Give Cash",
+            permission = "givecash",
+            action = function()
+                local target = Spark:askForPlayer(player)
+                if not target then
+                    return
+                end
+
+                player:showSurvey('Amount of cash', 32, function(result, text)
+                    if not result then
+                        return
+                    end
+
+                    target:addCash(tonumber(text) or 0)
+                    target:notification('You recieved ' .. text .. " from ID " .. player:getId())
+                end)
             end
         },
     }
@@ -66,6 +89,9 @@ function Spark:openAdminMenu(player)
         end
 
         data.action()
+    end, function ()
+        player:closeMenu()
+        Spark:openMainMenu(player)
     end)
 end
 
@@ -79,6 +105,26 @@ function Spark:openPoliceMenu(player)
     player:showMenu('Police Menu', 'rgb(214, 45, 30)', {}, function(button)
         
     end)
+end
+
+--- @param player player
+--- @return player | false
+function Spark:askForPlayer(player)
+    local result = promise.new()
+    player:showSurvey('Insert Player ID', 32, function(bool, text)
+        if not bool then
+            return
+        end
+
+        local target = Spark:getPlayer("id", text)
+        if target then
+            result:resolve(target)
+        else
+            result:resolve(false)
+        end
+    end)
+
+    return Citizen.Await(result)
 end
 
 --- @param player player

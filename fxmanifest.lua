@@ -22,6 +22,7 @@ ui_page 'html/index.html'
 files {
     'html/index.html',
     'html/css/index.css',
+    'html/js/functions.js',
     'html/js/index.js'
 }
 
@@ -54,6 +55,7 @@ client_scripts {
     
     'client/Prompt.lua',
     'client/Menu.lua',
+    'client/Survey.lua',
 
     'client/Map/*.lua'
 }

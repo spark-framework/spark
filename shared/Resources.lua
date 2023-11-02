@@ -8,7 +8,7 @@ end
 function Spark:onResourceStop(resource, callback)
     AddEventHandler('onResourceStop', function(name)
         if name == resource then
-            callback()
+            pcall(callback)
         end
     end)
 end

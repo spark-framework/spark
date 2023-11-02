@@ -8,8 +8,8 @@ window.addEventListener('message', event => {
             display: "flex"
         })
 
-        $('.title').text(data.title) // update title on menu
-        $('.header').css({ // update background color on header
+        $('.menu .header .title').text(data.title) // update title on menu
+        $('.menu .header').css({ // update background color on header
             "background-color": data.color
         })
 
@@ -49,4 +49,34 @@ window.addEventListener('message', event => {
             'background-color': 'white',
         })
     }
+})
+
+$(document).ready(() => {
+    $('.cancel').click(() => {
+        removePrompt()
+        sendCallback('Prompt:Result', {
+            result: false
+        })
+    })
+
+    $('.submit').click(() => {
+        sendCallback('Prompt:Result', {
+            result: true,
+            text: $('.prompt .input').val()
+        })
+
+        removePrompt()
+    })
+})
+
+window.addEventListener('message', event => {
+    let item = event.data
+    let data = item.data
+    if (item.type !== "prompt") return
+
+    $('.prompt').show()
+    $('.prompt .title').text(data.text)
+    $('.prompt .input').css({
+        "font-size": data.size
+    }).focus()
 })

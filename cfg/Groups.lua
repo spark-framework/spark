@@ -12,7 +12,8 @@ return {
         permissions = {
             "revive",
             "setjob",
-            "removejob"
+            "removejob",
+            "givecash"
         }
     },
 
