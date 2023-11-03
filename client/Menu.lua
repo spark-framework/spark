@@ -13,6 +13,7 @@ function Spark:getCurrentButton()
     return Data[Index]
 end
 
+--- @return number
 function Spark:getMenuIndex()
     return Index
 end
@@ -42,6 +43,8 @@ function Spark:showMenu(title, color, data, callback, close)
     })
 end
 
+--- @param index number
+--- @param text string
 function Spark:updateButton(index, text)
     return SendNUIMessage({
         type = "menu",
@@ -53,14 +56,6 @@ function Spark:updateButton(index, text)
     })
 end
 
-function Spark:closeMenu()
-    Open, Callback = false, nil
-    return SendNUIMessage({
-        type = "menu",
-        action = "close",
-    })
-end
-
 function Spark:updateMenu() -- update key index in NUI
     return SendNUIMessage({
         type = "menu",
@@ -69,6 +64,14 @@ function Spark:updateMenu() -- update key index in NUI
             index = Index,
             color = Color
         }
+    })
+end
+
+function Spark:closeMenu()
+    Open, Callback = false, nil
+    return SendNUIMessage({
+        type = "menu",
+        action = "close",
     })
 end
 

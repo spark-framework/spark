@@ -421,6 +421,7 @@ function Spark:getPlayer(method, value)
     end
 
     --- @param job string
+    --- @return boolean
     function player:hasJob(job)
         return self:getJob().name == job
     end

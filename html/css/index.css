@@ -1,3 +1,8 @@
+@font-face {
+	font-family: BoxedRound;
+	src: url("fonts/BoxedRoundSemibold.ttf");
+}
+
 body {
     padding: 0px;
     margin: 0px;
@@ -6,15 +11,17 @@ body {
 }
 
 .menu {
-    width: 16vw;
+    width: 17vw;
     top: 50%;
-    left: 8%;
+    left: 9%;
+    padding-bottom: 7px;
     transform: translate(-50%, -50%);
 
     position: absolute;
     flex-direction: column;
     display: none;
-    background-color: rgba(1, 1, 1, 0.491);
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 10px;
 }
 
 .menu .buttons {
@@ -30,56 +37,51 @@ body {
 
 .menu .header {
     position: absolute;
-    background-color: rgb(39, 78, 223);
+    background-color: rgb(39, 78, 223, 0);
     top: 0;
     width: 100%;
     height: 6vh;
+    border-radius: 10px;
 }
 
 .menu .header .title {
     position: relative;
-    left:0;
+    /* left: 10px; */
     width: 100%;
 
+    /*width: 15vw;*/
+
     text-align: center;
-    font-family: Montserrat;
     font-weight: 900;
     color: #ffffff;
 
     margin: 0;
-    top: 5%;
+    top: 11%;
 
-    font-size: 4.5vh;
+    font-size: 4vh;
+    font-family: BoxedRound;
 }
 
 .menu .button {
     position: relative;
     display: flex;
-    justify-content: center;
     margin-top: 7px;
+    margin-bottom: 9.75px;
 
-    /*background-color: white;*/
-    
-    width: 100%;
+    background-color: rgba(255, 255, 255, 0.063);
+    left: 2.5%;
+    width: 95%;
     height: 50px;
-    font-family: Montserrat;
-    font-size: 2.4rem;
+    font-family: BoxedRound;
+    font-size: 1.3rem;
     color: white;
+    border-radius: 7px;
 }
 
-.menu .button123 {
+.menu .button p {
     position: relative;
-    display: flex;
-    justify-content: center;
-
-    background-color: white;
-    
-    width: 100%;
-    height: 50px;
-    font-family: Montserrat;
-    font-size: 2.4rem;
-    font-weight: bold;
-    color: black;
+    bottom: 11.5px;
+    left: 10px;
 }
 
 .prompt {
@@ -100,13 +102,13 @@ body {
     border-radius: 15px;
     width: 100%;
     height: 110%;
-    background-color: #191919;
+    background-color: rgb(29, 26, 26);
 }
 
 .prompt .header .title {
     font-size: 1.9vw;
     color: white;
-    font-family: 'Roboto', sans-serif;
+    font-family: BoxedRound;
     font-weight: 300;
     left: 0;
     width: 100%;
@@ -117,14 +119,14 @@ body {
 .prompt .input {
     text-align: center;
     font-size: 1.22vw;
-    font-family: 'Roboto', sans-serif;
+    font-family: BoxedRound;
     font-weight: 100;
     color:rgb(244, 244, 244);
     position: absolute;
     top: 20%;
     width: 85%;
     height: 60%;
-    background-color: #272727;
+    background-color: rgba(255, 255, 255, 0.063);
     border: none;
     border-radius: 15px;
     left: 50%;
@@ -141,10 +143,9 @@ body {
     border-radius: 8px;
     position: absolute;
     top: 84%;
-    padding: 5px;
     width: 40%;
     height: 20%;
-    font-family: 'Roboto', sans-serif;
+    font-family: BoxedRound;
     font-weight: 300;
     font-size: 40px;
     color: white;
@@ -156,12 +157,14 @@ body {
 
 .prompt .cancel {
     background-color: rgb(255, 68, 90);
-    left: 20px;
+    left: 8%;
+    font-size: 2vw;
 }
 
 .prompt .submit {
     background-color: #28A745;
-    right: 20px;
+    right: 8%;
+    font-size: 2vw;
 }
 
 .prompt .cancel:hover {
@@ -170,4 +173,12 @@ body {
 
 .prompt .submit:hover {
     background-color: #2d7d40;
+}
+
+.prompt .cancel:active {
+    background-color: rgb(197, 25, 45);
+}
+
+.prompt .submit:active {
+    background-color: #226130;
 }

@@ -1,7 +1,7 @@
 --- @param coords vector3
 --- @param type number
 --- @param color number
---- @param text string | nil
+--- @param text? string
 --- @return number
 function Spark:addBlip(coords, type, color, text)
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)

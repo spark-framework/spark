@@ -9,9 +9,6 @@ window.addEventListener('message', event => {
         })
 
         $('.menu .header .title').text(data.title) // update title on menu
-        $('.menu .header').css({ // update background color on header
-            "background-color": data.color
-        })
 
         $('.buttons').empty()
 
@@ -19,7 +16,7 @@ window.addEventListener('message', event => {
         data.buttons.forEach(element => {
             index += 1
 
-            $(`<div id="${index.toString()}" class="button">${element}</div>`)
+            $(`<div id="${index.toString()}" class="button"><p>${element}<p></div>`)
                 .appendTo('.buttons') // Add buttons to menu
         })
 
@@ -38,8 +35,8 @@ window.addEventListener('message', event => {
     if (item.action === "update") {
         $('.buttons .button').each(function(index, element) {
             $(element).css({ // reset all buttons
-                "color": '#ffffff',
-                "background-color": "transparent",
+                "color": 'white',
+                "background-color": "rgba(255, 255, 255, 0.063)",
                 "margin-top": '7px',
             })
         })
@@ -51,7 +48,7 @@ window.addEventListener('message', event => {
     }
 
     if (item.action === "updateButton") {
-        $('.buttons #' + data.index.toString()).html(data.text)
+        $('.buttons #' + data.index.toString() + ' .p').text(data.text)
     }
 })
 

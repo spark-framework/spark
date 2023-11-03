@@ -1,7 +1,7 @@
 ---@diagnostic disable: duplicate-set-field
 
 --- @param name string
---- @param callback fun(player: player, ...)
+--- @param callback function
 function Spark:createCallback(name, callback)
     local allowed = true
     Spark:onResourceStop(GetInvokingResource(), function ()

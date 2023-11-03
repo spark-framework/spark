@@ -21,6 +21,7 @@ ui_page 'html/index.html'
 
 files {
     'html/index.html',
+    'html/css/fonts/BoxedRoundSemibold.ttf',
     'html/css/index.css',
     'html/js/functions.js',
     'html/js/index.js'

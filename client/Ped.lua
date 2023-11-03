@@ -2,7 +2,7 @@
 --- @param model string
 --- @param coords vector3
 --- @param heading number
---- @param options ped | nil
+--- @param options? ped
 --- @return number
 function Spark:createPed(type, model, coords, heading, options)
     local hash = GetHashKey(model)

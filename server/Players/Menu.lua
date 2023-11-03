@@ -111,17 +111,37 @@ end
 --- @return player | false
 function Spark:askForPlayer(player)
     local result = promise.new()
-    player:showSurvey('Insert Player ID', 32, function(bool, text)
-        if not bool then
-            return
+    local players = {}
+
+    for _, target in pairs(Spark:getPlayers()) do
+        players[GetPlayerName(target:getSource()) .. ' (' .. target:getId() ..')'] = target
+    end
+
+    local buttons = {
+        "- Find By Id"
+    }
+
+    for text in pairs(players) do
+        table.insert(buttons, text)
+    end
+
+    player:showMenu("Player Selection", '', buttons, function(button)
+        if button ~= buttons[1] then
+            result:resolve(players[button] and players[button] or nil)
+        else
+            player:showSurvey('Get player by ID', 32, function(status, text)
+                if status then
+                    local target = Spark:getPlayer("id", text)
+                    if target then
+                        result:resolve(target)
+                    end
+                end
+
+                result:resolve()
+            end)
         end
 
-        local target = Spark:getPlayer("id", text)
-        if target then
-            result:resolve(target)
-        else
-            result:resolve(false)
-        end
+        player:closeMenu()
     end)
 
     return Citizen.Await(result)

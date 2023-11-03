@@ -92,7 +92,7 @@ local Commands = {
     --- @param player player
     showPrompt = function(player)
         player:showSurvey('HEllo', 32, function(result, text)
-            player:notification(result .. " " .. text)
+            player:notification(tostring(result) .. " " .. text)
         end)
     end
 }
