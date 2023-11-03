@@ -40,12 +40,15 @@ function Spark:playerConnecting(source, def)
     def.done()
 end
 
+--- @param source number?
+--- @param netid number
 function Spark:playerJoining(source, netid)
     local steam = self:getSteamBySource(source)
 
     Players[steam].netid = netid -- update netid
 end
 
+--- @param source number?
 function Spark:playerSpawned(source)
     local steam = self:getSteamBySource(source)
     local player = Players[steam]
@@ -90,6 +93,7 @@ function Spark:playerDropped(source, reason)
 end
 
 --- @param steam string
+--- @param source number?
 --- @return table
 function Spark:authenticateUser(steam, source)
     local data = self:getRawDataByMethod('steam', steam)

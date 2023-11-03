@@ -104,7 +104,7 @@ function Spark:getPlayer(method, value)
     end
 
     --- @param event string
-    --- @param callback fun(player: player, ...)
+    --- @param callback fun(    ...)
     function player:listen(event, callback)
         --- @param plr player
         Spark:listenEvent(event, function(plr, ...)
