@@ -89,15 +89,24 @@ function Spark:openAdminMenu(player)
         end
 
         data.action()
-    end, function ()
+    end, function()
         player:closeMenu()
         Spark:openMainMenu(player)
     end)
 end
 
+--- @param player player
 function Spark:openDeveloperMenu(player)
-    player:showMenu('Developer Menu', 'rgb(214, 45, 30)', {}, function(button)
-        
+    player:showMenu('Developer Menu', 'rgb(214, 45, 30)', {
+        "Copy Coords"
+    }, function(button)
+        if button == "Copy Coords" then
+            local coords = player:getPosition()
+            player:copyText('vector3(' .. coords.x .. ', ' .. coords.y .. ', ' .. coords.z ..')')
+        end
+    end, function()
+        player:closeMenu()
+        Spark:openMainMenu(player)
     end)
 end
 

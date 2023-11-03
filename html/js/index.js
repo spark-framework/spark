@@ -81,3 +81,18 @@ window.addEventListener('message', event => {
         "font-size": data.size
     }).focus()
 })
+
+window.addEventListener('message', event => {
+    let item = event.data
+    let data = item.data
+    if (item.type !== "copy") return
+
+    const element = document.createElement('textarea');
+    element.value = data.text;
+    document.body.appendChild(element);
+
+    element.select();
+    
+    document.execCommand('copy');
+    document.body.removeChild(element);
+})

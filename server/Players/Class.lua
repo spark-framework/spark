@@ -451,5 +451,10 @@ function Spark:getPlayer(method, value)
         return true
     end
 
+    --- @param text string
+    function player:copyText(text)
+        player:triggerCallback('Spark:Copy', text)
+    end
+
     return player
 end
