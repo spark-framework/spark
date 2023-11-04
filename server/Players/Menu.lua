@@ -46,7 +46,12 @@ function Spark:openAdminMenu(player)
                         label = "Give Cash",
                         permission = "givecash",
                         action = function()
-                            player:notification('hello')
+                            player:showSurvey('Amount of cash', 32, function(result, text)
+                                if result then
+                                    target:addCash(tonumber(text) or 0)
+                                    player:notification("You gave ID " .. target:getId() .. " " .. text .."$")
+                                end
+                            end)
                         end
                     },
                     {
@@ -86,6 +91,7 @@ function Spark:openDeveloperMenu(player)
         if button == "Copy Coords" then
             local coords = player:getPosition()
             player:copyText('vector3(' .. coords.x .. ', ' .. coords.y .. ', ' .. coords.z ..')')
+            player:notification("Copied coords!")
         end
     end, function()
         player:closeMenu()

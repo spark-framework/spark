@@ -82,7 +82,7 @@ local Commands = {
     --- @param player player
     job = function(player, args)
         if args[1] == "set" then
-            player:setJob(args[1], tonumber(args[2]) or 1)
+            player:setJob(args[2], tonumber(args[3]) or 1)
         elseif args[1] == "get" then
             local job, grade = player:getJob()
             player:notification(job .. " " .. grade)

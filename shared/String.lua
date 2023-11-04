@@ -37,3 +37,13 @@ function Spark:splitString(text, separator)
 
     return result
 end
+
+--- https://stackoverflow.com/a/10992898
+--- @param number number
+--- @return string
+function Spark:formatNumber(number)
+    local _, __, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+
+    int = int:reverse():gsub("(%d%d%d)", "%1,")
+    return (minus .. int:reverse():gsub("^,", "") .. fraction):gsub(',', '.')
+end
