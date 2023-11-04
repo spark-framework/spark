@@ -343,11 +343,10 @@ function Spark:getPlayer(method, value)
     end
 
     --- @param title string
-    --- @param color string
     --- @param data table
     --- @param callback fun(button: string)
     --- @param close? fun()
-    function player:showMenu(title, color, data, callback, close)
+    function player:showMenu(title, data, callback, close)
         local id = Ids.Menu + 1
         Ids.Menu = id
 
@@ -367,7 +366,7 @@ function Spark:getPlayer(method, value)
             end)
         end
 
-        player:triggerCallback('Spark:Menu:Show', title, color, data, id, close and id)
+        player:triggerCallback('Spark:Menu:Show', title, data, id, close and id)
     end
 
     function player:closeMenu()

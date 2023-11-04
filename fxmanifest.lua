@@ -53,12 +53,8 @@ client_scripts {
     'client/Player.lua',
     'client/Player/State.lua',
     'client/Survival.lua',
-    
-    'client/Clipboard.lua',
-    'client/Prompt.lua',
-    'client/Menu.lua',
-    'client/Survey.lua',
 
+    'client/GUI/*.lua',
     'client/Map/*.lua'
 }
 

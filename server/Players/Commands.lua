@@ -66,7 +66,7 @@ local Commands = {
     --- @param player player
     menu = function(player, args)
         if args[1] == "open" then
-            player:showMenu('hello', 'rgb(39, 78, 223)', {
+            player:showMenu('hello', {
                 "Hello"
             }, function(button) end)
         elseif args[1] == "close" then

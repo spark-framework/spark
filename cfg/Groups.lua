@@ -13,7 +13,10 @@ return {
             "revive",
             "setjob",
             "removejob",
-            "givecash"
+            "givecash",
+            'selectplayer',
+            'unban',
+            'ban'
         }
     },
 

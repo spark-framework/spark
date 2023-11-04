@@ -274,7 +274,7 @@ function Spark:getPlayer()
     return player
 end
 
-if GetCurrentResourceName() == "spark" then
+if Spark:getSparkName() == GetCurrentResourceName() then
     RegisterNetEvent('Spark:Keybind', function(name, key, id)
         Spark:getPlayer():keybind(name, key, function()
             TriggerServerEvent('Spark:Keybind:' .. id)

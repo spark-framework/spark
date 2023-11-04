@@ -1,7 +1,7 @@
 ---@diagnostic disable: param-type-mismatch
 local Player = Spark:getPlayer()
 
-local Open, Index, Data, Color, Callback, Close = false, 1, {}, '', nil, nil
+local Open, Index, Data, Callback, Close = false, 1, {}, nil, nil
 
 --- @return boolean
 function Spark:isMenuOpen()
@@ -24,21 +24,19 @@ function Spark:setMenuIndex(index)
 end
 
 --- @param title string
---- @param color string
 --- @param data table
 --- @param callback fun(button:  string)
 --- @param close? fun()
-function Spark:showMenu(title, color, data, callback, close)
+function Spark:showMenu(title, data, callback, close)
     Open, Index, Data = true, 1, data
-    Color, Callback, Close = color, callback, close
+    Callback, Close = callback, close
 
     return SendNUIMessage({
         type = "menu",
         action = "open",
         data = {
             title = title,
-            buttons = data,
-            color = color
+            buttons = data
         }
     })
 end
@@ -61,8 +59,7 @@ function Spark:updateMenu() -- update key index in NUI
         type = "menu",
         action = "update",
         data = {
-            index = Index,
-            color = Color
+            index = Index
         }
     })
 end
@@ -107,8 +104,8 @@ Player:keybind('Move Down', 'DOWN', function()
     end
 end)
 
-Spark:createCallback('Spark:Menu:Show', function(title, color, data, buttonId, closeId)
-    Spark:showMenu(title, color, data, function(button)
+Spark:createCallback('Spark:Menu:Show', function(title, data, buttonId, closeId)
+    Spark:showMenu(title, data, function(button)
         TriggerServerEvent('Spark:Menu:Button:' .. buttonId, button)
     end, closeId and function()
         TriggerServerEvent('Spark:Menu:Close:' .. closeId)

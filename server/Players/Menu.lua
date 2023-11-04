@@ -14,7 +14,7 @@ function Spark:openMainMenu(player)
         table.insert(buttons, "Police")
     end
 
-    player:showMenu('Main Menu', 'rgb(230, 140, 14)', buttons, function(button)
+    player:showMenu('Main Menu', buttons, function(button)
         player:closeMenu()
         if button == "Admin" then
             self:openAdminMenu(player)
@@ -30,66 +30,49 @@ end
 
 --- @param player player
 function Spark:openAdminMenu(player)
-    local buttons = {
+    self:openPermissionMenu(player, 'Admin Menu', {
         {
-            label = "Set Job",
-            permission = "setjob",
+            label = "Select Player",
+            permission = "selectplayer",
             action = function()
                 local target = Spark:askForPlayer(player)
                 if not target then
                     return player:notification('Cannot find player!')
                 end
-            end
-        },
 
-        {
-            label = "Remove Job",
-            permission = "removejob",
-            action = function()
-                player:notification("Not made yet")
-            end
-        },
-
-        {
-            label = "Give Cash",
-            permission = "givecash",
-            action = function()
-                local target = Spark:askForPlayer(player)
-                if not target then
-                    return
-                end
-
-                player:showSurvey('Amount of cash', 32, function(result, text)
-                    if not result then
-                        return
-                    end
-
-                    target:addCash(tonumber(text) or 0)
-                    target:notification('You recieved ' .. text .. " from ID " .. player:getId())
+                player:closeMenu()
+                Spark:openPermissionMenu(player, 'Player (' .. target:getId() .. ')', {
+                    {
+                        label = "Give Cash",
+                        permission = "givecash",
+                        action = function()
+                            player:notification('hello')
+                        end
+                    },
+                    {
+                        label = target:isBanned() and 'Unban' or 'Ban',
+                        permission = target:isBanned() and 'unban' or 'ban',
+                        action = function()
+                            if not target:isBanned() then
+                                player:showSurvey('Reason of ban', 25, function(result, text)
+                                    if result then
+                                        target:setBanned(true, text)
+                                        player:notification('You banned ID ' .. target:getId())
+                                    end
+                                end)
+                            else
+                                target:setBanned(false)
+                                player:notification('You unbanned ID ' .. target:getId())
+                            end
+                        end
+                    }
+                }, function()
+                    player:closeMenu()
+                    Spark:openAdminMenu(player)
                 end)
             end
-        },
-    }
-
-    local result = {}
-    for _, button in pairs(buttons) do
-        if player:hasPermission(button.permission) then
-            table.insert(result, button.label)
-        end
-    end
-
-    player:showMenu('Admin Menu', 'rgb(214, 45, 30)', result, function(button)
-        local data
-        for _, v in pairs(buttons) do
-            data = v.label == button and v or data
-        end
-
-        if not player:hasPermission(data.permission) then
-            return
-        end
-
-        data.action()
-    end, function()
+        }
+    }, function()
         player:closeMenu()
         Spark:openMainMenu(player)
     end)
@@ -97,7 +80,7 @@ end
 
 --- @param player player
 function Spark:openDeveloperMenu(player)
-    player:showMenu('Developer Menu', 'rgb(214, 45, 30)', {
+    player:showMenu('Developer Menu', {
         "Copy Coords"
     }, function(button)
         if button == "Copy Coords" then
@@ -114,6 +97,32 @@ function Spark:openPoliceMenu(player)
     player:showMenu('Police Menu', 'rgb(214, 45, 30)', {}, function(button)
         
     end)
+end
+
+--- @param player player
+--- @param title string
+--- @param buttons table
+--- @param close? fun()
+function Spark:openPermissionMenu(player, title, buttons, close)
+    local result = {}
+    for _, button in pairs(buttons) do
+        if player:hasPermission(button.permission) then
+            table.insert(result, button.label)
+        end
+    end
+
+    player:showMenu(title, result, function(button)
+        local data
+        for _, v in pairs(buttons) do
+            data = v.label == button and v or data
+        end
+
+        if not player:hasPermission(data.permission) then
+            return
+        end
+
+        data.action()
+    end, close)
 end
 
 --- @param player player
@@ -134,7 +143,7 @@ function Spark:askForPlayer(player)
         table.insert(buttons, text)
     end
 
-    player:showMenu("Player Selection", '', buttons, function(button)
+    player:showMenu("Player Selection", buttons, function(button)
         if button ~= buttons[1] then
             result:resolve(players[button] and players[button] or nil)
         else
