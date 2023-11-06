@@ -9,7 +9,7 @@ name        'Spark'
 author      'frackz'
 version     '1.0'
 license     'GPL v3.0'
-repository  'https://github.com/frackz/spark'
+repository  'https://github.com/spark-framework/spark'
 description 'FiveM framework based on Lua'
 
 dependency  '/onesync'
