@@ -55,6 +55,22 @@ function Spark:openAdminMenu(player)
                         end
                     },
                     {
+                        label = "Remove Cash",
+                        permission = "removecash",
+                        action = function()
+                            player:showSurvey('Amount of cash', 32, function(result, text)
+                                if result then
+                                    if target:getCash() >= tonumber(text) then
+                                        return player:notification("ID " .. target:getId() .. ' dont have that kind of dough')
+                                    end
+    
+                                    target:removeCash(tonumber(text) or 0)
+                                    player:notification("You removed " .. text .."$ from ID " .. target:getId())
+                                end
+                            end)
+                        end
+                    },
+                    {
                         label = target:isBanned() and 'Unban' or 'Ban',
                         permission = target:isBanned() and 'unban' or 'ban',
                         action = function()

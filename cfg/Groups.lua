@@ -10,11 +10,11 @@ return {
             end
         },
         permissions = {
-            "revive",
-            "setjob",
-            "removejob",
-            "givecash",
             'selectplayer',
+
+            'givecash',
+            'removecash',
+
             'unban',
             'ban'
         }
