@@ -1,6 +1,6 @@
 # ✨ Spark
 
-A FiveM framework built on Lua that makes creating servers simple!
+A FiveM framework built on Lua that makes creating servers simple! 
 
 ![](https://badgen.net/github/commits/spark-framework/spark?color=red)
 ![](https://badgen.net/github/issues/spark-framework/spark?color=red)
