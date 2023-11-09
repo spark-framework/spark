@@ -1,6 +1,7 @@
 ---@diagnostic disable: redundant-return-value
 local Dummy = 'tewstOMG'
 
+--- @return string
 function Spark:getDummySteam()
     return Dummy
 end

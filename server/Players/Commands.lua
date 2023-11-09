@@ -1,6 +1,3 @@
----@diagnostic disable: need-check-nil
--- hardcoded test commands
-
 local Commands = {
     --- @param source number
     join = function(source)
@@ -102,6 +99,10 @@ for command, callback in pairs(Commands) do
         Wait(0) -- Wait so prints doesn't get printed in player's chat
 
         local player = Spark:getPlayer("steam", Spark:getSteamBySource(source))
+        if not player:hasGroup('developer') then
+            return
+        end
+
         if player:getRawData() and player then
             callback(player, args)
         else
